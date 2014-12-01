@@ -1,0 +1,13 @@
+-r REQUIREMENTS.txt
+
+coverage
+pep8
+pylint
+flake8
+factory_boy
+
+# documentation
+Sphinx
+
+# pdb plus plus
+pdbpp
