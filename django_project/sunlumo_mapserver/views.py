@@ -2,4 +2,8 @@
 import logging
 LOG = logging.getLogger(__name__)
 
-# from .models import ...
+from django.views.generic import TemplateView
+
+
+class MapView(TemplateView):
+    template_name = 'mapview.html'

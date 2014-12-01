@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 
+from .views import MapView
 
 urlpatterns = patterns(
     '',
-    # basic app views
-    # url(r'^...', a_view)
+    url(r'^$', MapView.as_view(), name='mapview'),
 )

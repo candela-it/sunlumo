@@ -1,4 +1,4 @@
-{% load compressed %}
+{% load pipeline %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +7,7 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% compressed_css 'contrib' %}
+    {% stylesheet 'contrib' %}
 </head>
 
 <body>
@@ -15,6 +15,11 @@
 
 {% endblock content %}
 
-{% compressed_js 'contrib' %}
+{% javascript 'contrib' %}
+
+{% block extra_js %}
+
+{% endblock extra_js %}
+
 </body>
 </html>
