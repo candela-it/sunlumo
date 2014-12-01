@@ -3,7 +3,7 @@ from .contrib import *
 
 # Project apps
 INSTALLED_APPS += (
-    'sunlumo_mapserver'
+    'sunlumo_mapserver',
 )
 
 
