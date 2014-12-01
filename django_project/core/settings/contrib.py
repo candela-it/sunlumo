@@ -18,3 +18,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder'
 )
+
+
+# QGIS specific settings
+QGIS_PYTHON_PATH = '/usr/share/qgis/python'
+
+import sys
+sys.path.append(QGIS_PYTHON_PATH)
