@@ -5,7 +5,7 @@ LOG = logging.getLogger(__name__)
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 
-from .renderer import render
+from .renderer import SunlumoProject
 
 
 class MapView(TemplateView):
@@ -20,9 +20,7 @@ class GetMapView(View):
         # QGIS_PROJECT = '/data/Landscape survey - Web.qgs'
         QGIS_PROJECT = '/data/simple.qgs'
 
-        img = render(QGIS_PROJECT, {'bbox': bbox})
-        response = HttpResponse(
-            img, content_type='png'
-        )
+        sl_project = SunlumoProject(QGIS_PROJECT)
+        img = sl_project.render({'bbox': bbox})
 
-        return response
+        return HttpResponse(img, content_type='png')
