@@ -10,7 +10,9 @@ INSTALLED_APPS += (
 PIPELINE_JS = {
     'contrib': {
         'source_filenames': (
-            'js/leaflet.js',
+            'js/leaflet-src.js',
+            'js/proj4-src.js',
+            'js/proj4leaflet.js'
         ),
         'output_filename': 'js/contrib.js',
     }
