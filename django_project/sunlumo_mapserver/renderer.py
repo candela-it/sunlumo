@@ -97,7 +97,10 @@ class SunlumoProject:
             crs.createFromSrid(3857)
             # crs.createFromSrid(3765)
 
-            img = QImage(QSize(256, 256), QImage.Format_ARGB32_Premultiplied)
+            img = QImage(
+                QSize(*params.get('image_size')),
+                QImage.Format_ARGB32_Premultiplied
+            )
 
             # set transparent backgorund color
             color = QColor(255, 255, 255, 0)
@@ -112,7 +115,7 @@ class SunlumoProject:
             rndr.setDestinationCrs(crs)
             rndr.setProjectionsEnabled(True)
             rndr.setExtent(QgsRectangle(*params.get('bbox')))
-            # rndr.setOutputSize(QSize(256, 256))
+
             rndr.setLayerSet(loaded_layers)
             rndr.setOutputSize(img.size(), img.logicalDpiX())
             rndr.setMapUnits(crs.mapUnits())
