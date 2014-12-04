@@ -14,8 +14,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRectangle,
     QgsMapLayerRegistry,
-    QgsMapRenderer,
-    QgsCoordinateReferenceSystem
+    QgsMapRendererCustomPainterJob,
+    QgsCoordinateReferenceSystem,
+    QgsMapSettings
 )
 
 
@@ -68,31 +69,29 @@ class SunlumoProject:
     def _parseLayers(self):
         # remove all layers from the map registry
         QgsMapLayerRegistry.instance().removeAllMapLayers()
-        with change_directory(self.project_root):
-            loaded_layers = []
-            for layer in self._readLayers():
-                layer_type = self._getAttr(layer, 'type').value()
-                if layer_type == 'vector':
-                    qgsLayer = QgsVectorLayer()
-                elif layer_type == 'raster':
-                    qgsLayer = QgsRasterLayer()
+        loaded_layers = []
+        for layer in self._readLayers():
+            layer_type = self._getAttr(layer, 'type').value()
+            if layer_type == 'vector':
+                qgsLayer = QgsVectorLayer()
+            elif layer_type == 'raster':
+                qgsLayer = QgsRasterLayer()
 
-                # read layer from XML
-                qgsLayer.readLayerXML(layer.toElement())
-                # add layer to the QgsMapLayerRegistry
+            # read layer from XML
+            qgsLayer.readLayerXML(layer.toElement())
+            # add layer to the QgsMapLayerRegistry
 
-                if qgsLayer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(qgsLayer)
-                    # add layer to the internal layer registry
-                    loaded_layers.append(qgsLayer.id())
-                    LOG.debug('Loaded layer: %s', qgsLayer.id())
-            return loaded_layers
+            if qgsLayer.isValid():
+                QgsMapLayerRegistry.instance().addMapLayer(qgsLayer)
+                # add layer to the internal layer registry
+                loaded_layers.append(qgsLayer.id())
+                LOG.debug('Loaded layer: %s', qgsLayer.id())
+        return loaded_layers
 
     def render(self, params):
-        with change_directory(self.project_root):
-            loaded_layers = self._parseLayers()
 
-            # print extent.toString()
+        with change_directory(self.project_root):
+
             crs = QgsCoordinateReferenceSystem()
             crs.createFromSrid(3857)
             # crs.createFromSrid(3765)
@@ -110,17 +109,20 @@ class SunlumoProject:
             p.begin(img)
             p.setRenderHint(QPainter.Antialiasing)
 
-            rndr = QgsMapRenderer()
-            rndr.clearLayerCoordinateTransforms()
-            rndr.setDestinationCrs(crs)
-            rndr.setProjectionsEnabled(True)
-            rndr.setExtent(QgsRectangle(*params.get('bbox')))
+            map_settings = QgsMapSettings()
+            map_settings.setBackgroundColor(color)
+            map_settings.setDestinationCrs(crs)
+            map_settings.setCrsTransformEnabled(True)
+            map_settings.setExtent(QgsRectangle(*params.get('bbox')))
+            map_settings.setOutputSize(img.size())
+            map_settings.setMapUnits(crs.mapUnits())
 
-            rndr.setLayerSet(loaded_layers)
-            rndr.setOutputSize(img.size(), img.logicalDpiX())
-            rndr.setMapUnits(crs.mapUnits())
+            loaded_layers = self._parseLayers()
+            map_settings.setLayers(loaded_layers)
 
-            rndr.render(p)
+            job = QgsMapRendererCustomPainterJob(map_settings, p)
+            job.start()
+            job.waitForFinished()
 
             map_buffer = QBuffer()
             map_buffer.open(QIODevice.ReadWrite)
