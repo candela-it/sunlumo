@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 
-from .views import MapView, GetMapView
+from .views import MapView, GetMapView, PrintPDFView
 
 urlpatterns = patterns(
     '',
     url(r'^$', MapView.as_view(), name='mapview'),
     url(r'^getmap$', GetMapView.as_view(), name='getmapview'),
+    url(r'^printpdf$', PrintPDFView.as_view(), name='printpdf')
 )

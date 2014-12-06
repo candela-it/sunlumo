@@ -4,6 +4,8 @@ LOG = logging.getLogger(__name__)
 
 import contextlib
 import os
+import json
+import tempfile
 
 from PyQt4.QtXml import QDomDocument
 
@@ -27,6 +29,14 @@ def change_directory(path):
         yield
     finally:
         os.chdir(prev_cwd)
+
+
+def writeParamsToJson(params):
+    tmpFile = tempfile.mkstemp()
+    with open(tmpFile[1], 'w') as param_file:
+        json.dump(params, param_file)
+
+    return tmpFile[1]
 
 # QgsProject.instance().setFileName(QGIS_PROJECT)
 # if not(QgsProject.instance().read()):
