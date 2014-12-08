@@ -15,17 +15,28 @@ class MapView(TemplateView):
     template_name = 'mapview.html'
 
 
-class GetMapView(View):
+class UpperParamsMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        self.req_params = {
+            key.upper(): request.GET[key] for key in request.GET.keys()
+        }
+        return super(UpperParamsMixin, self).dispatch(
+            request, *args, **kwargs
+        )
+
+
+class GetMapView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
-        if not(all(param in request.GET for param in [
+        if not(all(param in self.req_params for param in [
                 'BBOX', 'WIDTH', 'HEIGHT'])):
             raise Http404
 
         try:
-            bbox = [float(a) for a in request.GET.get('BBOX').split(',')]
+            bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
             image_size = [
                 int(a) for a in (
-                    request.GET.get('WIDTH'), request.GET.get('HEIGHT'))
+                    self.req_params.get('WIDTH'),
+                    self.req_params.get('HEIGHT'))
             ]
         except:
             # return 404 if any of parameters are missing or not parsable
@@ -37,7 +48,6 @@ class GetMapView(View):
         }
 
     def get(self, request, *args, **kwargs):
-
         params = self._parse_request_params(request)
         # QGIS_PROJECT = '/data/Landscape survey - Web.qgs'
         QGIS_PROJECT = '/data/simple.qgs'
@@ -48,15 +58,15 @@ class GetMapView(View):
         return HttpResponse(img, content_type='png')
 
 
-class PrintPDFView(View):
+class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
-        if not(all(param in request.GET for param in [
+        if not(all(param in self.req_params for param in [
                 'BBOX', 'COMPOSER_TEMPLATE'])):
             raise Http404
 
         try:
-            bbox = [float(a) for a in request.GET.get('BBOX').split(',')]
-            composer_template = request.GET.get('COMPOSER_TEMPLATE')
+            bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
+            composer_template = self.req_params.get('COMPOSER_TEMPLATE')
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
