@@ -22,5 +22,5 @@ class Command(BaseCommand):
             params = json.load(paramFile)
 
         params['tmpFile'] = param_file
-        prnt = Printer(params['project_file'])
+        prnt = Printer(params['map_file'])
         prnt.printToPdf(params)
