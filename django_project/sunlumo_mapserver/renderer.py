@@ -17,12 +17,18 @@ from .utils import SunlumoProject, change_directory
 
 class Renderer(SunlumoProject):
 
+    def check_required_params(self, params):
+        if not(all(param in params.keys() for param in [
+                'bbox', 'image_size'])):
+            raise RuntimeError('Missing render process params!')
+
     def render(self, params):
+        self.check_required_params(params)
+
         with change_directory(self.project_root):
 
             crs = QgsCoordinateReferenceSystem()
-            crs.createFromSrid(3857)
-            # crs.createFromSrid(3765)
+            crs.createFromSrid(4326)
 
             img = QImage(
                 QSize(*params.get('image_size')),
@@ -54,7 +60,9 @@ class Renderer(SunlumoProject):
 
             map_buffer = QBuffer()
             map_buffer.open(QIODevice.ReadWrite)
-            img.save(map_buffer, "PNG")
+            # img2 = img.convertToFormat(QImage.Format_Indexed8)
+            # img2.save(map_buffer, "PNG")
+            img.save(map_buffer, 'PNG')
 
             # clean up
             p.end()

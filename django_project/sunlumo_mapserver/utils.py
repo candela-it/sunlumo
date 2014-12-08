@@ -49,7 +49,7 @@ class SunlumoProject:
     def __init__(self, project_file):
         self.project_file = project_file
         self._parseProject(project_file)
-        self.project_root = os.path.dirname(project_file)
+        self.project_root = os.path.abspath(os.path.dirname(project_file))
 
     def _readLayers(self):
         layers = self.doc.elementsByTagName('maplayer')

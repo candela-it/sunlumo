@@ -13,7 +13,11 @@ class TestSunlumoProject(TestCase):
 
         self.assertNotEqual(sl_prj.doc, None)
 
-        self.assertEqual(sl_prj.project_root, './sunlumo_mapserver/test_data')
+        self.assertEqual(
+            sl_prj.project_root,
+            '/project/django_project/sunlumo_mapserver/test_data'
+        )
+
         self.assertEqual(
             sl_prj.project_file,
             './sunlumo_mapserver/test_data/test_sunlumo.qgs'
