@@ -12,7 +12,9 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/leaflet.js',
             'js/proj4-src.js',
-            'js/proj4leaflet.js'
+            'js/proj4leaflet.js',
+            'js/NonTiledLayer.js',
+            'js/NonTiledLayer.WMS.js'
         ),
         'output_filename': 'js/contrib.js',
     }

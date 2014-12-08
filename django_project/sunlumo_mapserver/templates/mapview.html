@@ -17,11 +17,13 @@ var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 map.addLayer(osm);
 
-var qgis = L.tileLayer.wms("/getmap", {
+var qgis = new L.NonTiledLayer.WMS("/getmap", {
     layers: 'DMR25 Sjenčanje',
     format: 'image/png',
-    transparent: true
+    transparent: true,
+    pane: map.getPanes().tilePane
 });
+
 
 map.addLayer(qgis);
 </script>
