@@ -38,11 +38,6 @@ def writeParamsToJson(params):
 
     return tmpFile[1]
 
-# QgsProject.instance().setFileName(QGIS_PROJECT)
-# if not(QgsProject.instance().read()):
-    # sys.exit(1)
-# QgsMapLayerRegistry.instance().mapLayers().values()
-
 
 class SunlumoProject:
 
