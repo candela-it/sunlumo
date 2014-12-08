@@ -29,7 +29,7 @@ class Renderer(SunlumoProject):
         with change_directory(self.project_root):
 
             crs = QgsCoordinateReferenceSystem()
-            crs.createFromSrid(4326)
+            crs.createFromSrid(params.get('srs'))
 
             img = QImage(
                 QSize(*params.get('image_size')),

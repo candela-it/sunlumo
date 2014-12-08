@@ -21,6 +21,7 @@ var qgis = new L.NonTiledLayer.WMS("/getmap", {
     layers: 'DMR25 Sjenčanje',
     format: 'image/png',
     transparent: true,
+    map: '/data/simple.qgs',
     pane: map.getPanes().tilePane
 });
 

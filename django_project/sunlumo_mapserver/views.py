@@ -28,7 +28,7 @@ class UpperParamsMixin(object):
 class GetMapView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'WIDTH', 'HEIGHT'])):
+                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS'])):
             raise Http404
 
         try:
@@ -38,21 +38,27 @@ class GetMapView(UpperParamsMixin, View):
                     self.req_params.get('WIDTH'),
                     self.req_params.get('HEIGHT'))
             ]
+            srs = int(self.req_params.get('SRS').split(':')[-1])
+            map_file = self.req_params.get('MAP')
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
 
+        # map must have a value
+        if not(map_file):
+            raise Http404
+
         return {
             'bbox': bbox,
-            'image_size': image_size
+            'image_size': image_size,
+            'map_file': map_file,
+            'srs': srs
         }
 
     def get(self, request, *args, **kwargs):
         params = self._parse_request_params(request)
-        # QGIS_PROJECT = '/data/Landscape survey - Web.qgs'
-        QGIS_PROJECT = '/data/simple.qgs'
 
-        sl_project = Renderer(QGIS_PROJECT)
+        sl_project = Renderer(params.get('map_file'))
         img = sl_project.render(params)
 
         return HttpResponse(img, content_type='png')

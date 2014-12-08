@@ -19,7 +19,8 @@ class TestSunlumoProjectRenderer(TestCase):
         )
 
         image = sl_prj.render({
-            'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512]
+            'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
+            'srs': 4326
         })
 
         # might not be the best approach, but at least it's not a blank image
