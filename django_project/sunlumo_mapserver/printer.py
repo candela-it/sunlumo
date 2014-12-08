@@ -2,8 +2,6 @@
 import logging
 LOG = logging.getLogger(__name__)
 
-from PyQt4.QtXml import QDomDocument
-
 from qgis.core import (
     QgsComposition,
     QgsPalLabeling,
@@ -15,11 +13,15 @@ from .utils import SunlumoProject, change_directory
 
 class Printer(SunlumoProject):
 
+    def check_required_params(self, params):
+        req_params = ['tmpFile']
+        if not(all(param in params.keys() for param in req_params)):
+            raise RuntimeError('Missing printer process params!')
+
     def printToPdf(self, params):
+        self.check_required_params(params)
+
         with change_directory(self.project_root):
-            doc = QDomDocument()
-            project_data = open(self.project_file, 'r')
-            doc.setContent(project_data.read())
 
             map_layers = self.parseLayers()
 
@@ -30,14 +32,14 @@ class Printer(SunlumoProject):
             rndr.setLayerSet(map_layers)
 
             test_comp = (
-                doc.elementsByTagName('Composer').at(0)
+                self.doc.elementsByTagName('Composer').at(0)
                 .firstChildElement('Composition')
             )
 
             comp = QgsComposition(rndr)
             comp.setPlotStyle(QgsComposition.Print)
 
-            comp.readXML(test_comp, doc)
+            comp.readXML(test_comp, self.doc)
             # read composition elements
             comp.addItemsFromXML(test_comp, self.doc)
 

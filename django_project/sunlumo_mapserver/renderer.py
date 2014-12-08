@@ -18,8 +18,9 @@ from .utils import SunlumoProject, change_directory
 class Renderer(SunlumoProject):
 
     def check_required_params(self, params):
-        if not(all(param in params.keys() for param in [
-                'bbox', 'image_size'])):
+        req_prams = ['bbox', 'image_size']
+
+        if not(all(param in params.keys() for param in req_prams)):
             raise RuntimeError('Missing render process params!')
 
     def render(self, params):
