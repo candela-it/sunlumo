@@ -71,6 +71,10 @@ class PrintPDFView(UpperParamsMixin, View):
             # return 404 if any of parameters are missing or not parsable
             raise Http404
 
+        if not(composer_template):
+            # composer template should not be empty
+            raise Http404
+
         return {
             'bbox': bbox,
             'composer_template': composer_template

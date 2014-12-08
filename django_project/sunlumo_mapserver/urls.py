@@ -6,6 +6,6 @@ from .views import MapView, GetMapView, PrintPDFView
 urlpatterns = patterns(
     '',
     url(r'^$', MapView.as_view(), name='mapview'),
-    url(r'^getmap$', GetMapView.as_view(), name='getmapview'),
+    url(r'^getmap$', GetMapView.as_view(), name='getmap'),
     url(r'^printpdf$', PrintPDFView.as_view(), name='printpdf')
 )

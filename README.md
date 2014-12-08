@@ -18,7 +18,7 @@ apt-get update
 Then install packages from the repository:
 
 ```
-apt-get install vim qgis qgis-server python-pip libpq-dev libpython-dev git
+apt-get install vim qgis qgis-server python-pip libpq-dev libpython-dev git curl
 ```
 
 
@@ -34,6 +34,8 @@ machine this should not be a problem.
 
 ```
 pip install -r REQUIREMENTS-dev.txt
+nodeenv -n 0.10.33 -v
+npm install -g yuglify
 ```
 
 It's probably best to simply copy another developer's specific settings and
@@ -52,4 +54,26 @@ single thread environment. This also applies to the deployment environment.
 ```
 export DJANGO_SETTINGS_MODULE=core.settings.dev_username
 python manage.py runserver 0.0.0.0:8000 --nothreading
+```
+
+## Running tests
+
+Tests are executed in the *production like* environment. Create your own
+developer specific settings and customize to it to your liking.
+
+```
+cp core/settings/test_dodobas.py core/settings/test_username.py
+```
+
+We also need to aggregate and optimize static files:
+
+```
+python manage.py collectstatic --settings=core.settings.test_username --noinput
+```
+
+And then you can simply run test by executing `test.bash` in django_project
+directory:
+
+```
+USER=username ./test.bash
 ```
