@@ -68,26 +68,31 @@ class SunlumoProject:
     def _parseProject(self, project_file):
         with open(project_file, 'rb') as project_data:
             self.doc = QDomDocument()
-            self.doc.setContent(project_data.read())
+            validity = self.doc.setContent(project_data.read())
 
-    def _parseLayers(self):
-        # remove all layers from the map registry
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
-        loaded_layers = []
-        for layer in self._readLayers():
-            layer_type = self._getAttr(layer, 'type').value()
-            if layer_type == 'vector':
-                qgsLayer = QgsVectorLayer()
-            elif layer_type == 'raster':
-                qgsLayer = QgsRasterLayer()
+            # check validity of the QGIS Project XML file
+            if not(validity[0]):
+                raise RuntimeError(validity[1])
 
-            # read layer from XML
-            qgsLayer.readLayerXML(layer.toElement())
-            # add layer to the QgsMapLayerRegistry
+    def parseLayers(self):
+        with change_directory(self.project_root):
+            # remove all layers from the map registry
+            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            loaded_layers = []
+            for layer in self._readLayers():
+                layer_type = self._getAttr(layer, 'type').value()
+                if layer_type == 'vector':
+                    qgsLayer = QgsVectorLayer()
+                elif layer_type == 'raster':
+                    qgsLayer = QgsRasterLayer()
 
-            if qgsLayer.isValid():
-                QgsMapLayerRegistry.instance().addMapLayer(qgsLayer)
-                # add layer to the internal layer registry
-                loaded_layers.append(qgsLayer.id())
-                LOG.debug('Loaded layer: %s', qgsLayer.id())
-        return loaded_layers
+                # read layer from XML
+                qgsLayer.readLayerXML(layer.toElement())
+
+                # add layer to the QgsMapLayerRegistry
+                if qgsLayer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(qgsLayer)
+                    # add layer to the internal layer registry
+                    loaded_layers.append(qgsLayer.id())
+                    LOG.debug('Loaded layer: %s', qgsLayer.id())
+            return loaded_layers

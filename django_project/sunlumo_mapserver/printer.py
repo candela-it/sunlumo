@@ -5,10 +5,6 @@ LOG = logging.getLogger(__name__)
 from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (
-    QgsRectangle,
-    QgsMapLayerRegistry,
-    QgsCoordinateReferenceSystem,
-    QgsMapSettings,
     QgsComposition,
     QgsPalLabeling,
     QgsMapRenderer
@@ -25,7 +21,7 @@ class Printer(SunlumoProject):
             project_data = open(self.project_file, 'r')
             doc.setContent(project_data.read())
 
-            map_layers = self._parseLayers()
+            map_layers = self.parseLayers()
 
             le = QgsPalLabeling()
             rndr = QgsMapRenderer()
