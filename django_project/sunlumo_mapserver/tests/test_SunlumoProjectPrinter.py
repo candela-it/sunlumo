@@ -20,7 +20,8 @@ class TestSunlumoProjectPrinter(TestCase):
 
         tmpFile = '/tmp/printtmp'
         sl_prj.printToPdf({
-            'tmpFile': tmpFile
+            'tmpFile': tmpFile,
+            'layout': 'test_layout'
         })
 
         with open(tmpFile + '.pdf', 'r') as pdfFile:

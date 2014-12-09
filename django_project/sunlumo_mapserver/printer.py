@@ -14,7 +14,7 @@ from .utils import SunlumoProject, change_directory
 class Printer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_params = ['tmpFile']
+        req_params = ['tmpFile', 'layout']
         if not(all(param in params.keys() for param in req_params)):
             raise RuntimeError('Missing printer process params!')
 
@@ -31,17 +31,17 @@ class Printer(SunlumoProject):
 
             rndr.setLayerSet(map_layers)
 
-            test_comp = (
-                self.doc.elementsByTagName('Composer').at(0)
+            composer = (
+                self.getLayoutbyName(params['layout'])
                 .firstChildElement('Composition')
             )
 
             comp = QgsComposition(rndr)
             comp.setPlotStyle(QgsComposition.Print)
 
-            comp.readXML(test_comp, self.doc)
+            comp.readXML(composer, self.doc)
             # read composition elements
-            comp.addItemsFromXML(test_comp, self.doc)
+            comp.addItemsFromXML(composer, self.doc)
 
             # save the file
             comp.exportAsPDF(params['tmpFile'] + '.pdf')

@@ -80,20 +80,30 @@ class TestViews(TestCase):
 
     def test_printpdf_view_bad_params(self):
         resp = self.client.get(reverse('printpdf'), {
-            'bbox': '-a,-b,c,d', 'composer_template': 'test'
+            'bbox': '-a,-b,c,d', 'layout': 'test_layout',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         })
 
         self.assertEqual(resp.status_code, 404)
 
         resp = self.client.get(reverse('printpdf'), {
-            'bbox': '-2,-2,2,2', 'composer_template': ''
+            'bbox': '-2,-2,2,2', 'layout': '',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        resp = self.client.get(reverse('printpdf'), {
+            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'map': ''
         })
 
         self.assertEqual(resp.status_code, 404)
 
     def test_printpdf_view(self):
         resp = self.client.get(reverse('printpdf'), {
-            'bbox': '-2,-2,2,2', 'composer_template': 'test'
+            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         })
 
         self.assertEqual(resp.status_code, 200)

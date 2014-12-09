@@ -67,29 +67,30 @@ class GetMapView(UpperParamsMixin, View):
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'COMPOSER_TEMPLATE'])):
+                'BBOX', 'LAYOUT'])):
             raise Http404
 
         try:
             bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
-            composer_template = self.req_params.get('COMPOSER_TEMPLATE')
+            layout = self.req_params.get('LAYOUT')
+            map_file = self.req_params.get('MAP')
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
 
-        if not(composer_template):
+        if not(layout) or not(map_file):
             # composer template should not be empty
             raise Http404
 
         return {
             'bbox': bbox,
-            'composer_template': composer_template
+            'layout': layout,
+            'map_file': map_file
         }
 
     def get(self, request, *args, **kwargs):
 
         params = self._parse_request_params(request)
-        params['project_file'] = '/data/simple.qgs'
 
         tmpFile = writeParamsToJson(params)
 

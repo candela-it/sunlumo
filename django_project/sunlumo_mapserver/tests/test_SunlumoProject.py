@@ -50,3 +50,35 @@ class TestSunlumoProject(TestCase):
                 u'polygons20141208133824264'
             ]
         )
+
+    def test_parseLayouts(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        layouts = sl_prj.parseLayouts()
+
+        self.assertListEqual(
+            layouts, [u'test_layout']
+        )
+
+    def test_getLayoutByName(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        layout = sl_prj.getLayoutbyName('test_layout')
+
+        self.assertEqual(
+            sl_prj._getAttr(layout, 'title').value(), u'test_layout'
+        )
+
+    def test_getLayoutByName_nonexistant(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        layout = sl_prj.getLayoutbyName('test_nonexistant_layout')
+
+        with self.assertRaises(RuntimeError):
+            sl_prj._getAttr(layout, 'title').value()

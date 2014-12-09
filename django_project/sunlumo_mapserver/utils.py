@@ -51,13 +51,21 @@ class SunlumoProject:
         for i in xrange(layers.size()):
             yield layers.at(i)
 
-    def _readAttrs(self, layer):
-        attrs = layer.attributes()
+    def _readLayouts(self):
+        layouts = self.doc.elementsByTagName('Composer')
+        for i in xrange(layouts.size()):
+            yield layouts.at(i)
+
+    def _readAttrs(self, obj):
+        attrs = obj.attributes()
         for i in xrange(attrs.size()):
             yield attrs.item(i)
 
-    def _getAttr(self, layer, attr):
-        attrs = layer.attributes()
+    def _getAttr(self, obj, attr):
+        if not(obj):
+            raise RuntimeError('XML Object must exist!')
+
+        attrs = obj.attributes()
         return attrs.namedItem(attr).toAttr()
 
     def _parseProject(self, project_file):
@@ -70,10 +78,11 @@ class SunlumoProject:
                 raise RuntimeError(validity[1])
 
     def parseLayers(self):
+        loaded_layers = []
+
         with change_directory(self.project_root):
             # remove all layers from the map registry
             QgsMapLayerRegistry.instance().removeAllMapLayers()
-            loaded_layers = []
             for layer in self._readLayers():
                 layer_type = self._getAttr(layer, 'type').value()
                 if layer_type == 'vector':
@@ -91,3 +100,19 @@ class SunlumoProject:
                     loaded_layers.append(qgsLayer.id())
                     LOG.debug('Loaded layer: %s', qgsLayer.id())
             return loaded_layers
+
+    def parseLayouts(self):
+        available_layouts = []
+        with change_directory(self.project_root):
+            for layout in self._readLayouts():
+                available_layouts.append(
+                    self._getAttr(layout, 'title').value()
+                )
+        return available_layouts
+
+    def getLayoutbyName(self, name):
+        for layout in self._readLayouts():
+            if self._getAttr(layout, 'title').value() == name:
+                return layout
+        else:
+            return None
