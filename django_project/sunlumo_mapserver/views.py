@@ -28,7 +28,7 @@ class UpperParamsMixin(object):
 class GetMapView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS'])):
+                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT'])):
             raise Http404
 
         try:
@@ -39,6 +39,7 @@ class GetMapView(UpperParamsMixin, View):
                     self.req_params.get('HEIGHT'))
             ]
             srs = int(self.req_params.get('SRS').split(':')[-1])
+            image_format = self.req_params.get('FORMAT').split('/')[-1]
             map_file = self.req_params.get('MAP')
         except:
             # return 404 if any of parameters are missing or not parsable
@@ -48,11 +49,16 @@ class GetMapView(UpperParamsMixin, View):
         if not(map_file):
             raise Http404
 
+        # check if image format is supported
+        if image_format not in ['png', 'jpeg', 'png8']:
+            raise Http404
+
         return {
             'bbox': bbox,
             'image_size': image_size,
             'map_file': map_file,
-            'srs': srs
+            'srs': srs,
+            'image_format': image_format
         }
 
     def get(self, request, *args, **kwargs):
@@ -61,7 +67,7 @@ class GetMapView(UpperParamsMixin, View):
         sl_project = Renderer(params.get('map_file'))
         img = sl_project.render(params)
 
-        return HttpResponse(img, content_type='png')
+        return HttpResponse(img, content_type=params.get('image_format'))
 
 
 class PrintPDFView(UpperParamsMixin, View):

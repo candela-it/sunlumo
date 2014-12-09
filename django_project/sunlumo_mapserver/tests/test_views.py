@@ -26,37 +26,64 @@ class TestViews(TestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_getmap_view_bad_params(self):
+        # bad bbox
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-a,-b,c,d', 'width': 100, 'height': 100, 'srs': 4326,
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
         })
 
         self.assertEqual(resp.status_code, 404)
 
+        # bad heigth
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 'a', 'srs': 4326,
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
         })
 
         self.assertEqual(resp.status_code, 404)
 
+        # bad width
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 'b', 'height': 100, 'srs': 4326,
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
         })
 
         self.assertEqual(resp.status_code, 404)
 
+        # bad srs
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 'a',
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
         })
 
         self.assertEqual(resp.status_code, 404)
 
+        # missing map parameter
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
-            'map': ''
+            'map': '', 'format': 'image/png'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # unknown image format
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/unknown'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # unparsable image format
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'some_weird_format'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -64,7 +91,8 @@ class TestViews(TestCase):
     def test_getmap_view(self):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
         })
 
         self.assertEqual(resp.status_code, 200)

@@ -18,7 +18,7 @@ from .utils import SunlumoProject, change_directory
 class Renderer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_prams = ['bbox', 'image_size']
+        req_prams = ['bbox', 'image_size', 'srs', 'image_format']
 
         if not(all(param in params.keys() for param in req_prams)):
             raise RuntimeError('Missing render process params!')
@@ -42,7 +42,6 @@ class Renderer(SunlumoProject):
 
             p = QPainter()
             p.begin(img)
-            # p.setRenderHint(QPainter.Antialiasing)
 
             map_settings = QgsMapSettings()
             map_settings.setBackgroundColor(color)
@@ -61,9 +60,14 @@ class Renderer(SunlumoProject):
 
             map_buffer = QBuffer()
             map_buffer.open(QIODevice.ReadWrite)
-            # img2 = img.convertToFormat(QImage.Format_Indexed8)
-            # img2.save(map_buffer, "PNG")
-            img.save(map_buffer, 'PNG')
+
+            if params.get('image_format') == 'jpeg':
+                img.save(map_buffer, 'JPEG')
+            elif params.get('image_format') == 'png8':
+                png8 = img.convertToFormat(QImage.Format_Indexed8)
+                png8.save(map_buffer, "PNG")
+            else:
+                img.save(map_buffer, 'PNG')
 
             # clean up
             p.end()
