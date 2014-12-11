@@ -48,7 +48,26 @@ def rgb2hex(rgb_value):
     return '0x{0:02x}{1:02x}{2:02x}'.format(*rgb_value)
 
 
-class SunlumoProject:
+def str2bool(value):
+    valid = {
+        'true': True, 't': True, '1': True,
+        'false': False, 'f': False, '0': False,
+    }
+
+    if isinstance(value, bool):
+        return value
+
+    if not isinstance(value, basestring):
+        raise ValueError('invalid literal for boolean. Not a string.')
+
+    lower_value = value.lower()
+    if lower_value in valid:
+        return valid[lower_value]
+    else:
+        raise ValueError('invalid literal for boolean: "%s"' % value)
+
+
+class SunlumoProject(object):
 
     def __init__(self, project_file):
         self.project_file = project_file
