@@ -39,6 +39,15 @@ def writeParamsToJson(params):
     return tmpFile[1]
 
 
+def hex2rgb(hex_value):
+    hex_value = hex_value.lstrip('0x')
+    return [int(hex_value[i: i + 2], 16) for i in xrange(0, 6, 2)]
+
+
+def rgb2hex(rgb_value):
+    return '0x{0:02x}{1:02x}{2:02x}'.format(*rgb_value)
+
+
 class SunlumoProject:
 
     def __init__(self, project_file):

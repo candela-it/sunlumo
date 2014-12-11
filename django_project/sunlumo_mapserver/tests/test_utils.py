@@ -4,7 +4,7 @@ import json
 
 from django.test import TestCase
 
-from ..utils import writeParamsToJson, change_directory
+from ..utils import writeParamsToJson, change_directory, hex2rgb, rgb2hex
 
 
 class TestUtils(TestCase):
@@ -30,3 +30,17 @@ class TestUtils(TestCase):
         new_cwd = os.getcwd()
 
         self.assertEqual(new_cwd, old_cwd)
+
+    def test_hex2rgb(self):
+        rgb = hex2rgb('0xFFFFFF')
+        self.assertListEqual(rgb, [255, 255, 255])
+
+        rgb = hex2rgb('FF00FF')
+        self.assertListEqual(rgb, [255, 0, 255])
+
+    def test_rgb2hex(self):
+        hex_color = rgb2hex([255, 255, 255])
+        self.assertEqual(hex_color, '0xffffff')
+
+        hex_color = rgb2hex([255, 0, 255])
+        self.assertEqual(hex_color, '0xff00ff')
