@@ -8,7 +8,8 @@ from qgis.core import (
     QgsMapRenderer
 )
 
-from .utils import SunlumoProject, change_directory
+from .utils import change_directory
+from .project import SunlumoProject
 
 
 class Printer(SunlumoProject):

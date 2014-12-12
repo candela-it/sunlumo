@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from ..utils import SunlumoProject
+from ..project import SunlumoProject
 
 
 class TestSunlumoProject(TestCase):
