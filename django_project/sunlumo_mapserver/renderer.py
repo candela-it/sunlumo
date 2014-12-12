@@ -18,7 +18,10 @@ from .utils import SunlumoProject, change_directory
 class Renderer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_prams = ['bbox', 'image_size', 'srs', 'image_format']
+        req_prams = [
+            'bbox', 'image_size', 'srs', 'image_format', 'transparent',
+            'bgcolor'
+        ]
 
         if not(all(param in params.keys() for param in req_prams)):
             raise RuntimeError('Missing render process params!')
@@ -36,8 +39,16 @@ class Renderer(SunlumoProject):
                 QImage.Format_ARGB32_Premultiplied
             )
 
-            # set transparent backgorund color
-            color = QColor(255, 255, 255, 0)
+            # set background color
+            bgcolor = params.get('bgcolor')
+            if params.get('transparent'):
+                # fully transparent
+                bgcolor.append(0)
+            else:
+                # fully opaque
+                bgcolor.append(255)
+
+            color = QColor(*bgcolor)
             img.fill(color)
 
             p = QPainter()

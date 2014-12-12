@@ -41,14 +41,22 @@ class TestUtils(TestCase):
         rgb = hex2rgb('0xFFFFFF')
         self.assertListEqual(rgb, [255, 255, 255])
 
+        rgb = hex2rgb('#FFFFFF')
+        self.assertListEqual(rgb, [255, 255, 255])
+
         rgb = hex2rgb('FF00FF')
         self.assertListEqual(rgb, [255, 0, 255])
+
+        self.assertRaises(ValueError, hex2rgb, 'xx00xx')
 
     def test_rgb2hex(self):
         hex_color = rgb2hex([255, 255, 255])
         self.assertEqual(hex_color, '0xffffff')
 
         hex_color = rgb2hex([255, 0, 255])
+        self.assertEqual(hex_color, '0xff00ff')
+
+        hex_color = rgb2hex([2550, 0, 255])
         self.assertEqual(hex_color, '0xff00ff')
 
     def test_str2bool(self):

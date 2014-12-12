@@ -97,7 +97,20 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertGreaterEqual(len(resp.content), 330)
+        self.assertTrue(5850 < len(resp.content) < 5950, len(resp.content))
+
+        self.assertEqual(resp['Content-Type'], 'png')
+
+    def test_getmap_view_bgcolor(self):
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png', 'bgcolor': 'FFFFFF', 'transparent': 'TRUE'
+        })
+
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertTrue(5100 < len(resp.content) < 5200, len(resp.content))
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -136,6 +149,6 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertGreaterEqual(len(resp.content), 330)
+        self.assertTrue(220000 < len(resp.content) < 230000, len(resp.content))
 
         self.assertEqual(resp['Content-Type'], 'pdf')

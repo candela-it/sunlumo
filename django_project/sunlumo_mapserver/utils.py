@@ -40,12 +40,17 @@ def writeParamsToJson(params):
 
 
 def hex2rgb(hex_value):
-    hex_value = hex_value.lstrip('0x')
+    if hex_value.find('0x') > -1:
+        hex_value = hex_value[2:]
+    if hex_value.find('#') > -1:
+        hex_value = hex_value[1:]
     return [int(hex_value[i: i + 2], 16) for i in xrange(0, 6, 2)]
 
 
-def rgb2hex(rgb_value):
-    return '0x{0:02x}{1:02x}{2:02x}'.format(*rgb_value)
+def rgb2hex(rgb_values):
+    return '0x{0:02x}{1:02x}{2:02x}'.format(
+        *(max(0, min(rgb_val, 255)) for rgb_val in rgb_values)
+    )
 
 
 def str2bool(value):

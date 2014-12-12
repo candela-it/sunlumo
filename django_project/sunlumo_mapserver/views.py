@@ -8,7 +8,7 @@ from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView, View
 
 from .renderer import Renderer
-from .utils import writeParamsToJson
+from .utils import writeParamsToJson, str2bool, hex2rgb
 
 
 class MapView(TemplateView):
@@ -40,7 +40,9 @@ class GetMapView(UpperParamsMixin, View):
             ]
             srs = int(self.req_params.get('SRS').split(':')[-1])
             image_format = self.req_params.get('FORMAT').split('/')[-1]
+            transparent = str2bool(self.req_params.get('TRANSPARENT', False))
             map_file = self.req_params.get('MAP')
+            bgcolor = hex2rgb(self.req_params.get('BGCOLOR', '0xFFFFFF'))
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
@@ -53,13 +55,17 @@ class GetMapView(UpperParamsMixin, View):
         if image_format not in ['png', 'jpeg', 'png8']:
             raise Http404
 
-        return {
+        params = {
             'bbox': bbox,
             'image_size': image_size,
             'map_file': map_file,
             'srs': srs,
-            'image_format': image_format
+            'image_format': image_format,
+            'transparent': transparent,
+            'bgcolor': bgcolor
         }
+
+        return params
 
     def get(self, request, *args, **kwargs):
         params = self._parse_request_params(request)

@@ -26,7 +26,8 @@ class TestSunlumoProjectPrinter(TestCase):
 
         with open(tmpFile + '.pdf', 'r') as pdfFile:
             # we just want to test if the PDF file in not blank
-            self.assertGreaterEqual(len(pdfFile.read()), 200000)
+            data = pdfFile.read()
+            self.assertTrue(220000 < len(data) < 230000, len(data))
 
     def test_printer_missing_required_params(self):
 
