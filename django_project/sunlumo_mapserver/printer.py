@@ -5,7 +5,8 @@ LOG = logging.getLogger(__name__)
 from qgis.core import (
     QgsComposition,
     QgsPalLabeling,
-    QgsMapRenderer
+    QgsMapRenderer,
+    QgsRectangle
 )
 
 from .utils import change_directory
@@ -15,7 +16,7 @@ from .project import SunlumoProject
 class Printer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_params = ['tmpFile', 'layout']
+        req_params = ['tmpFile', 'layout', 'bbox']
         if not(all(param in params.keys() for param in req_params)):
             raise RuntimeError('Missing printer process params!')
 
@@ -43,6 +44,10 @@ class Printer(SunlumoProject):
             comp.readXML(composer, self.doc)
             # read composition elements
             comp.addItemsFromXML(composer, self.doc)
+
+            # set bbox for the first Map in the layout
+            comp_map = comp.getComposerMapById(0)
+            comp_map.setNewExtent(QgsRectangle(*params.get('bbox')))
 
             # save the file
             comp.exportAsPDF(params['tmpFile'] + '.pdf')

@@ -149,6 +149,6 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertTrue(220000 < len(resp.content) < 230000, len(resp.content))
+        self.assertTrue(240000 < len(resp.content) < 250000, len(resp.content))
 
         self.assertEqual(resp['Content-Type'], 'pdf')

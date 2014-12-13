@@ -21,13 +21,14 @@ class TestSunlumoProjectPrinter(TestCase):
         tmpFile = '/tmp/printtmp'
         sl_prj.printToPdf({
             'tmpFile': tmpFile,
-            'layout': 'test_layout'
+            'layout': 'test_layout',
+            'bbox': [-2, -2, 2, 2]
         })
 
         with open(tmpFile + '.pdf', 'r') as pdfFile:
             # we just want to test if the PDF file in not blank
             data = pdfFile.read()
-            self.assertTrue(220000 < len(data) < 230000, len(data))
+            self.assertTrue(240000 < len(data) < 250000, len(data))
 
     def test_printer_missing_required_params(self):
 

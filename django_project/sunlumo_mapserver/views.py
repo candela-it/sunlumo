@@ -79,7 +79,7 @@ class GetMapView(UpperParamsMixin, View):
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'LAYOUT'])):
+                'BBOX', 'LAYOUT', 'MAP'])):
             raise Http404
 
         try:
@@ -110,7 +110,7 @@ class PrintPDFView(UpperParamsMixin, View):
         proc = subprocess.call(['python', 'manage.py', 'print_map', tmpFile])
         if proc:
             # subprocess did not exit cleanly
-            raise Http404
+            return HttpResponse(status=500)
 
         with open(tmpFile + '.pdf', 'r') as pdfFile:
             data = pdfFile.read()

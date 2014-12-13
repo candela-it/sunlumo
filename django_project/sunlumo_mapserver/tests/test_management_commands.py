@@ -10,7 +10,7 @@ class TestManagementCommands(TestCase):
     def test_print_map(self):
 
         params = {
-            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'bbox': [-2, -2, 2, 2], 'layout': 'test_layout',
             'map_file': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         }
 
@@ -23,7 +23,7 @@ class TestManagementCommands(TestCase):
         with open(fileName + '.pdf', 'r') as pdfFile:
             # we just want to test if the PDF file in not blank
             data = pdfFile.read()
-            self.assertTrue(220000 < len(data) < 230000, len(data))
+            self.assertTrue(240000 < len(data) < 250000, len(data))
 
     def test_print_map_missing_args(self):
 
