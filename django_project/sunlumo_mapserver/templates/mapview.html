@@ -9,24 +9,40 @@
 {% block extra_js %}
 <script>
 
-var map = L.map('map').setView([44.7, 14.5], 9);
+proj4.defs("EPSG:3765","+proj=tmerc +lat_0=0 +lon_0=16.5 +k=0.9999 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
-var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+var projection = ol.proj.get('EPSG:3765');
+
+var extent = [208311.05, 4614890.75, 724721.78, 5159767.36];
+projection.setExtent(extent);
+
+var map = new ol.Map({
+    target: 'map',
+    layers: [
+        new ol.layer.Tile({
+            extent: extent,
+            source: new ol.source.TileWMS(({
+                url: 'http://geoportal.dgu.hr/wms',
+                params: {'LAYERS': 'DOF', 'TILED':true, 'FORMAT':'image/jpeg'}
+                // serverType: 'geoserver'
+            }))
+        }),
+        new ol.layer.Image({
+            extent: extent,
+            transparent:true,
+            source: new ol.source.ImageWMS({
+                url: '/getmap',
+                params: {'LAYERS': 'DMR25 Sjenčanje', 'MAP':'/data/simple.qgs', 'VERSION':'1.1.1', 'FORMAT':'image/png'}
+            })
+        })
+    ],
+    view: new ol.View({
+        projection: projection,
+        center: ol.proj.transform([14.5, 44.7], 'EPSG:4326', 'EPSG:3765'),
+        zoom: 3,
+        extent: extent
+    })
 });
 
-map.addLayer(osm);
-
-var qgis = new L.NonTiledLayer.WMS("/getmap", {
-    layers: 'DMR25 Sjenčanje',
-    format: 'image/png',
-    transparent: true,
-    bgcolor: '0x00FF00',
-    map: '/data/simple.qgs',
-    pane: map.getPanes().tilePane
-});
-
-
-map.addLayer(qgis);
 </script>
 {% endblock %}

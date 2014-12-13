@@ -10,11 +10,8 @@ INSTALLED_APPS += (
 PIPELINE_JS = {
     'contrib': {
         'source_filenames': (
-            'js/leaflet.js',
             'js/proj4-src.js',
-            'js/proj4leaflet.js',
-            'js/NonTiledLayer.js',
-            'js/NonTiledLayer.WMS.js'
+            'js/ol.js',
         ),
         'output_filename': 'js/contrib.js',
     }
@@ -23,7 +20,7 @@ PIPELINE_JS = {
 PIPELINE_CSS = {
     'contrib': {
         'source_filenames': (
-            'css/leaflet.css',
+            'css/ol.css',
         ),
         'output_filename': 'css/contrib.css',
         'extra_context': {
