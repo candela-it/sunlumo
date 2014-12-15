@@ -9,15 +9,6 @@ class TestSunlumoProjectRenderer(TestCase):
     def test_render_png(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
 
-        layers = sl_prj.parseLayers()
-
-        self.assertListEqual(
-            layers, [
-                u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
-            ]
-        )
-
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png', 'bgcolor': [255, 255, 255],
@@ -30,15 +21,6 @@ class TestSunlumoProjectRenderer(TestCase):
     def test_render_png8(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
 
-        layers = sl_prj.parseLayers()
-
-        self.assertListEqual(
-            layers, [
-                u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
-            ]
-        )
-
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png8', 'bgcolor': [255, 255, 255],
@@ -50,15 +32,6 @@ class TestSunlumoProjectRenderer(TestCase):
 
     def test_render_jpeg(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
-
-        layers = sl_prj.parseLayers()
-
-        self.assertListEqual(
-            layers, [
-                u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
-            ]
-        )
 
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],

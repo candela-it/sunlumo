@@ -9,15 +9,6 @@ class TestSunlumoProjectPrinter(TestCase):
     def test_printer(self):
         sl_prj = Printer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
 
-        layers = sl_prj.parseLayers()
-
-        self.assertListEqual(
-            layers, [
-                u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
-            ]
-        )
-
         tmpFile = '/tmp/printtmp'
         sl_prj.printToPdf({
             'tmpFile': tmpFile,

@@ -42,12 +42,12 @@ class TestSunlumoProject(TestCase):
             './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         )
 
-        layers = sl_prj.parseLayers()
+        sl_prj.parseLayers()
 
         self.assertListEqual(
-            layers, [
-                u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
+            sl_prj.RENDER_ORDER, [
+                u'polygons20141208133824264', u'lines20141208133737878',
+                u'points20141208133705287'
             ]
         )
 
@@ -82,3 +82,21 @@ class TestSunlumoProject(TestCase):
 
         with self.assertRaises(RuntimeError):
             sl_prj._getAttr(layout, 'title').value()
+
+    def test_readLegend(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        sl_prj._readLegend()
+
+        layers = sl_prj.LAYERS
+        self.assertListEqual(
+            layers.keys(), [
+                u'lines20141208133737878', u'points20141208133705287',
+                u'polygons20141208133824264'
+            ]
+        )
+
+        # all layers should be visible
+        self.assertTrue(all([vals['visible'] for key, vals in layers.items()]))

@@ -63,8 +63,8 @@ class Renderer(SunlumoProject):
             map_settings.setOutputSize(img.size())
             map_settings.setMapUnits(crs.mapUnits())
 
-            loaded_layers = self.parseLayers()
-            map_settings.setLayers(loaded_layers)
+            self.parseLayers()
+            map_settings.setLayers(self.RENDER_ORDER)
 
             job = QgsMapRendererCustomPainterJob(map_settings, p)
             job.start()

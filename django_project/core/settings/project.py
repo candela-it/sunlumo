@@ -11,7 +11,6 @@ PIPELINE_JS = {
     'contrib': {
         'source_filenames': (
             'js/proj4-src.js',
-            'js/ol.js',
         ),
         'output_filename': 'js/contrib.js',
     }

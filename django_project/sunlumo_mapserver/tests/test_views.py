@@ -97,7 +97,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertTrue(5850 < len(resp.content) < 5950, len(resp.content))
+        self.assertEqual(len(resp.content), 6168)
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -110,7 +110,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertTrue(5100 < len(resp.content) < 5200, len(resp.content))
+        self.assertEqual(len(resp.content), 5311)
 
         self.assertEqual(resp['Content-Type'], 'png')
 

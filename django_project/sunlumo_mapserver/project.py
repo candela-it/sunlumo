@@ -16,10 +16,36 @@ from .utils import change_directory
 
 class SunlumoProject(object):
 
+    LAYERS = {}
+    RENDER_ORDER = []
+
     def __init__(self, project_file):
         self.project_file = project_file
         self._parseProject(project_file)
         self.project_root = os.path.abspath(os.path.dirname(project_file))
+
+    def _readLegend(self):
+        self.RENDER_ORDER = []
+        lItems = self.doc.elementsByTagName('legend').at(0).childNodes()
+        for i in xrange(lItems.size()):
+            lItem = lItems.at(i)
+            if lItem.nodeName() == 'legendlayer':
+                layer_name = self._getAttr(lItem, 'name').value()
+
+                visible_val = self._getAttr(lItem, 'checked').value()
+                visible = True if visible_val == 'Qt::Checked' else False
+
+                layer_id = self._getAttr(
+                    lItem.firstChild().firstChild(), 'layerid'
+                ).value()
+
+                self.LAYERS[layer_id] = {
+                    'layer_name': layer_name,
+                    'visible': visible
+                }
+                self.RENDER_ORDER.append(layer_id)
+            else:
+                raise RuntimeError('Unknown legend item')
 
     def _readLayers(self):
         layers = self.doc.elementsByTagName('maplayer')
@@ -53,8 +79,7 @@ class SunlumoProject(object):
                 raise RuntimeError(validity[1])
 
     def parseLayers(self):
-        loaded_layers = []
-
+        self._readLegend()
         with change_directory(self.project_root):
             # remove all layers from the map registry
             QgsMapLayerRegistry.instance().removeAllMapLayers()
@@ -70,11 +95,11 @@ class SunlumoProject(object):
 
                 # add layer to the QgsMapLayerRegistry
                 if qgsLayer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(qgsLayer)
+                    QgsMapLayerRegistry.instance().addMapLayer(qgsLayer, False)
                     # add layer to the internal layer registry
-                    loaded_layers.append(qgsLayer.id())
                     LOG.debug('Loaded layer: %s', qgsLayer.id())
-            return loaded_layers
+            # from qgis.core import QgsProject
+            # lnames = QgsProject.instance().layerTreeRoot()
 
     def parseLayouts(self):
         available_layouts = []
@@ -91,3 +116,6 @@ class SunlumoProject(object):
                 return layout
         else:
             return None
+
+    def getDetails(self):
+        return {}
