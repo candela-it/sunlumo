@@ -16,7 +16,7 @@ class TestSunlumoProjectRenderer(TestCase):
         })
 
         # might not be the best approach, but at least it's not a blank image
-        self.assertTrue(44000 < image.size() < 45000, image.size())
+        self.assertEqual(image.size(), 44735)
 
     def test_render_png8(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
@@ -28,7 +28,7 @@ class TestSunlumoProjectRenderer(TestCase):
         })
 
         # might not be the best approach, but at least it's not a blank image
-        self.assertTrue(14000 < image.size() < 15000, image.size())
+        self.assertEqual(image.size(), 14185)
 
     def test_render_jpeg(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
@@ -40,7 +40,7 @@ class TestSunlumoProjectRenderer(TestCase):
         })
 
         # might not be the best approach, but at least it's not a blank image
-        self.assertTrue(13000 < image.size() < 14000, image.size())
+        self.assertEqual(image.size(), 13044)
 
     def test_render_missing_required_params(self):
 

@@ -16,10 +16,10 @@ class TestSunlumoProjectPrinter(TestCase):
             'bbox': [-2, -2, 2, 2]
         })
 
-        with open(tmpFile + '.pdf', 'r') as pdfFile:
+        with open(tmpFile + '.pdf', 'rb') as pdfFile:
             # we just want to test if the PDF file in not blank
             data = pdfFile.read()
-            self.assertTrue(240000 < len(data) < 250000, len(data))
+            self.assertEqual(len(data), 243851)
 
     def test_printer_missing_required_params(self):
 
