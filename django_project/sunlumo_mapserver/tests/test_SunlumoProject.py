@@ -42,10 +42,8 @@ class TestSunlumoProject(TestCase):
             './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         )
 
-        sl_prj.parseLayers()
-
         self.assertListEqual(
-            sl_prj.RENDER_ORDER, [
+            sl_prj.LAYERS, [
                 u'polygons20141208133824264', u'lines20141208133737878',
                 u'points20141208133705287'
             ]
@@ -56,7 +54,7 @@ class TestSunlumoProject(TestCase):
             './sunlumo_mapserver/test_data/test_sunlumo.qgs'
         )
 
-        layouts = sl_prj.parseLayouts()
+        layouts = sl_prj._parseLayouts()
 
         self.assertListEqual(
             layouts, [u'test_layout']
@@ -90,7 +88,7 @@ class TestSunlumoProject(TestCase):
 
         sl_prj._readLegend()
 
-        layers = sl_prj.LAYERS
+        layers = sl_prj.LAYERS_DATA
         self.assertListEqual(
             layers.keys(), [
                 u'lines20141208133737878', u'points20141208133705287',

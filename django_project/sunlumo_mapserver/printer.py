@@ -25,13 +25,11 @@ class Printer(SunlumoProject):
 
         with change_directory(self.project_root):
 
-            self.parseLayers()
-
             le = QgsPalLabeling()
             rndr = QgsMapRenderer()
             rndr.setLabelingEngine(le)
 
-            rndr.setLayerSet(self.RENDER_ORDER)
+            rndr.setLayerSet(self.LAYERS)
 
             composer = (
                 self.getLayoutbyName(params['layout'])

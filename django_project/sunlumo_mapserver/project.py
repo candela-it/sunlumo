@@ -16,16 +16,16 @@ from .utils import change_directory
 
 class SunlumoProject(object):
 
-    LAYERS = {}
-    RENDER_ORDER = []
+    LAYERS_DATA = {}
+    LAYERS = []
 
     def __init__(self, project_file):
         self.project_file = project_file
-        self._parseProject(project_file)
         self.project_root = os.path.abspath(os.path.dirname(project_file))
+        self._parseProject(project_file)
 
     def _readLegend(self):
-        self.RENDER_ORDER = []
+        self.LAYERS = []
         lItems = self.doc.elementsByTagName('legend').at(0).childNodes()
         for i in xrange(lItems.size()):
             lItem = lItems.at(i)
@@ -39,28 +39,19 @@ class SunlumoProject(object):
                     lItem.firstChild().firstChild(), 'layerid'
                 ).value()
 
-                self.LAYERS[layer_id] = {
+                self.LAYERS_DATA[layer_id] = {
                     'layer_name': layer_name,
                     'visible': visible
                 }
-                self.RENDER_ORDER.append(layer_id)
+                if visible:
+                    self.LAYERS.append(layer_id)
             else:
                 raise RuntimeError('Unknown legend item')
 
-    def _readLayers(self):
-        layers = self.doc.elementsByTagName('maplayer')
-        for i in xrange(layers.size()):
-            yield layers.at(i)
-
-    def _readLayouts(self):
-        layouts = self.doc.elementsByTagName('Composer')
-        for i in xrange(layouts.size()):
-            yield layouts.at(i)
-
-    def _readAttrs(self, obj):
-        attrs = obj.attributes()
-        for i in xrange(attrs.size()):
-            yield attrs.item(i)
+    def _iterateOverTagByName(self, tag):
+        elements = self.doc.elementsByTagName(tag)
+        for i in xrange(elements.size()):
+            yield elements.at(i)
 
     def _getAttr(self, obj, attr):
         if not(obj):
@@ -78,12 +69,14 @@ class SunlumoProject(object):
             if not(validity[0]):
                 raise RuntimeError(validity[1])
 
-    def parseLayers(self):
         self._readLegend()
+        self._parseLayers()
+
+    def _parseLayers(self):
         with change_directory(self.project_root):
             # remove all layers from the map registry
             QgsMapLayerRegistry.instance().removeAllMapLayers()
-            for layer in self._readLayers():
+            for layer in self._iterateOverTagByName('maplayer'):
                 layer_type = self._getAttr(layer, 'type').value()
                 if layer_type == 'vector':
                     qgsLayer = QgsVectorLayer()
@@ -98,20 +91,18 @@ class SunlumoProject(object):
                     QgsMapLayerRegistry.instance().addMapLayer(qgsLayer, False)
                     # add layer to the internal layer registry
                     LOG.debug('Loaded layer: %s', qgsLayer.id())
-            # from qgis.core import QgsProject
-            # lnames = QgsProject.instance().layerTreeRoot()
 
-    def parseLayouts(self):
+    def _parseLayouts(self):
         available_layouts = []
         with change_directory(self.project_root):
-            for layout in self._readLayouts():
+            for layout in self._iterateOverTagByName('Composer'):
                 available_layouts.append(
                     self._getAttr(layout, 'title').value()
                 )
         return available_layouts
 
     def getLayoutbyName(self, name):
-        for layout in self._readLayouts():
+        for layout in self._iterateOverTagByName('Composer'):
             if self._getAttr(layout, 'title').value() == name:
                 return layout
         else:
