@@ -108,5 +108,18 @@ class SunlumoProject(object):
         else:
             return None
 
+    def getLayersForRendering(self, layers):
+        return [
+            self.getLayerIdByName(layer) for layer in layers
+            if self.getLayerIdByName(layer)
+        ]
+
+    def getLayerIdByName(self, layer_name):
+        for layer_id, layer in self.LAYERS_DATA.items():
+            if layer.get('layer_name') == layer_name:
+                return layer_id
+        else:
+            return None
+
     def getDetails(self):
         return {}

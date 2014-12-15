@@ -8,6 +8,7 @@ from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView, View
 
 from .renderer import Renderer
+from .project import SunlumoProject
 from .utils import writeParamsToJson, str2bool, hex2rgb
 
 
@@ -28,7 +29,7 @@ class UpperParamsMixin(object):
 class GetMapView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT'])):
+                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT', 'LAYERS'])):
             raise Http404
 
         try:
@@ -43,12 +44,16 @@ class GetMapView(UpperParamsMixin, View):
             transparent = str2bool(self.req_params.get('TRANSPARENT', False))
             map_file = self.req_params.get('MAP')
             bgcolor = hex2rgb(self.req_params.get('BGCOLOR', '0xFFFFFF'))
+            layers = self.req_params.get('LAYERS').split(',')
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
 
         # map must have a value
         if not(map_file):
+            raise Http404
+
+        if len(layers) == 1 and layers[0] == '':
             raise Http404
 
         # check if image format is supported
@@ -62,7 +67,8 @@ class GetMapView(UpperParamsMixin, View):
             'srs': srs,
             'image_format': image_format,
             'transparent': transparent,
-            'bgcolor': bgcolor
+            'bgcolor': bgcolor,
+            'layers': layers
         }
 
         return params
@@ -79,11 +85,12 @@ class GetMapView(UpperParamsMixin, View):
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'LAYOUT', 'MAP'])):
+                'BBOX', 'LAYOUT', 'MAP', 'LAYERS'])):
             raise Http404
 
         try:
             bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
+            layers = self.req_params.get('LAYERS').split(',') or None
             layout = self.req_params.get('LAYOUT')
             map_file = self.req_params.get('MAP')
         except:
@@ -94,10 +101,14 @@ class PrintPDFView(UpperParamsMixin, View):
             # composer template should not be empty
             raise Http404
 
+        if len(layers) == 1 and layers[0] == '':
+            raise Http404
+
         return {
             'bbox': bbox,
             'layout': layout,
-            'map_file': map_file
+            'map_file': map_file,
+            'layers': layers
         }
 
     def get(self, request, *args, **kwargs):

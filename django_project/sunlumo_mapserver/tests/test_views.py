@@ -30,7 +30,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-a,-b,c,d', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png'
+            'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -39,7 +39,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 'a', 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png'
+            'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -48,7 +48,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 'b', 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png'
+            'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -57,7 +57,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 'a',
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png'
+            'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -65,7 +65,7 @@ class TestViews(TestCase):
         # missing map parameter
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
-            'map': '', 'format': 'image/png'
+            'map': '', 'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -74,7 +74,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/unknown'
+            'format': 'image/unknown', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -83,7 +83,25 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'some_weird_format'
+            'format': 'some_weird_format', 'layers': 'polygons,lines,points'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # missing layers param
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # layers param empty
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png', 'layers': ''
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -92,7 +110,7 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png'
+            'format': 'image/png', 'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 200)
@@ -105,7 +123,8 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png', 'bgcolor': 'FFFFFF', 'transparent': 'TRUE'
+            'format': 'image/png', 'bgcolor': 'FFFFFF', 'transparent': 'TRUE',
+            'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 200)
@@ -122,21 +141,40 @@ class TestViews(TestCase):
     def test_printpdf_view_bad_params(self):
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-a,-b,c,d', 'layout': 'test_layout',
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
 
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-2,-2,2,2', 'layout': '',
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 404)
 
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-2,-2,2,2', 'layout': 'test_layout',
-            'map': ''
+            'map': '', 'layers': 'polygons,lines,points'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # missing layers
+        resp = self.client.get(reverse('printpdf'), {
+            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        })
+
+        self.assertEqual(resp.status_code, 404)
+
+        # missing layers
+        resp = self.client.get(reverse('printpdf'), {
+            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'layers': ''
         })
 
         self.assertEqual(resp.status_code, 404)
@@ -144,7 +182,8 @@ class TestViews(TestCase):
     def test_printpdf_view(self):
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-2,-2,2,2', 'layout': 'test_layout',
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'layers': 'polygons,lines,points'
         })
 
         self.assertEqual(resp.status_code, 200)

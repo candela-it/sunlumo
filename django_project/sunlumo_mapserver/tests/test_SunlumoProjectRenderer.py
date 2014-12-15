@@ -12,7 +12,7 @@ class TestSunlumoProjectRenderer(TestCase):
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png', 'bgcolor': [255, 255, 255],
-            'transparent': True
+            'transparent': True, 'layers': ['polygons', 'lines', 'points']
         })
 
         # might not be the best approach, but at least it's not a blank image
@@ -24,7 +24,7 @@ class TestSunlumoProjectRenderer(TestCase):
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png8', 'bgcolor': [255, 255, 255],
-            'transparent': True
+            'transparent': True, 'layers': ['polygons', 'lines', 'points']
         })
 
         # might not be the best approach, but at least it's not a blank image
@@ -36,7 +36,7 @@ class TestSunlumoProjectRenderer(TestCase):
         image = sl_prj.render({
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'jpeg', 'bgcolor': [255, 255, 255],
-            'transparent': True
+            'transparent': True, 'layers': ['polygons', 'lines', 'points']
         })
 
         # might not be the best approach, but at least it's not a blank image

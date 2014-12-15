@@ -16,7 +16,7 @@ from .project import SunlumoProject
 class Printer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_params = ['tmpFile', 'layout', 'bbox']
+        req_params = ['tmpFile', 'layout', 'bbox', 'layers']
         if not(all(param in params.keys() for param in req_params)):
             raise RuntimeError('Missing printer process params!')
 
@@ -29,7 +29,8 @@ class Printer(SunlumoProject):
             rndr = QgsMapRenderer()
             rndr.setLabelingEngine(le)
 
-            rndr.setLayerSet(self.LAYERS)
+            layers = self.getLayersForRendering(params.get('layers'))
+            rndr.setLayerSet(layers)
 
             composer = (
                 self.getLayoutbyName(params['layout'])
