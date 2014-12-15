@@ -98,3 +98,25 @@ class TestSunlumoProject(TestCase):
 
         # all layers should be visible
         self.assertTrue(all([vals['visible'] for key, vals in layers.items()]))
+
+    def test_getLayerIdByName(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        self.assertEqual(
+            sl_prj.getLayerIdByName('polygons'), 'polygons20141208133824264'
+        )
+
+        # test unknown layer
+        self.assertEqual(sl_prj.getLayerIdByName('unknown_layer'), None)
+
+    def test_getLayersForRendering(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        self.assertEqual(
+            sl_prj.getLayersForRendering(['polygons', 'unknown_layer']),
+            ['polygons20141208133824264']
+        )

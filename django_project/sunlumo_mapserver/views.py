@@ -55,6 +55,8 @@ class GetMapView(UpperParamsMixin, View):
 
         if len(layers) == 1 and layers[0] == '':
             raise Http404
+        else:
+            layers = [layer.strip() for layer in layers]
 
         # check if image format is supported
         if image_format not in ['png', 'jpeg', 'png8']:
@@ -103,6 +105,8 @@ class PrintPDFView(UpperParamsMixin, View):
 
         if len(layers) == 1 and layers[0] == '':
             raise Http404
+        else:
+            layers = [layer.strip() for layer in layers]
 
         return {
             'bbox': bbox,
