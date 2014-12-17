@@ -2,7 +2,7 @@
 from .project import *  # NOQA
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+# See https://docs.djangoproject.com/en/1.7/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
 
 # Comment if you are not running behind proxy

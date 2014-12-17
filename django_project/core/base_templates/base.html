@@ -1,4 +1,4 @@
-{% load pipeline %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +14,8 @@
         margin: 0;
     }
     </style>
+    <link href="{% static 'css/ol.css' %}" media="screen">
 
-    {% stylesheet 'contrib' %}
 </head>
 
 <body>
@@ -23,7 +23,6 @@
 
 {% endblock content %}
 
-{% javascript 'contrib' %}
 
 {% block extra_js %}
 
