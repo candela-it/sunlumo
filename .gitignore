@@ -2,6 +2,9 @@
 django_project/core/settings/secret.py
 xmlrunner
 *.gfs
+node_modules
+*.module.js
+*.module.css
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

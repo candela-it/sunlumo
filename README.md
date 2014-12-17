@@ -35,14 +35,27 @@ machine this should not be a problem.
 ```
 pip install -r REQUIREMENTS-dev.txt
 nodeenv -n 0.10.33 -v
-npm install -g yuglify
+npm install -g grunt-cli
 ```
+
+Then `cd django_project` and install JS/CSS development utilties:
+
+```
+npm install .
+```
+
 
 It's probably best to simply copy another developer's specific settings and
 customize it to your liking.
 
 ```
 cp core/settings/dev_dodobas.py core/settings/dev_username.py
+```
+
+You also need to generate JS and CSS resources by using *grunt* JS task runner:
+
+```
+grunt build
 ```
 
 ## Development server
