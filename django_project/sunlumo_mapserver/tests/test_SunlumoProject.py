@@ -120,3 +120,24 @@ class TestSunlumoProject(TestCase):
             sl_prj.getLayersForRendering(['polygons', 'unknown_layer']),
             ['polygons20141208133824264']
         )
+
+    def test_getDetails(self):
+        sl_prj = SunlumoProject(
+            './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        )
+
+        self.assertDictEqual(
+            sl_prj.getDetails(), {
+                'layers': {
+                    u'lines20141208133737878': {
+                        'visible': True, 'layer_name': u'lines'
+                    },
+                    u'points20141208133705287': {
+                        'visible': True, 'layer_name': u'points'
+                    },
+                    u'polygons20141208133824264': {
+                        'visible': True, 'layer_name': u'polygons'
+                    }
+                }
+            }
+        )

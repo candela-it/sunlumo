@@ -7,6 +7,8 @@ import subprocess
 from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView, View
 
+from braces.views import JSONResponseMixin
+
 from .renderer import Renderer
 from .project import SunlumoProject
 from .utils import writeParamsToJson, str2bool, hex2rgb
@@ -24,6 +26,35 @@ class UpperParamsMixin(object):
         return super(UpperParamsMixin, self).dispatch(
             request, *args, **kwargs
         )
+
+
+class ProjectDetails(UpperParamsMixin, JSONResponseMixin, View):
+    def _parse_request_params(self, request):
+        if not(all(param in self.req_params for param in ['MAP'])):
+            raise Http404
+
+        try:
+            map_file = self.req_params.get('MAP')
+        except:
+            # return 404 if any of parameters are missing or not parsable
+            raise Http404
+
+        # map must have a value
+        if not(map_file):
+            raise Http404
+
+        params = {
+            'map_file': map_file
+        }
+
+        return params
+
+    def get(self, request, *args, **kwargs):
+        params = self._parse_request_params(request)
+
+        project = SunlumoProject(params['map_file'])
+
+        return self.render_json_response(project.getDetails())
 
 
 class GetMapView(UpperParamsMixin, View):

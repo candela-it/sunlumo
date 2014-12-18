@@ -216,3 +216,26 @@ class TestViews(TestCase):
         self.assertEqual(len(resp.content), 230765)
 
         self.assertEqual(resp['Content-Type'], 'pdf')
+
+    def test_projectdetails_view(self):
+        resp = self.client.get(reverse('projectdetails'), {
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs'
+        })
+
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertEqual(resp['Content-Type'], 'application/json')
+
+        self.assertEqual(len(resp.content), 224)
+
+    def test_projectdetails_view_mising_params(self):
+        resp = self.client.get(reverse('projectdetails'))
+
+        self.assertEqual(resp.status_code, 404)
+
+    def test_projectdetails_view_bad_params(self):
+        resp = self.client.get(reverse('projectdetails'), {
+            'map': ''
+        })
+
+        self.assertEqual(resp.status_code, 404)
