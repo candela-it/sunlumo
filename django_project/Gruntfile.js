@@ -6,6 +6,15 @@ module.exports = function(grunt) {
             js: {
                 src: 'lib_js/lib/app.js',
                 dest: 'core/base_static/js/app.module.js'
+            },
+            tests: {
+                src: [ 'lib_js/tests/browser/test_suite.js' ],
+                dest: 'lib_js/tests/browser/test_suite.module.js',
+                options: {
+                    external: [ 'core/base_static/js/app.module.js' ],
+                    // Embed source map for tests
+                    debug: true
+                }
             }
         },
         cssmin: {
@@ -39,6 +48,9 @@ module.exports = function(grunt) {
                     spawn: false,
                 },
             },
+        },
+        mocha_phantomjs: {
+            all: ['lib_js/tests/browser/*.html']
         }
     });
 
@@ -47,7 +59,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    grunt.registerTask('default', ['jshint', 'browserify', 'cssmin']);
+    grunt.registerTask('default', ['jshint', 'browserify:js']);
     grunt.registerTask('build', ['browserify', 'cssmin', 'uglify']);
 };
