@@ -15,8 +15,7 @@ class TestViews(TestCase):
 
         self.assertListEqual(
             [tmpl.name for tmpl in resp.templates], [
-                'mapview.html', u'base.html', u'pipeline/css.html',
-                u'pipeline/js.html'
+                'mapview.html', u'base.html'
             ]
         )
 
