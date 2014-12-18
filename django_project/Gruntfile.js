@@ -12,6 +12,10 @@ module.exports = function(grunt) {
             contrib: {
                 src: 'lib_css/ol.css',
                 dest: 'core/base_static/css/contrib.module.css'
+            },
+            project: {
+                src: 'lib_css/project.css',
+                dest: 'core/base_static/css/project.module.css'
             }
         },
         uglify: {
@@ -25,11 +29,11 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             },
-            app: ['lib_js/lib/*.js']
+            project: ['lib_js/lib/*.js']
         },
         watch: {
             scripts: {
-                files: ['lib_js/lib/*.js'],
+                files: ['lib_js/lib/*.js', 'lib_css/*.css'],
                 tasks: ['default'],
                 options: {
                     spawn: false,
