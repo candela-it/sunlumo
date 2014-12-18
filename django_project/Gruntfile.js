@@ -13,11 +13,37 @@ module.exports = function(grunt) {
                 src: 'lib_css/ol.css',
                 dest: 'core/base_static/css/contrib.module.css'
             }
+        },
+        uglify: {
+            js: {
+                files: {
+                    'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js']
+                }
+            }
+        },
+        jshint: {
+            options: {
+                jshintrc: true
+            },
+            app: ['lib_js/*.js']
+        },
+        watch: {
+            scripts: {
+                files: ['lib_js/*.js'],
+                tasks: ['default'],
+                options: {
+                    spawn: false,
+                },
+            },
         }
     });
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-css');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('build', ['browserify', 'cssmin']);
+    grunt.registerTask('default', ['jshint', 'browserify', 'cssmin']);
+    grunt.registerTask('build', ['browserify', 'cssmin', 'uglify']);
 };

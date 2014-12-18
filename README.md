@@ -55,7 +55,7 @@ cp core/settings/dev_dodobas.py core/settings/dev_username.py
 You also need to generate JS and CSS resources by using *grunt* JS task runner:
 
 ```
-grunt build
+grunt
 ```
 
 ## Development server
