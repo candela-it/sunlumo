@@ -4,7 +4,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
             js: {
-                src: 'lib_js/app.js',
+                src: 'lib_js/lib/app.js',
                 dest: 'core/base_static/js/app.module.js'
             }
         },
@@ -25,11 +25,11 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             },
-            app: ['lib_js/*.js']
+            app: ['lib_js/lib/*.js']
         },
         watch: {
             scripts: {
-                files: ['lib_js/*.js'],
+                files: ['lib_js/lib/*.js'],
                 tasks: ['default'],
                 options: {
                     spawn: false,

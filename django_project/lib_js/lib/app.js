@@ -1,6 +1,6 @@
 'use strict';
 
-var ol = require('./contrib/ol');
+var ol = require('../contrib/ol');
 
 // initialize projections
 require('./proj');
