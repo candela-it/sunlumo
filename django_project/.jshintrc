@@ -67,6 +67,13 @@
 
     // Custom Globals
     "globals" : {
-        "proj4": true
+        "proj4": false,
+        /* MOCHA */
+        "describe"   : false,
+        "it"         : false,
+        "before"     : false,
+        "beforeEach" : false,
+        "after"      : false,
+        "afterEach"  : false
     }
 }

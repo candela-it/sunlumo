@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
-            js: {
+            project: {
                 src: 'lib_js/lib/app.js',
                 dest: 'core/base_static/js/app.module.js'
             },
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
-            js: {
+            project: {
                 files: {
                     'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js']
                 }
@@ -38,16 +38,24 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             },
-            project: ['lib_js/lib/*.js']
+            project: ['lib_js/lib/*.js'],
+            tests: ['lib_js/tests/*.js']
         },
         watch: {
-            scripts: {
-                files: ['lib_js/lib/*.js', 'lib_css/*.css'],
-                tasks: ['default'],
+            project: {
+                files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
+                tasks: ['default', 'tests'],
                 options: {
                     spawn: false,
                 },
             },
+            tests: {
+                files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
+                tasks: ['default', 'tests', 'mocha_phantomjs'],
+                options: {
+                    spawn: false,
+                },
+            }
         },
         mocha_phantomjs: {
             all: ['lib_js/tests/browser/*.html']
@@ -61,6 +69,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
-    grunt.registerTask('default', ['jshint', 'browserify:js']);
-    grunt.registerTask('build', ['browserify', 'cssmin', 'uglify']);
+    grunt.registerTask('default', ['jshint:project', 'browserify:project']);
+    grunt.registerTask('tests', ['jshint:tests', 'browserify:tests']);
+    grunt.registerTask('build', ['browserify:project', 'cssmin', 'uglify']);
 };
