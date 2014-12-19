@@ -123,5 +123,6 @@ class SunlumoProject(object):
 
     def getDetails(self):
         return {
-            'layers': self.LAYERS_DATA
+            'layers': self.LAYERS_DATA,
+            'layers_order': self.LAYERS
         }

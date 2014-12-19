@@ -226,7 +226,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp['Content-Type'], 'application/json')
 
-        self.assertEqual(len(resp.content), 224)
+        self.assertEqual(len(resp.content), 324)
 
     def test_projectdetails_view_mising_params(self):
         resp = self.client.get(reverse('projectdetails'))

@@ -138,6 +138,10 @@ class TestSunlumoProject(TestCase):
                     u'polygons20141208133824264': {
                         'visible': True, 'layer_name': u'polygons'
                     }
-                }
+                },
+                'layers_order': [
+                    u'polygons20141208133824264', u'lines20141208133737878',
+                    u'points20141208133705287'
+                ]
             }
         )
