@@ -51,15 +51,42 @@ module.exports = function(grunt) {
             },
             tests: {
                 files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
-                tasks: ['default', 'tests', 'mocha_phantomjs'],
+                tasks: ['default', 'tests', 'mocha_istanbul'],
                 options: {
                     spawn: false,
                 },
             }
         },
         mocha_phantomjs: {
-            all: ['lib_js/tests/browser/*.html']
+            all: ['lib_js/tests/browser/*.html'],
+            options: {
+                reporter: 'list'
+            }
+        },
+        mocha_istanbul: {
+            coverage: {
+                src: 'lib_js/tests',
+                options: {
+                    mask: '*.js'
+                }
+            },
+        },
+        istanbul_check_coverage: {
+            default: {
+                options: {
+                    coverageFolder: 'coverage*', // will check both coverage folders and merge the coverage results
+                    check: {
+                        lines: 80,
+                        statements: 80
+                    }
+                }
+            }
         }
+    });
+
+    grunt.event.on('coverage', function(lcov, done){
+        console.log(lcov);
+        done(); // or done(false); in case of error
     });
 
     grunt.loadNpmTasks('grunt-browserify');
@@ -68,6 +95,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
 
     grunt.registerTask('default', ['jshint:project', 'browserify:project']);
     grunt.registerTask('tests', ['jshint:tests', 'browserify:tests']);

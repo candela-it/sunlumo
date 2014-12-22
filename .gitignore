@@ -5,6 +5,7 @@ xmlrunner
 node_modules
 *.module.js
 *.module.css
+coverage/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
