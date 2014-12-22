@@ -24,23 +24,29 @@ describe('SLProject Object', function() {
         expect(test_fun).to.throw('SLProject options parameter must be defined');
     });
 
-    it('should not initialize when required options are missing', function () {
+    it('should not initialize when "layer" option is missing', function () {
 
         var test_fun  = function () {new SLProject({'test': '...'});};
 
         expect(test_fun).to.throw('SLProject options must contain "layers" property');
+
     });
 
-    it('should not initialize with empty layers param', function () {
+    it('should not initialize when "layers_order" option is missing', function () {
 
-        var test_fun  = function () {new SLProject({'layers': {'layer1':{}}});};
+        var test_fun  = function () {new SLProject({
+            'layers': {'layer1_some_id': {
+                'visible': true, 'layer_name': 'layer1'
+                }
+            }});
+        };
 
         expect(test_fun).to.throw('SLProject options must contain "layers_order" property');
     });
 
-    it('should not initialize with empty layers_order param', function () {
+    it('should not initialize with empty layers param', function () {
 
-        var test_fun  = function () {new SLProject({'layers': {}, 'layers_order': {}});};
+        var test_fun  = function () {new SLProject({'layers': {}});};
 
         expect(test_fun).to.throw('SLProject "layers" must not be empty');
     });

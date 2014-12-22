@@ -42,12 +42,12 @@ SLProject.prototype = {
             throw new Error('SLProject options must contain "layers" property');
         }
 
-        if (!_.contains(properties, 'layers_order')) {
-            throw new Error('SLProject options must contain "layers_order" property');
-        }
-
         if (Object.getOwnPropertyNames(this.options.layers).length === 0) {
             throw new Error('SLProject "layers" must not be empty');
+        }
+
+        if (!_.contains(properties, 'layers_order')) {
+            throw new Error('SLProject options must contain "layers_order" property');
         }
 
         var layer_keys = Object.getOwnPropertyNames(this.options.layers);
@@ -64,9 +64,6 @@ SLProject.prototype = {
             throw new Error('SLProject "layers" and "layers_order" are not matching');
         }
 
-        if (Object.getOwnPropertyNames(this.options.layers).length === 0) {
-            throw new Error('SLProject "layers" must not be empty');
-        }
     },
 
     getLayersParam: function () {

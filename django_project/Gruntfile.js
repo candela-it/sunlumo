@@ -51,7 +51,7 @@ module.exports = function(grunt) {
             },
             tests: {
                 files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
-                tasks: ['default', 'tests', 'mocha_istanbul'],
+                tasks: ['default', 'tests', 'mocha_phantomjs'],
                 options: {
                     spawn: false,
                 },
