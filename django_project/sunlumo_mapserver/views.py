@@ -5,17 +5,13 @@ LOG = logging.getLogger(__name__)
 import subprocess
 
 from django.http import HttpResponse, Http404
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 
 from braces.views import JSONResponseMixin
 
 from .renderer import Renderer
 from .project import SunlumoProject
 from .utils import writeParamsToJson, str2bool, hex2rgb
-
-
-class MapView(TemplateView):
-    template_name = 'mapview.html'
 
 
 class UpperParamsMixin(object):

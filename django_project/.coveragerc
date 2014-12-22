@@ -3,7 +3,7 @@
 branch = True
 source = .
 omit = */tests/*,*migrations/*
-include = sunlumo_mapserver/*
+include = sunlumo_mapserver/*, sunlumo_webclient/*
 
 [report]
 precision = 2

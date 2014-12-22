@@ -8,17 +8,6 @@ class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_mapview_view(self):
-        resp = self.client.get(reverse('mapview'))
-
-        self.assertEqual(resp.status_code, 200)
-
-        self.assertListEqual(
-            [tmpl.name for tmpl in resp.templates], [
-                'mapview.html', u'base.html'
-            ]
-        )
-
     def test_getmap_view_mising_params(self):
         resp = self.client.get(reverse('getmap'))
 
