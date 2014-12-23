@@ -7,54 +7,54 @@ var expect = chai.expect;
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-var SLProject = require('../lib/sl_project');
+var SL_LayerControl = require('../lib/sl_layerControl');
 
-describe('SLProject Object', function() {
+describe('SL_LayerControl Object', function() {
     it('should not initialize', function() {
 
-        var test_fun  = function () {new SLProject();};
+        var test_fun  = function () {new SL_LayerControl();};
 
-        expect(test_fun).to.throw('SLProject options parameter must be defined');
+        expect(test_fun).to.throw('SL_LayerControl options parameter must be defined');
     });
 
     it('should not initialize with empty options', function() {
 
-        var test_fun  = function () {new SLProject({});};
+        var test_fun  = function () {new SL_LayerControl({});};
 
-        expect(test_fun).to.throw('SLProject options parameter must be defined');
+        expect(test_fun).to.throw('SL_LayerControl options parameter must be defined');
     });
 
     it('should not initialize when "layer" option is missing', function () {
 
-        var test_fun  = function () {new SLProject({'test': '...'});};
+        var test_fun  = function () {new SL_LayerControl({'test': '...'});};
 
-        expect(test_fun).to.throw('SLProject options must contain "layers" property');
+        expect(test_fun).to.throw('SL_LayerControl options must contain "layers" property');
 
     });
 
     it('should not initialize when "layers_order" option is missing', function () {
 
-        var test_fun  = function () {new SLProject({
+        var test_fun  = function () {new SL_LayerControl({
             'layers': {'layer1_some_id': {
                 'visible': true, 'layer_name': 'layer1'
                 }
             }});
         };
 
-        expect(test_fun).to.throw('SLProject options must contain "layers_order" property');
+        expect(test_fun).to.throw('SL_LayerControl options must contain "layers_order" property');
     });
 
     it('should not initialize with empty layers param', function () {
 
-        var test_fun  = function () {new SLProject({'layers': {}});};
+        var test_fun  = function () {new SL_LayerControl({'layers': {}});};
 
-        expect(test_fun).to.throw('SLProject "layers" must not be empty');
+        expect(test_fun).to.throw('SL_LayerControl "layers" must not be empty');
     });
 
     it('should not initialize when layers_order are not matching layers', function() {
 
         var test_fun  = function () {
-            new SLProject({
+            new SL_LayerControl({
                 'layers': {
                     'layer1_some_id': {
                         'visible': true, 'layer_name': 'layer1'
@@ -67,12 +67,12 @@ describe('SLProject Object', function() {
             });
         };
 
-        expect(test_fun).to.throw('SLProject "layers" and "layers_order" are not matching');
+        expect(test_fun).to.throw('SL_LayerControl "layers" and "layers_order" are not matching');
     });
 
     it('should initialize with options', function() {
 
-        var sl_prj = new SLProject({
+        var sl_prj = new SL_LayerControl({
             'layers': {
                 'layer1_some_id': {
                     'visible': true, 'layer_name': 'layer1'
@@ -91,10 +91,10 @@ describe('SLProject Object', function() {
 
 });
 
-describe('SLProject Object public methods', function() {
+describe('SL_LayerControl Object public methods', function() {
     it('should return comma separated list of layers in order', function() {
 
-        var sl_prj = new SLProject({
+        var sl_prj = new SL_LayerControl({
             'layers': {
                 'layer1_some_id': {
                     'visible': true, 'layer_name': 'layer1'

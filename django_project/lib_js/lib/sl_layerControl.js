@@ -2,14 +2,14 @@
 
 var _ = require('lodash');
 
-var SLProject = function (options) {
+var SL_LayerControl = function (options) {
     // default options
     this.options = {
         // initial module options
     };
 
     if (!options || Object.getOwnPropertyNames(options).length === 0) {
-        throw new Error('SLProject options parameter must be defined');
+        throw new Error('SL_LayerControl options parameter must be defined');
     }
 
     // override and extend default options
@@ -28,7 +28,7 @@ var SLProject = function (options) {
 };
 
 
-SLProject.prototype = {
+SL_LayerControl.prototype = {
 
     _init: function (){
         // initialize
@@ -39,15 +39,15 @@ SLProject.prototype = {
         var properties = Object.getOwnPropertyNames(this.options);
 
         if (!_.contains(properties, 'layers')) {
-            throw new Error('SLProject options must contain "layers" property');
+            throw new Error('SL_LayerControl options must contain "layers" property');
         }
 
         if (Object.getOwnPropertyNames(this.options.layers).length === 0) {
-            throw new Error('SLProject "layers" must not be empty');
+            throw new Error('SL_LayerControl "layers" must not be empty');
         }
 
         if (!_.contains(properties, 'layers_order')) {
-            throw new Error('SLProject options must contain "layers_order" property');
+            throw new Error('SL_LayerControl options must contain "layers_order" property');
         }
 
         var layer_keys = Object.getOwnPropertyNames(this.options.layers);
@@ -61,7 +61,7 @@ SLProject.prototype = {
         });
 
         if (!allLayersAreOrdered) {
-            throw new Error('SLProject "layers" and "layers_order" are not matching');
+            throw new Error('SL_LayerControl "layers" and "layers_order" are not matching');
         }
 
     },
@@ -71,4 +71,4 @@ SLProject.prototype = {
     }
 };
 
-module.exports = SLProject;
+module.exports = SL_LayerControl;
