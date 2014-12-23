@@ -7,14 +7,15 @@
     "proj4": "^2.3.3"
   },
   "devDependencies": {
+    "browserify-shim": "^3.8.1",
     "chai": "^1.10.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.2.1",
     "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-cssmin": "^0.10.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-css": "^0.5.4",
     "grunt-mocha-istanbul": "^2.2.0",
     "grunt-mocha-phantomjs": "^0.6.0",
     "istanbul": "^0.3.5",
@@ -28,5 +29,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Candela-IT",
-  "license": "MIT"
+  "license": "MIT",
+
+  "browser": {
+    "jquery": "./lib_js/vendor/jquery.js",
+    "modernizr": "./lib_js/vendor/modernizr.js",
+    "foundation": "./lib_js/vendor/foundation.js"
+  },
+  "browserify-shim": "./lib_js/shims.js",
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  }
 }

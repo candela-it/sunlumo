@@ -2,8 +2,15 @@
 
 var ol = require('../contrib/ol');
 
+
+require('jquery');
+require('modernizr');
+require('foundation');
+
 // initialize projections
 require('./proj');
+
+// var sl_project = require('./sl_project');
 
 var projection = ol.proj.get('EPSG:3765');
 
@@ -25,7 +32,7 @@ var sunlumo_QGIS = new ol.layer.Image({
     source: new ol.source.ImageWMS({
         url: '/getmap',
         params: {'LAYERS': 'Cres  Corine LC,Cres obala,hillshade', 'MAP':'/data/simple.qgs', 'VERSION':'1.1.1', 'FORMAT':'image/png'},
-        ratio: 1.2
+        ratio: 1
     })
 });
 

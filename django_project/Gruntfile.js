@@ -1,11 +1,32 @@
+// var
+//     shims = require("./shims"),
+//     sharedModules = Object.keys(shims).concat([
+//       // place all modules you want in the lib build here
+//       // "dustjs-linkedin"
+//     ]);
+
+
 module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
+            // contrib: {
+            //     files: {
+            //         'core/base_static/js/vendor.module.js': ['lib_js/vendor/*.js'],
+            //     },
+            //     options: {
+            //         transform: ["browserify-shim"],
+            //         require: sharedModules
+            //     }
+            // },
             project: {
                 src: 'lib_js/lib/app.js',
-                dest: 'core/base_static/js/app.module.js'
+                dest: 'core/base_static/js/app.module.js',
+                // options: {
+                //     transform: ["browserify-shim"],
+                    // require: sharedModules
+                // }
             },
             tests: {
                 src: [ 'lib_js/tests/browser/test_suite.js' ],
@@ -19,7 +40,7 @@ module.exports = function(grunt) {
         },
         cssmin: {
             contrib: {
-                src: 'lib_css/ol.css',
+                src: ['lib_css/normalize.css', 'lib_css/foundation.css', 'lib_css/ol.css'],
                 dest: 'core/base_static/css/contrib.module.css'
             },
             project: {
@@ -30,7 +51,8 @@ module.exports = function(grunt) {
         uglify: {
             project: {
                 files: {
-                    'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js']
+                    'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js'],
+                    'core/base_static/js/vendor.module.js': ['core/base_static/js/vendor.module.js']
                 }
             }
         },
@@ -90,14 +112,15 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-css');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['jshint:project', 'browserify:project']);
+    grunt.registerTask('default', ['jshint:project', 'browserify:project', 'cssmin']);
     grunt.registerTask('tests', ['jshint:tests', 'browserify:tests']);
     grunt.registerTask('build', ['browserify:project', 'cssmin', 'uglify']);
 };
