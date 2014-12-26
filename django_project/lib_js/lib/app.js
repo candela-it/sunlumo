@@ -10,7 +10,9 @@ require('foundation');
 // initialize projections
 require('./proj');
 
-// var sl_project = require('./sl_project');
+require('./sl_layerControl');
+
+// var EVENTS = require('./events');
 
 var projection = ol.proj.get('EPSG:3765');
 

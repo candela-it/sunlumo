@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Sunlumo QGIS Server",
   "dependencies": {
+    "jvent": "^0.2.0",
     "lodash": "^2.4.1",
+    "mithril": "^0.1.27",
     "proj4": "^2.3.3"
   },
   "devDependencies": {
@@ -30,7 +32,6 @@
   },
   "author": "Candela-IT",
   "license": "MIT",
-
   "browser": {
     "jquery": "./lib_js/vendor/jquery.js",
     "modernizr": "./lib_js/vendor/modernizr.js",

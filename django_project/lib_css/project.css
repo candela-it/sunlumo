@@ -14,3 +14,21 @@ html, body {
 #sidebar {
     width:15em;
 }
+
+
+div.layer_list {
+  margin:0;
+  width: 15em;
+  display: inline-block;
+  padding:0;
+  background:#ddd;
+}
+
+div.layer_list div {
+  padding: 10px;
+  color: #666;
+}
+
+div.dragging {
+  background: #eee;
+}
