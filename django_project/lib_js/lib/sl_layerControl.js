@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var m = require('mithril');
+var ol = require('../contrib/ol');
 
 var EVENTS = require('./events');
 
@@ -72,7 +73,15 @@ Layer.controller = function() {
     };
     this.dragEnd = function() {
         this.sort(this.items, undefined);
-        EVENTS.emit('layer.order.updated', {
+        EVENTS.emit('layers.updated', {
+            'layers': this.items
+        });
+    };
+
+    this.layerToggle = function (item, e) {
+        item.visible(e.target.checked);
+
+        EVENTS.emit('layers.updated', {
             'layers': this.items
         });
     };
@@ -94,7 +103,7 @@ Layer.view = function(ctrl) {
                 m('input[type=checkbox]', {
                     'id': item.l_id(),
                     'checked': item.visible(),
-                    'onchange': m.withAttr('checked', item.visible)
+                    'onchange': ctrl.layerToggle.bind(ctrl, item)
                 }),
                 item.name()
             ]);
@@ -126,16 +135,38 @@ var SL_LayerControl = function (options) {
     // check if we got right flavour of options
     this._checkOptions();
 
-    // initialize the client
+    // initialize the layer control
     this._init();
+
+    // initialize the layer control event handling
+    this._initEvents();
 };
 
 
 SL_LayerControl.prototype = {
 
-    _init: function (){
-        var self = this;
+    _initQGISLayer: function () {
+        this.SL_Source = new ol.source.ImageWMS({
+            url: '/getmap',
+            params: {
+                //'LAYERS': 'Cres  Corine LC,Cres obala,hillshade',
+                //'MAP':'/data/simple.qgs',
+                'VERSION':'1.1.1',
+                'FORMAT':'image/png'
+            },
+            ratio: 1
+        });
 
+        this.SL_QGIS_Layer = new ol.layer.Image({
+            // extent: extent,
+            transparent:true,
+            source: this.SL_Source
+        });
+    },
+
+    _init: function () {
+        var self = this;
+        this._initQGISLayer();
         // add layers to the control, maintaining the initial order
         _.forEach(this.options.layers_order, function (l_id) {
             var layer = self.options.layers[l_id];
@@ -143,6 +174,20 @@ SL_LayerControl.prototype = {
         });
         // force redraw
         m.redraw(true);
+
+        this.SL_Source.updateParams({
+            'LAYERS':this.getLayersParam(),
+            'MAP': this.options.map
+        });
+    },
+
+    _initEvents: function () {
+        var self = this;
+        EVENTS.on('layers.updated', function() {
+            self.SL_Source.updateParams({
+                'LAYERS':self.getLayersParam()
+            });
+        });
     },
 
     _checkOptions: function () {
@@ -178,7 +223,17 @@ SL_LayerControl.prototype = {
     },
 
     getLayersParam: function () {
-        return this.options.layers_order.join(',');  // return comma concatenated string
+        // return comma concatenated string of visible layers
+        var visible_layers = [];
+
+        for (var i = 0; i < Layer.vm.list.length; i++) {
+            var layer = Layer.vm.list[i];
+            if (layer.visible()) {
+                visible_layers.push(layer.name());
+            }
+        }
+
+        return visible_layers.join(',');
     }
 };
 

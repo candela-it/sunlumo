@@ -123,6 +123,7 @@ class SunlumoProject(object):
 
     def getDetails(self):
         return {
+            'map': self.project_file,
             'layers': self.LAYERS_DATA,
             'layers_order': self.LAYERS
         }

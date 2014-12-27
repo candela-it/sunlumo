@@ -2,14 +2,10 @@
 
 var ol = require('../contrib/ol');
 
-var _ = require('lodash');
-
 // initialize projections
 require('./proj');
 
 var SL_LayerControl = require('./sl_layerControl');
-
-var EVENTS = require('./events');
 
 
 var SL_Project = function (options) {
@@ -39,13 +35,7 @@ SL_Project.prototype = {
     _init: function (){
         // initialize
 
-        EVENTS.on('layer.order.updated', function(payload) {
-            _.forEach(payload.layers, function(layer) {
-                console.log(layer.name(), layer.visible());
-            });
-        });
-
-        new SL_LayerControl(this.options);
+        var qgis_layer = new SL_LayerControl(this.options);
 
         var projection = ol.proj.get('EPSG:3765');
 
@@ -61,16 +51,6 @@ SL_Project.prototype = {
             }))
         });
 
-        var sunlumo_QGIS = new ol.layer.Image({
-            extent: extent,
-            transparent:true,
-            source: new ol.source.ImageWMS({
-                url: '/getmap',
-                params: {'LAYERS': 'Cres  Corine LC,Cres obala,hillshade', 'MAP':'/data/simple.qgs', 'VERSION':'1.1.1', 'FORMAT':'image/png'},
-                ratio: 1
-            })
-        });
-
         var map = new ol.Map({
             target: 'map',
             view: new ol.View({
@@ -82,7 +62,7 @@ SL_Project.prototype = {
         });
 
         map.addLayer(dgu_dof);
-        map.addLayer(sunlumo_QGIS);
+        map.addLayer(qgis_layer.SL_QGIS_Layer);
     },
 };
 
