@@ -5,39 +5,36 @@ var m = require('mithril');
 
 var EVENTS = require('./events');
 
-var layer = {};
-
-layer.Layer = function (data) {
+var Layer = function (data) {
+    this.l_id = m.prop(data.l_id);
     this.name = m.prop(data.name);
-    this.visibility = m.prop(data.visibility);
+    this.visible = m.prop(data.visible);
 };
 
-layer.LayerList = Array;
+var LayerList = Array;
 
-layer.vm = (function () {
+Layer.vm = (function () {
     var vm = {};
     vm.init = function () {
-        vm.list = new layer.LayerList();
-        vm.name = m.prop('');
-        vm.visibility = m.prop(true);
-
-        vm.add = function(name, visibility) {
-            vm.list.push(new layer.Layer({
-                'name': name,
-                'visibility': visibility
-            }));
-        };
+        vm.list = new LayerList();
     };
+
+    // add layer to the list
+    vm.add = function(id, name, visible) {
+        vm.list.push(new Layer({
+            'l_id': id,
+            'name': name,
+            'visible': visible
+        }));
+    };
+
     return vm;
 }());
 
-layer.controller = function() {
-    layer.vm.init();
-    layer.vm.add('Cres  Corine LC', true);
-    layer.vm.add('Cres obala', true);
-    layer.vm.add('hillshade', true);
+Layer.controller = function() {
+    Layer.vm.init();
 
-    this.items = layer.vm.list;
+    this.items = Layer.vm.list;
     this.dragging = m.prop(undefined);
 
     this.sort = function (layers, dragging) {
@@ -81,9 +78,9 @@ layer.controller = function() {
     };
 };
 
-layer.view = function(ctrl) {
+Layer.view = function(ctrl) {
     return m('div', {'class': 'layer_list'}, [
-        layer.vm.list.map(function(item, index) {
+        Layer.vm.list.map(function(item, index) {
             var dragging = (index === ctrl.dragging()) ? 'dragging' : '';
 
             return m('div', {
@@ -93,12 +90,19 @@ layer.view = function(ctrl) {
               'ondragstart': ctrl.dragStart.bind(ctrl),
               'ondragover': ctrl.dragOver.bind(ctrl),
               'ondragend': ctrl.dragEnd.bind(ctrl)
-            }, item.name());
+            }, [
+                m('input[type=checkbox]', {
+                    'id': item.l_id(),
+                    'checked': item.visible(),
+                    'onchange': m.withAttr('checked', item.visible)
+                }),
+                item.name()
+            ]);
         })
     ]);
 };
 
-m.module(document.getElementById('sidebar'), {controller: layer.controller, view: layer.view});
+m.module(document.getElementById('sidebar'), {controller: Layer.controller, view: Layer.view});
 
 
 var SL_LayerControl = function (options) {
@@ -130,7 +134,15 @@ var SL_LayerControl = function (options) {
 SL_LayerControl.prototype = {
 
     _init: function (){
-        // initialize
+        var self = this;
+
+        // add layers to the control, maintaining the initial order
+        _.forEach(this.options.layers_order, function (l_id) {
+            var layer = self.options.layers[l_id];
+            Layer.vm.add(l_id, layer.layer_name, layer.visible);
+        });
+        // force redraw
+        m.redraw(true);
     },
 
     _checkOptions: function () {
