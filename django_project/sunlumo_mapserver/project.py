@@ -16,8 +16,8 @@ from .utils import change_directory
 
 class SunlumoProject(object):
 
-    LAYERS_DATA = {}
-    LAYERS = []
+    LAYERS_DATA = {}  # generic Layer datastructure
+    LAYERS = []  # initial layer order
 
     def __init__(self, project_file):
         self.project_file = project_file
@@ -25,7 +25,9 @@ class SunlumoProject(object):
         self._parseProject(project_file)
 
     def _readLegend(self):
+        # clear layers
         self.LAYERS = []
+
         lItems = self.doc.elementsByTagName('legend').at(0).childNodes()
         for i in xrange(lItems.size()):
             lItem = lItems.at(i)
@@ -43,8 +45,8 @@ class SunlumoProject(object):
                     'layer_name': layer_name,
                     'visible': visible
                 }
-                if visible:
-                    self.LAYERS.append(layer_id)
+                # add layer_id to the LAYERS list
+                self.LAYERS.append(layer_id)
             else:
                 raise RuntimeError('Unknown legend item')
 
