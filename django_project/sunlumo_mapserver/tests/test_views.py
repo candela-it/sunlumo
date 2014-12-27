@@ -85,15 +85,6 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 404)
 
-        # layers param empty
-        resp = self.client.get(reverse('getmap'), {
-            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png', 'layers': ''
-        })
-
-        self.assertEqual(resp.status_code, 404)
-
     def test_getmap_view(self):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
@@ -117,6 +108,19 @@ class TestViews(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         self.assertEqual(len(resp.content), 4745)
+
+        self.assertEqual(resp['Content-Type'], 'png')
+
+    def test_getmap_view_empty_layers(self):
+        resp = self.client.get(reverse('getmap'), {
+            'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'format': 'image/png', 'layers': ''
+        })
+
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertEqual(len(resp.content), 350)
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -171,15 +175,6 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 404)
 
-        # missing layers
-        resp = self.client.get(reverse('printpdf'), {
-            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
-            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'layers': ''
-        })
-
-        self.assertEqual(resp.status_code, 404)
-
     def test_printpdf_view(self):
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-2,-2,2,2', 'layout': 'test_layout',
@@ -203,6 +198,19 @@ class TestViews(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         self.assertEqual(len(resp.content), 230765)
+
+        self.assertEqual(resp['Content-Type'], 'pdf')
+
+    def test_printpdf_view_empty_layers(self):
+        resp = self.client.get(reverse('printpdf'), {
+            'bbox': '-2,-2,2,2', 'layout': 'test_layout',
+            'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
+            'layers': ''
+        })
+
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertEqual(len(resp.content), 8427)
 
         self.assertEqual(resp['Content-Type'], 'pdf')
 

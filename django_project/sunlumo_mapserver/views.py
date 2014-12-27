@@ -71,7 +71,10 @@ class GetMapView(UpperParamsMixin, View):
             transparent = str2bool(self.req_params.get('TRANSPARENT', False))
             map_file = self.req_params.get('MAP')
             bgcolor = hex2rgb(self.req_params.get('BGCOLOR', '0xFFFFFF'))
-            layers = self.req_params.get('LAYERS').split(',')
+            layers = [
+                layer.strip()
+                for layer in self.req_params.get('LAYERS').split(',')
+            ]
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
@@ -79,11 +82,6 @@ class GetMapView(UpperParamsMixin, View):
         # map must have a value
         if not(map_file):
             raise Http404
-
-        if len(layers) == 1 and layers[0] == '':
-            raise Http404
-        else:
-            layers = [layer.strip() for layer in layers]
 
         # check if image format is supported
         if image_format not in ['png', 'jpeg', 'png8']:
@@ -119,7 +117,10 @@ class PrintPDFView(UpperParamsMixin, View):
 
         try:
             bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
-            layers = self.req_params.get('LAYERS').split(',') or None
+            layers = [
+                layer.strip()
+                for layer in self.req_params.get('LAYERS').split(',')
+            ]
             layout = self.req_params.get('LAYOUT')
             map_file = self.req_params.get('MAP')
         except:
@@ -129,11 +130,6 @@ class PrintPDFView(UpperParamsMixin, View):
         if not(layout) or not(map_file):
             # composer template should not be empty
             raise Http404
-
-        if len(layers) == 1 and layers[0] == '':
-            raise Http404
-        else:
-            layers = [layer.strip() for layer in layers]
 
         return {
             'bbox': bbox,
