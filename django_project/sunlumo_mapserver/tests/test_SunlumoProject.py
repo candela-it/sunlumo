@@ -128,6 +128,7 @@ class TestSunlumoProject(TestCase):
 
         self.assertDictEqual(
             sl_prj.getDetails(), {
+                'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
                 'layers': {
                     u'lines20141208133737878': {
                         'visible': True, 'layer_name': u'lines'

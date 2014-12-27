@@ -13,6 +13,8 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
+        self.assertTrue(resp.context['SL_Details'] is not None)
+
         self.assertListEqual(
             [tmpl.name for tmpl in resp.templates], [
                 'index.html', u'base.html'
