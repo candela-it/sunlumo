@@ -24,7 +24,7 @@ class TestManagementCommands(TestCase):
         with open(fileName + '.pdf', 'rb') as pdfFile:
             # we just want to test if the PDF file in not blank
             data = pdfFile.read()
-            self.assertEqual(len(data), 243851)
+            self.assertEqual(len(data), 426652)
 
     def test_print_map_missing_args(self):
 

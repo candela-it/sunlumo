@@ -88,6 +88,24 @@ class SunlumoProject(object):
                 # read layer from XML
                 qgsLayer.readLayerXML(layer.toElement())
 
+                # get layer transparency
+                if layer_type == 'vector':
+                    self.LAYERS_DATA[qgsLayer.id()].update({
+                        'transparency': qgsLayer.layerTransparency()
+                    })
+                elif layer_type == 'raster':
+                    qgsRasterRender = qgsLayer.renderer()
+                    self.LAYERS_DATA[qgsLayer.id()].update({
+                        'transparency': (
+                            int((1 - qgsRasterRender.opacity()) * 100)
+                        )
+                    })
+
+                # record layer type
+                self.LAYERS_DATA[qgsLayer.id()].update({
+                    'type': layer_type
+                })
+
                 # add layer to the QgsMapLayerRegistry
                 if qgsLayer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(qgsLayer, False)

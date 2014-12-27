@@ -45,7 +45,7 @@ class TestSunlumoProject(TestCase):
         self.assertListEqual(
             sl_prj.LAYERS, [
                 u'polygons20141208133824264', u'lines20141208133737878',
-                u'points20141208133705287'
+                u'points20141208133705287', u'raster20141227234036592'
             ]
         )
 
@@ -92,7 +92,7 @@ class TestSunlumoProject(TestCase):
         self.assertListEqual(
             layers.keys(), [
                 u'lines20141208133737878', u'points20141208133705287',
-                u'polygons20141208133824264'
+                u'raster20141227234036592', u'polygons20141208133824264'
             ]
         )
 
@@ -128,21 +128,27 @@ class TestSunlumoProject(TestCase):
 
         self.assertDictEqual(
             sl_prj.getDetails(), {
-                'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
                 'layers': {
                     u'lines20141208133737878': {
-                        'visible': True, 'layer_name': u'lines'
+                        'visible': True, 'type': u'vector',
+                        'layer_name': u'lines', 'transparency': 0
                     },
                     u'points20141208133705287': {
-                        'visible': True, 'layer_name': u'points'
+                        'visible': True, 'type': u'vector',
+                        'layer_name': u'points', 'transparency': 0
+                    },
+                    u'raster20141227234036592': {
+                        'visible': True, 'type': u'raster',
+                        'layer_name': u'raster', 'transparency': 25
                     },
                     u'polygons20141208133824264': {
-                        'visible': True, 'layer_name': u'polygons'
-                    }
-                },
+                        'visible': True, 'type': u'vector',
+                        'layer_name': u'polygons', 'transparency': 50}
+                    },
+                'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
                 'layers_order': [
                     u'polygons20141208133824264', u'lines20141208133737878',
-                    u'points20141208133705287'
+                    u'points20141208133705287', u'raster20141227234036592'
                 ]
             }
         )

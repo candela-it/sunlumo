@@ -89,12 +89,12 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('getmap'), {
             'bbox': '-2,-2,2,2', 'width': 100, 'height': 100, 'srs': 4326,
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'format': 'image/png', 'layers': 'polygons,lines,points'
+            'format': 'image/png', 'layers': 'polygons,lines,points,raster'
         })
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(len(resp.content), 6168)
+        self.assertEqual(len(resp.content), 6147)
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -107,7 +107,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(len(resp.content), 4745)
+        self.assertEqual(len(resp.content), 4742)
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -134,7 +134,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(len(resp.content), 5311)
+        self.assertEqual(len(resp.content), 5451)
 
         self.assertEqual(resp['Content-Type'], 'png')
 
@@ -179,12 +179,12 @@ class TestViews(TestCase):
         resp = self.client.get(reverse('printpdf'), {
             'bbox': '-2,-2,2,2', 'layout': 'test_layout',
             'map': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'layers': 'polygons,lines,points'
+            'layers': 'polygons,lines,points,raster'
         })
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(len(resp.content), 243851)
+        self.assertEqual(len(resp.content), 445925)
 
         self.assertEqual(resp['Content-Type'], 'pdf')
 
@@ -197,7 +197,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(len(resp.content), 230765)
+        self.assertEqual(len(resp.content), 412947)
 
         self.assertEqual(resp['Content-Type'], 'pdf')
 
@@ -223,7 +223,7 @@ class TestViews(TestCase):
 
         self.assertEqual(resp['Content-Type'], 'application/json')
 
-        self.assertEqual(len(resp.content), 381)
+        self.assertEqual(len(resp.content), 628)
 
     def test_projectdetails_view_mising_params(self):
         resp = self.client.get(reverse('projectdetails'))

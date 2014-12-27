@@ -26,3 +26,5 @@ LOGGING = {
         'handlers': ['nullhandler'],
     }
 }
+
+QGIS_PROJECT = './sunlumo_mapserver/test_data/test_sunlumo.qgs'
