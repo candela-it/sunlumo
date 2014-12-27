@@ -13,4 +13,10 @@
 
 <script src="{% static 'js/app.module.js' %}"></script>
 
+<script>
+
+new SL_Project({{ SL_Details|safe }});
+
+</script>
+
 {% endblock %}
