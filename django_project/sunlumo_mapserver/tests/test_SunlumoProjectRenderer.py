@@ -13,11 +13,12 @@ class TestSunlumoProjectRenderer(TestCase):
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png', 'bgcolor': [255, 255, 255],
             'transparent': True,
-            'layers': ['polygons', 'lines', 'points', 'raster']
+            'layers': ['polygons', 'lines', 'points', 'raster'],
+            'transparencies': [50, 0, 0, 25]
         })
 
         # might not be the best approach, but at least it's not a blank image
-        self.assertEqual(image.size(), 42611)
+        self.assertEqual(image.size(), 42426)
 
     def test_render_png8(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
@@ -26,11 +27,12 @@ class TestSunlumoProjectRenderer(TestCase):
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'png8', 'bgcolor': [255, 255, 255],
             'transparent': True,
-            'layers': ['polygons', 'lines', 'points', 'raster']
+            'layers': ['polygons', 'lines', 'points', 'raster'],
+            'transparencies': [50, 0, 0, 25]
         })
 
         # might not be the best approach, but at least it's not a blank image
-        self.assertEqual(image.size(), 12996)
+        self.assertEqual(image.size(), 13045)
 
     def test_render_jpeg(self):
         sl_prj = Renderer('./sunlumo_mapserver/test_data/test_sunlumo.qgs')
@@ -39,7 +41,8 @@ class TestSunlumoProjectRenderer(TestCase):
             'bbox': [-1.5, -1.5, 1.5, 1.5], 'image_size': [512, 512],
             'srs': 4326, 'image_format': 'jpeg', 'bgcolor': [255, 255, 255],
             'transparent': True,
-            'layers': ['polygons', 'lines', 'points', 'raster']
+            'layers': ['polygons', 'lines', 'points', 'raster'],
+            'transparencies': [50, 0, 0, 25]
         })
 
         # might not be the best approach, but at least it's not a blank image

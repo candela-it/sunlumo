@@ -16,7 +16,7 @@ from .project import SunlumoProject
 class Printer(SunlumoProject):
 
     def check_required_params(self, params):
-        req_params = ['tmpFile', 'layout', 'bbox', 'layers']
+        req_params = ['tmpFile', 'layout', 'bbox', 'layers', 'transparencies']
         if not(all(param in params.keys() for param in req_params)):
             raise RuntimeError('Missing printer process params!')
 
@@ -30,6 +30,7 @@ class Printer(SunlumoProject):
             rndr.setLabelingEngine(le)
 
             layers = self.getLayersForRendering(params.get('layers'))
+            self.setTransparencies(layers, params.get('transparencies'))
             rndr.setLayerSet(layers)
 
             composer = (

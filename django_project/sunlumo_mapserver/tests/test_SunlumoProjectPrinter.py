@@ -12,7 +12,8 @@ class TestSunlumoProjectPrinter(TestCase):
         tmpFile = '/tmp/printtmp'
         sl_prj.printToPdf({
             'tmpFile': tmpFile, 'layout': 'test_layout',
-            'bbox': [-2, -2, 2, 2], 'layers': ['polygons', 'lines', 'points']
+            'bbox': [-2, -2, 2, 2], 'layers': ['polygons', 'lines', 'points'],
+            'transparencies': [50, 0, 0]
         })
 
         with open(tmpFile + '.pdf', 'rb') as pdfFile:

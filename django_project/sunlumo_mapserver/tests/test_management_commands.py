@@ -12,7 +12,8 @@ class TestManagementCommands(TestCase):
         params = {
             'bbox': [-2, -2, 2, 2], 'layout': 'test_layout',
             'map_file': './sunlumo_mapserver/test_data/test_sunlumo.qgs',
-            'layers': ['polygons', 'lines', 'points']
+            'layers': ['polygons', 'lines', 'points'],
+            'transparencies': [50, 0, 0]
         }
 
         fileName = writeParamsToJson(params)

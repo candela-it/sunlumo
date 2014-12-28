@@ -3,6 +3,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 import os
+
 from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (
@@ -20,6 +21,8 @@ class SunlumoProject(object):
     LAYERS = []  # initial layer order
 
     def __init__(self, project_file):
+        self.layerRegistry = QgsMapLayerRegistry.instance()
+
         self.project_file = project_file
         self.project_root = os.path.abspath(os.path.dirname(project_file))
         self._parseProject(project_file)
@@ -76,8 +79,11 @@ class SunlumoProject(object):
 
     def _parseLayers(self):
         with change_directory(self.project_root):
-            # remove all layers from the map registry
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            # remove map layers
+            self.layerRegistry.removeMapLayers(
+                self.layerRegistry.mapLayers().keys()
+            )
+
             for layer in self._iterateOverTagByName('maplayer'):
                 layer_type = self._getAttr(layer, 'type').value()
                 if layer_type == 'vector':
@@ -100,6 +106,7 @@ class SunlumoProject(object):
                             int((1 - qgsRasterRender.opacity()) * 100)
                         )
                     })
+                    del qgsRasterRender
 
                 # record layer type
                 self.LAYERS_DATA[qgsLayer.id()].update({
@@ -108,8 +115,7 @@ class SunlumoProject(object):
 
                 # add layer to the QgsMapLayerRegistry
                 if qgsLayer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(qgsLayer, False)
-                    # add layer to the internal layer registry
+                    self.layerRegistry.addMapLayer(qgsLayer, False)
                     LOG.debug('Loaded layer: %s', qgsLayer.id())
 
     def _parseLayouts(self):
@@ -147,3 +153,18 @@ class SunlumoProject(object):
             'layers': self.LAYERS_DATA,
             'layers_order': self.LAYERS
         }
+
+    def setTransparency(self, layer_id, transparency):
+        qgsLayer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
+        layer_type = self.LAYERS_DATA[layer_id].get('type')
+        if layer_type == 'vector':
+            qgsLayer.setLayerTransparency(transparency)
+        elif layer_type == 'raster':
+            qgsRasterRender = qgsLayer.renderer()
+            qgsRasterRender.setOpacity(1 - (transparency / 100.0))
+
+            del qgsRasterRender
+
+    def setTransparencies(self, layers, transparencies):
+        for idx, layer_id in enumerate(layers):
+            self.setTransparency(layer_id, transparencies[idx])

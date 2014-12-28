@@ -56,7 +56,8 @@ class ProjectDetails(UpperParamsMixin, JSONResponseMixin, View):
 class GetMapView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT', 'LAYERS'])):
+                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT', 'LAYERS',
+                'TRANSPARENCIES'])):
             raise Http404
 
         try:
@@ -74,6 +75,12 @@ class GetMapView(UpperParamsMixin, View):
             layers = [
                 layer.strip()
                 for layer in self.req_params.get('LAYERS').split(',')
+            ]
+
+            transparencies = [
+                int(a)
+                for a in self.req_params.get('TRANSPARENCIES').split(',')
+                if len(a) > 0
             ]
         except:
             # return 404 if any of parameters are missing or not parsable
@@ -95,7 +102,8 @@ class GetMapView(UpperParamsMixin, View):
             'image_format': image_format,
             'transparent': transparent,
             'bgcolor': bgcolor,
-            'layers': layers
+            'layers': layers,
+            'transparencies': transparencies
         }
 
         return params
@@ -112,7 +120,7 @@ class GetMapView(UpperParamsMixin, View):
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'LAYOUT', 'MAP', 'LAYERS'])):
+                'BBOX', 'LAYOUT', 'MAP', 'LAYERS', 'TRANSPARENCIES'])):
             raise Http404
 
         try:
@@ -123,6 +131,11 @@ class PrintPDFView(UpperParamsMixin, View):
             ]
             layout = self.req_params.get('LAYOUT')
             map_file = self.req_params.get('MAP')
+            transparencies = [
+                int(a)
+                for a in self.req_params.get('TRANSPARENCIES').split(',')
+                if len(a) > 0
+            ]
         except:
             # return 404 if any of parameters are missing or not parsable
             raise Http404
@@ -135,7 +148,8 @@ class PrintPDFView(UpperParamsMixin, View):
             'bbox': bbox,
             'layout': layout,
             'map_file': map_file,
-            'layers': layers
+            'layers': layers,
+            'transparencies': transparencies
         }
 
     def get(self, request, *args, **kwargs):

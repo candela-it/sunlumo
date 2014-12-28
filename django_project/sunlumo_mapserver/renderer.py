@@ -21,7 +21,7 @@ class Renderer(SunlumoProject):
     def check_required_params(self, params):
         req_prams = [
             'bbox', 'image_size', 'srs', 'image_format', 'transparent',
-            'bgcolor', 'layers'
+            'bgcolor', 'layers', 'transparencies'
         ]
 
         if not(all(param in params.keys() for param in req_prams)):
@@ -52,9 +52,6 @@ class Renderer(SunlumoProject):
             color = QColor(*bgcolor)
             img.fill(color)
 
-            p = QPainter()
-            p.begin(img)
-
             map_settings = QgsMapSettings()
             map_settings.setBackgroundColor(color)
             map_settings.setDestinationCrs(crs)
@@ -64,7 +61,12 @@ class Renderer(SunlumoProject):
             map_settings.setMapUnits(crs.mapUnits())
 
             layers = self.getLayersForRendering(params.get('layers'))
+            self.setTransparencies(layers, params.get('transparencies'))
+
             map_settings.setLayers(layers)
+
+            p = QPainter()
+            p.begin(img)
 
             job = QgsMapRendererCustomPainterJob(map_settings, p)
             job.start()
