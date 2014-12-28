@@ -10,6 +10,7 @@ var Layer = function (data) {
     this.l_id = m.prop(data.l_id);
     this.name = m.prop(data.name);
     this.visible = m.prop(data.visible);
+    this.transparency = m.prop(data.transparency);
 };
 
 var LayerList = Array;
@@ -21,11 +22,12 @@ Layer.vm = (function () {
     };
 
     // add layer to the list
-    vm.add = function(id, name, visible) {
+    vm.add = function(id, name, visible, transparency) {
         vm.list.push(new Layer({
             'l_id': id,
             'name': name,
-            'visible': visible
+            'visible': visible,
+            'transparency': transparency
         }));
     };
 
@@ -46,6 +48,12 @@ Layer.controller = function() {
     };
 
     this.dragStart = function(e) {
+        // Fix for Firefox (maybe others), prevents dragstart event bubbling
+        // on range input elements
+        if (document.activeElement.type === 'range') {
+            return false; // block dragging
+        }
+
         // get the data-id of the dragged element
         this.dragged = Number(e.currentTarget.dataset.id);
         e.dataTransfer.effectAllowed = 'move';
@@ -81,9 +89,13 @@ Layer.controller = function() {
     this.layerToggle = function (item, e) {
         item.visible(e.target.checked);
 
-        EVENTS.emit('layers.updated', {
-            'layers': this.items
-        });
+        EVENTS.emit('layers.updated');
+    };
+
+    this.layerTransparency = function (item, e) {
+        item.transparency(e.target.value);
+
+        EVENTS.emit('layers.updated');
     };
 };
 
@@ -101,11 +113,15 @@ Layer.view = function(ctrl) {
               'ondragend': ctrl.dragEnd.bind(ctrl)
             }, [
                 m('input[type=checkbox]', {
-                    'id': item.l_id(),
                     'checked': item.visible(),
                     'onchange': ctrl.layerToggle.bind(ctrl, item)
                 }),
-                item.name()
+                item.name(),
+                m('input[type=range]', {
+                    'draggable': false,
+                    'value': item.transparency(),
+                    'onchange': ctrl.layerTransparency.bind(ctrl, item)
+                })
             ]);
         })
     ]);
@@ -170,14 +186,15 @@ SL_LayerControl.prototype = {
         // add layers to the control, maintaining the initial order
         _.forEach(this.options.layers_order, function (l_id) {
             var layer = self.options.layers[l_id];
-            Layer.vm.add(l_id, layer.layer_name, layer.visible);
+            Layer.vm.add(l_id, layer.layer_name, layer.visible, layer.transparency);
         });
         // force redraw
         m.redraw(true);
 
         this.SL_Source.updateParams({
             'LAYERS':this.getLayersParam(),
-            'MAP': this.options.map
+            'MAP': this.options.map,
+            'TRANSPARENCIES': this.getTransparencyParam()
         });
     },
 
@@ -185,7 +202,8 @@ SL_LayerControl.prototype = {
         var self = this;
         EVENTS.on('layers.updated', function() {
             self.SL_Source.updateParams({
-                'LAYERS':self.getLayersParam()
+                'LAYERS':self.getLayersParam(),
+                'TRANSPARENCIES': self.getTransparencyParam()
             });
         });
     },
@@ -232,8 +250,19 @@ SL_LayerControl.prototype = {
                 visible_layers.push(layer.name());
             }
         }
-
         return visible_layers.join(',');
+    },
+    getTransparencyParam: function () {
+        // return comma concatenated string of visible layers transparencies
+        var layers_transparencies = [];
+
+        for (var i = 0; i < Layer.vm.list.length; i++) {
+            var layer = Layer.vm.list[i];
+            if (layer.visible()) {
+                layers_transparencies.push(layer.transparency());
+            }
+        }
+        return layers_transparencies.join(',');
     }
 };
 
