@@ -58,6 +58,11 @@ You also need to generate JS and CSS resources by using *grunt* JS task runner:
 grunt
 ```
 
+When developing JS or CSS is probably best to open a new terminal and execute:
+`grunt watch:project`. This command will constantly watch JS and CSS files in
+the project folders and run a set of tasks that will browserify JS and combine
+and compress CSS.
+
 ## Development server
 
 QGIS is based on QT framework and as such it's not really friendly towards
