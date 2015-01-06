@@ -4,16 +4,10 @@ LOG = logging.getLogger(__name__)
 
 import json
 
-from PyQt4.QtCore import QSize, QBuffer, QIODevice
-from PyQt4.QtGui import QColor, QImage, QPainter
-
 from qgis.core import (
-    QgsMapRendererCustomPainterJob,
     QgsCoordinateReferenceSystem,
-    QgsMapSettings,
     QgsRectangle,
-    QgsFeatureRequest,
-    QgsFeature
+    QgsFeatureRequest
 )
 
 from .utils import change_directory
@@ -77,8 +71,11 @@ class FeatureInfo(SunlumoProject):
                             feat.geometry().exportToGeoJSON()
                         )
                     }
-                    json_feat.update({'properties': dict(
-                        zip(layer_field_names, [attr if attr else None for attr in feat.attributes()])
+                    json_feat.update({'properties': dict(zip(
+                        layer_field_names, [
+                            attr if attr else None
+                            for attr in feat.attributes()
+                        ])
                     )})
                     found_features['features'].append(json_feat)
 

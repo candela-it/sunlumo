@@ -144,11 +144,15 @@ Layer.view = function(ctrl) {
 m.module(document.getElementById('sidebar'), {controller: Layer.controller, view: Layer.view});
 
 
-var SL_LayerControl = function (options) {
+var SL_LayerControl = function (map, options) {
     // default options
     this.options = {
         // initial module options
     };
+
+    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+        throw new Error('SL_LayerControl map parameter must be defined');
+    }
 
     if (!options || Object.getOwnPropertyNames(options).length === 0) {
         throw new Error('SL_LayerControl options parameter must be defined');
@@ -161,6 +165,8 @@ var SL_LayerControl = function (options) {
         }
     }
 
+    // internal reference to the map object
+    this.map = map;
 
     // check if we got right flavour of options
     this._checkOptions();
@@ -179,8 +185,6 @@ SL_LayerControl.prototype = {
         this.SL_Source = new ol.source.ImageWMS({
             url: '/getmap',
             params: {
-                //'LAYERS': 'Cres  Corine LC,Cres obala,hillshade',
-                //'MAP':'/data/simple.qgs',
                 'VERSION':'1.1.1',
                 'FORMAT':'image/png'
             },
@@ -222,27 +226,19 @@ SL_LayerControl.prototype = {
         });
 
         EVENTS.on('map.singleclick', function(data) {
-            var viewResolution = data.map.getView().getResolution();
+            var viewResolution = self.map.getView().getResolution();
             var url = self.SL_Source.getGetFeatureInfoUrl(
-                data.coordinate, viewResolution, data.map.getView().getProjection(), {
-                    'INFO_FORMAT': 'application/json',
-                    'QUERY_LAYERS': self.getQueryLayersParam()
-                }
-            );
+                data.coordinate, viewResolution, self.map.getView().getProjection(), {
+                   'INFO_FORMAT': 'application/json',
+                   'QUERY_LAYERS': self.getQueryLayersParam()
+               });
 
-            if (url) {
-                var geojson_source = new ol.source.GeoJSON({
-                    url: url,
-                    // projection: data.map.getView().getProjection(),
-                    defaultProjection: data.map.getView().getProjection()
-                });
-
-                var geojson_layer = new ol.layer.Vector({
-                    source: geojson_source
-                });
-                data.map.addLayer(geojson_layer);
-            }
+            // emit updated url to the GFI control
+            EVENTS.emit('qgis.gfi.url.changed', {
+                'url': url
+            });
         });
+
     },
 
     _checkOptions: function () {

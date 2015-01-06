@@ -84,7 +84,7 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
                     for layer in self.req_params.get('QUERY_LAYERS').split(',')
                 ]
             else:
-                query_layers = None
+                query_layers = []
             transparencies = [
                 int(a)
                 for a in self.req_params.get('TRANSPARENCIES').split(',')

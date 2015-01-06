@@ -8,6 +8,7 @@ var ol = require('../contrib/ol');
 require('./proj');
 
 var SL_LayerControl = require('./sl_layerControl');
+var SL_GFIControl = require('./sl_getfeatureinfoControl');
 
 
 var SL_Project = function (options) {
@@ -37,8 +38,6 @@ SL_Project.prototype = {
     _init: function (){
         // initialize
 
-        var qgis_layer = new SL_LayerControl(this.options);
-
         var projection = ol.proj.get('EPSG:3765');
 
         var extent = [208311.05, 4614890.75, 724721.78, 5159767.36];
@@ -53,7 +52,7 @@ SL_Project.prototype = {
             }))
         });
 
-        var map = new ol.Map({
+        this.map = new ol.Map({
             target: 'map',
             view: new ol.View({
                 projection: projection,
@@ -63,13 +62,22 @@ SL_Project.prototype = {
             })
         });
 
-        map.addLayer(dgu_dof);
-        map.addLayer(qgis_layer.SL_QGIS_Layer);
+        this.map.addLayer(dgu_dof);
 
-        map.on('singleclick', function(evt) {
+
+        // these two layers should be added as last overlays
+        // add qgis_layer to the map
+        var qgis_layer = new SL_LayerControl(this.map, this.options);
+        this.map.addLayer(qgis_layer.SL_QGIS_Layer);
+
+        // add qgis_GFIControl Layer to the map
+        var qgis_GFI_layer = new SL_GFIControl(this.map, this.options);
+        this.map.addLayer(qgis_GFI_layer.SL_GFI_Layer);
+
+        // propagate map events
+        this.map.on('singleclick', function(evt) {
             EVENTS.emit('map.singleclick', {
-                'coordinate': evt.coordinate,
-                'map': map
+                'coordinate': evt.coordinate
             });
         });
     },
