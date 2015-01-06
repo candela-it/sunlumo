@@ -1,5 +1,7 @@
 'use strict';
 
+var EVENTS = require('./events');
+
 var ol = require('../contrib/ol');
 
 // initialize projections
@@ -63,6 +65,13 @@ SL_Project.prototype = {
 
         map.addLayer(dgu_dof);
         map.addLayer(qgis_layer.SL_QGIS_Layer);
+
+        map.on('singleclick', function(evt) {
+            EVENTS.emit('map.singleclick', {
+                'coordinate': evt.coordinate,
+                'map': map
+            });
+        });
     },
 };
 

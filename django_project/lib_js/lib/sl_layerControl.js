@@ -11,6 +11,8 @@ var Layer = function (data) {
     this.name = m.prop(data.name);
     this.visible = m.prop(data.visible);
     this.transparency = m.prop(data.transparency);
+    // should we query this layer 'GetFeatureInfo'
+    this.query = m.prop(false);
 };
 
 var LayerList = Array;
@@ -92,6 +94,10 @@ Layer.controller = function() {
         EVENTS.emit('layers.updated');
     };
 
+    this.queryLayerToggle = function (item, e) {
+        item.query(e.target.checked);
+    };
+
     this.layerTransparency = function (item, e) {
         item.transparency(e.target.value);
 
@@ -122,7 +128,14 @@ Layer.view = function(ctrl) {
                     'draggable': false,
                     'value': item.transparency(),
                     'onchange': ctrl.layerTransparency.bind(ctrl, item)
-                })
+                }),
+                m('div', [
+                    m('input[type=checkbox]', {
+                        'checked': item.query(),
+                        'onchange': ctrl.queryLayerToggle.bind(ctrl, item)
+                    }),
+                    'Q'
+                ])
             ]);
         })
     ]);
@@ -207,6 +220,29 @@ SL_LayerControl.prototype = {
                 'TRANSPARENCIES': self.getTransparencyParam()
             });
         });
+
+        EVENTS.on('map.singleclick', function(data) {
+            var viewResolution = data.map.getView().getResolution();
+            var url = self.SL_Source.getGetFeatureInfoUrl(
+                data.coordinate, viewResolution, data.map.getView().getProjection(), {
+                    'INFO_FORMAT': 'application/json',
+                    'QUERY_LAYERS': self.getQueryLayersParam()
+                }
+            );
+
+            if (url) {
+                var geojson_source = new ol.source.GeoJSON({
+                    url: url,
+                    // projection: data.map.getView().getProjection(),
+                    defaultProjection: data.map.getView().getProjection()
+                });
+
+                var geojson_layer = new ol.layer.Vector({
+                    source: geojson_source
+                });
+                data.map.addLayer(geojson_layer);
+            }
+        });
     },
 
     _checkOptions: function () {
@@ -264,6 +300,18 @@ SL_LayerControl.prototype = {
             }
         }
         return layers_transparencies.join(',');
+    },
+    getQueryLayersParam: function () {
+        // return comma concatenated string of queryable layers
+        var query_layers = [];
+
+        for (var i = 0; i < Layer.vm.list.length; i++) {
+            var layer = Layer.vm.list[i];
+            if (layer.query()) {
+                query_layers.push(layer.name());
+            }
+        }
+        return query_layers.join(',');
     }
 };
 

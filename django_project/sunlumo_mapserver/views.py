@@ -10,6 +10,7 @@ from django.views.generic import View
 from braces.views import JSONResponseMixin
 
 from .renderer import Renderer
+from .featureinfo import FeatureInfo
 from .project import SunlumoProject
 from .utils import writeParamsToJson, str2bool, hex2rgb
 
@@ -53,14 +54,15 @@ class ProjectDetails(UpperParamsMixin, JSONResponseMixin, View):
         return self.render_json_response(project.getDetails())
 
 
-class GetMapView(UpperParamsMixin, View):
+class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
                 'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT', 'LAYERS',
-                'TRANSPARENCIES'])):
+                'TRANSPARENCIES', 'REQUEST'])):
             raise Http404
 
         try:
+            request = self.req_params.get('REQUEST')
             bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
             image_size = [
                 int(a) for a in (
@@ -76,7 +78,13 @@ class GetMapView(UpperParamsMixin, View):
                 layer.strip()
                 for layer in self.req_params.get('LAYERS').split(',')
             ]
-
+            if self.req_params.get('QUERY_LAYERS'):
+                query_layers = [
+                    layer.strip()
+                    for layer in self.req_params.get('QUERY_LAYERS').split(',')
+                ]
+            else:
+                query_layers = None
             transparencies = [
                 int(a)
                 for a in self.req_params.get('TRANSPARENCIES').split(',')
@@ -87,7 +95,7 @@ class GetMapView(UpperParamsMixin, View):
             raise Http404
 
         # map must have a value
-        if not(map_file):
+        if not(map_file) or not(request):
             raise Http404
 
         # check if image format is supported
@@ -103,7 +111,9 @@ class GetMapView(UpperParamsMixin, View):
             'transparent': transparent,
             'bgcolor': bgcolor,
             'layers': layers,
-            'transparencies': transparencies
+            'transparencies': transparencies,
+            'request': request,
+            'query_layers': query_layers
         }
 
         return params
@@ -111,10 +121,16 @@ class GetMapView(UpperParamsMixin, View):
     def get(self, request, *args, **kwargs):
         params = self._parse_request_params(request)
 
-        sl_project = Renderer(params.get('map_file'))
-        img = sl_project.render(params)
+        if params.get('request') == 'GetMap':
+            sl_project = Renderer(params.get('map_file'))
+            img = sl_project.render(params)
 
-        return HttpResponse(img, content_type=params.get('image_format'))
+            return HttpResponse(img, content_type=params.get('image_format'))
+        else:
+            sl_project = FeatureInfo(params.get('map_file'))
+            features = sl_project.identify(params)
+
+            return self.render_json_response(features)
 
 
 class PrintPDFView(UpperParamsMixin, View):
