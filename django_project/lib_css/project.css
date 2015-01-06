@@ -24,9 +24,10 @@ div.layer_list {
   background:#ddd;
 }
 
-div.layer_list div {
+div.layer {
   padding: 10px;
   color: #666;
+  border: 1px red solid;
 }
 
 div.dragging {

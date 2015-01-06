@@ -102,9 +102,10 @@ Layer.controller = function() {
 Layer.view = function(ctrl) {
     return m('div', {'class': 'layer_list'}, [
         Layer.vm.list.map(function(item, index) {
+            // determine if the element is currently being dragged
             var dragging = (index === ctrl.dragging()) ? 'dragging' : '';
 
-            return m('div', {
+            return m('div.layer', {
               'data-id': index,
               'class': dragging,
               'draggable': 'true',
