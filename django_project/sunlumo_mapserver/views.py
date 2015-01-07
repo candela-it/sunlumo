@@ -85,6 +85,13 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
                 ]
             else:
                 query_layers = []
+            if self.req_params.get('X') and self.req_params.get('Y'):
+                click_point = [
+                    int(self.req_params.get('X')),
+                    int(self.req_params.get('Y'))
+                ]
+            else:
+                click_point = []
             transparencies = [
                 int(a)
                 for a in self.req_params.get('TRANSPARENCIES').split(',')
@@ -113,7 +120,8 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
             'layers': layers,
             'transparencies': transparencies,
             'request': request,
-            'query_layers': query_layers
+            'query_layers': query_layers,
+            'click_point': click_point
         }
 
         return params

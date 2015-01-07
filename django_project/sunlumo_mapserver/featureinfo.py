@@ -7,7 +7,9 @@ import json
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsRectangle,
-    QgsFeatureRequest
+    QgsFeatureRequest,
+    QgsPoint,
+    QgsGeometry
 )
 
 from .utils import change_directory
@@ -18,7 +20,7 @@ class FeatureInfo(SunlumoProject):
 
     def check_required_params(self, params):
         req_prams = [
-            'bbox', 'srs', 'query_layers'
+            'bbox', 'srs', 'query_layers', 'click_point'
         ]
 
         if not(all(param in params.keys() for param in req_prams)):
@@ -34,6 +36,15 @@ class FeatureInfo(SunlumoProject):
 
             qfr = QgsFeatureRequest()
             qfr.setFilterRect(QgsRectangle(*params.get('bbox')))
+
+            center_point = self._calcPoint(
+                params.get('bbox'), params.get('image_size')[0],
+                params.get('image_size')[1],
+                params.get('click_point')[0], params.get('click_point')[1]
+            )
+
+            geom_center_point = QgsGeometry.fromPoint(QgsPoint(*center_point))
+            geom_center_point = geom_center_point.buffer(10, 10)
 
             found_features = {
                 'type': 'FeatureCollection', 'features': [],
@@ -64,11 +75,15 @@ class FeatureInfo(SunlumoProject):
                 #     print feature
 
                 for feat in features:
+                    geom = feat.geometry()
+                    if not(geom.intersects(geom_center_point)):
+                        continue
+
                     json_feat = {
                         'type': 'Feature',
                         'id': feat.id(),
                         'geometry': json.loads(
-                            feat.geometry().exportToGeoJSON()
+                            geom.exportToGeoJSON()
                         )
                     }
                     json_feat.update({'properties': dict(zip(
@@ -80,3 +95,12 @@ class FeatureInfo(SunlumoProject):
                     found_features['features'].append(json_feat)
 
         return found_features
+
+    def _calcPoint(self, bbox, width, height, i, j):
+        x_res = (bbox[2] - bbox[0]) / width
+        y_res = (bbox[3] - bbox[1]) / height
+
+        x = bbox[0] + i * x_res
+        y = bbox[1] + j * y_res
+
+        return (x, y)
