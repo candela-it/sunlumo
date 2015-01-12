@@ -19,6 +19,9 @@ html, body {
     width:300px;
 }
 
+#sidebar ul {
+  margin-left: 0;
+}
 
 div.layer_list {
   margin:0;

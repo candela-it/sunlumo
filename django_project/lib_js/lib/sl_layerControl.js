@@ -141,7 +141,7 @@ Layer.view = function(ctrl) {
     ]);
 };
 
-m.module(document.getElementById('sidebar'), {controller: Layer.controller, view: Layer.view});
+m.module(document.getElementById('panelLayers'), {controller: Layer.controller, view: Layer.view});
 
 
 var SL_LayerControl = function (map, options) {
