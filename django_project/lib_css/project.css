@@ -90,3 +90,13 @@ html, body {
 .deactivated {
   color: rgba(0,0,0,0.2) !important;
 }
+
+
+#panelSearch {
+  margin: 10px;
+  padding: 0;
+}
+
+#panelSearch .columns {
+  padding: 0 !important;
+}
