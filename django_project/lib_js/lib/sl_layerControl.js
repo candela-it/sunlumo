@@ -13,6 +13,8 @@ var Layer = function (data) {
     this.transparency = m.prop(data.transparency);
     // should we query this layer 'GetFeatureInfo'
     this.query = m.prop(false);
+    this.showLayerControl = m.prop(false);
+    this.showLayerDetails = m.prop(false);
 };
 
 var LayerList = Array;
@@ -88,20 +90,43 @@ Layer.controller = function() {
         });
     };
 
-    this.layerToggle = function (item, e) {
-        item.visible(e.target.checked);
-
+    this.layerToggle = function (item) {
+        if (item.visible()) {
+            item.visible(false);
+        } else {
+            item.visible(true);
+        }
         EVENTS.emit('layers.updated');
     };
 
-    this.queryLayerToggle = function (item, e) {
-        item.query(e.target.checked);
+    this.queryLayerToggle = function (item) {
+        if (item.query()) {
+            item.query(false);
+        } else {
+            item.query(true);
+        }
     };
 
     this.layerTransparency = function (item, e) {
         item.transparency(e.target.value);
 
         EVENTS.emit('layers.updated');
+    };
+
+    this.mouseOver = function(item) {
+        item.showLayerControl(true);
+    };
+
+    this.mouseOut = function(item) {
+        item.showLayerControl(false);
+    };
+
+    this.toggleShowControl = function(item) {
+        if (item.showLayerDetails()) {
+            item.showLayerDetails(false);
+        } else {
+            item.showLayerDetails(true);
+        }
     };
 };
 
@@ -117,31 +142,54 @@ Layer.view = function(ctrl) {
               'draggable': 'true',
               'ondragstart': ctrl.dragStart.bind(ctrl),
               'ondragover': ctrl.dragOver.bind(ctrl),
-              'ondragend': ctrl.dragEnd.bind(ctrl)
+              'ondragend': ctrl.dragEnd.bind(ctrl),
+              'onmouseenter': ctrl.mouseOver.bind(ctrl, item),
+              'onmouseleave': ctrl.mouseOut.bind(ctrl, item)
             }, [
-                m('input[type=checkbox]', {
-                    'checked': item.visible(),
-                    'onchange': ctrl.layerToggle.bind(ctrl, item)
-                }),
-                item.name(),
-                m('input[type=range]', {
-                    'draggable': false,
-                    'value': item.transparency(),
-                    'onchange': ctrl.layerTransparency.bind(ctrl, item)
-                }),
-                m('div', [
-                    m('input[type=checkbox]', {
-                        'checked': item.query(),
-                        'onchange': ctrl.queryLayerToggle.bind(ctrl, item)
-                    }),
-                    'Q'
+                m('div', {
+                    'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
+                    'onclick': ctrl.layerToggle.bind(ctrl, item)
+                }, [
+                    m('i', {
+                        'class': 'fi-eye'
+                    })
+                ]),
+                m('div', {
+                    'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
+                    'onclick': ctrl.queryLayerToggle.bind(ctrl, item)
+                }, [
+                    m('i', {
+                        'class': 'fi-info'
+                    })
+                ]),
+                m('div', {
+                    'class': 'layer-name'
+                }, [item.name()]),
+
+                m('div', {
+                    'class':  (item.showLayerControl()) ? 'layer-control layer-settings-control' : 'layer-control layer-settings-control hide',
+                    'onclick': ctrl.toggleShowControl.bind(ctrl, item)
+                }, [
+                    m('i', {
+                        'class': 'fi-widget'
+                    })
+                ]),
+                m('div', {
+                    'class': (item.showLayerDetails()) ? 'layer-details' : 'layer-details hide'
+                }, [
+                    m('span', {}, 'TRANSPARENTNOST: '),
+                    m('input[type=range]', {
+                        'draggable': false,
+                        'value': item.transparency(),
+                        'onchange': ctrl.layerTransparency.bind(ctrl, item)
+                    })
                 ])
             ]);
         })
     ]);
 };
 
-m.module(document.getElementById('sidebar'), {controller: Layer.controller, view: Layer.view});
+m.module(document.getElementById('panelLayers'), {controller: Layer.controller, view: Layer.view});
 
 
 var SL_LayerControl = function (map, options) {

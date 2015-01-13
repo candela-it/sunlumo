@@ -5,6 +5,10 @@ html, body {
     height: 100%;
 }
 
+.hide {
+  display: none;
+}
+
 #map {
     position: fixed;
     top: 45px;
@@ -19,21 +23,70 @@ html, body {
     width:300px;
 }
 
+#sidebar ul {
+  margin-left: 0;
+}
 
-div.layer_list {
+#panelLayers {
+  padding: 0 !important;
+  margin: 2px 2px;
+}
+
+#panelLayers div.layer-details {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 0 0 0 10px;
+}
+
+#panelLayers div.layer-name {
+  margin-left: 10px;
+  display: inline-block;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+#panelLayers div.layer-settings-control {
+  position: relative;
+  float: right;
+  clear: right;
+}
+
+
+#panelLayers div.layer_list {
   margin:0;
-  width: 15em;
+  width: 100%;
   display: inline-block;
   padding:0;
-  background:#ddd;
 }
 
-div.layer {
-  padding: 10px;
-  color: #666;
-  border: 1px red solid;
+#panelLayers div.layer {
+  font-size: 12px;
+  color: #000;
+  padding: 4px 5px 2px 0px;
+}
 }
 
-div.dragging {
-  background: #eee;
+#panelLayers div.layer:hover {
+  background-color: #EEEEEE;
+}
+
+#panelLayers div.dragging {
+  background: #EEE;
+}
+
+#panelLayers .layer-control {
+  display: inline-block;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  line-height: 18px;
+  margin-left: 5px;
+}
+
+#panelLayers .layer-control:hover {
+  color: #000;
+}
+
+.deactivated {
+  color: rgba(0,0,0,0.2) !important;
 }

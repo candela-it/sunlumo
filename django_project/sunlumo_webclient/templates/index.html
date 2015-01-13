@@ -16,6 +16,25 @@
 
 <!-- SIDEBAR -->
 <div id="sidebar">
+    <ul class="accordion" data-accordion>
+        <li class="accordion-navigation">
+            <a href="#panelLayers">Slojevi</a>
+            <div id="panelLayers" class="content active">
+            </div>
+        </li>
+        <li class="accordion-navigation">
+            <a href="#panelSearch">Pretraživanje</a>
+            <div id="panelSearch" class="content">
+                test
+            </div>
+        </li>
+        <li class="accordion-navigation">
+            <a href="#panelTools">Alati</a>
+            <div id="panelTools" class="content">
+                test
+            </div>
+        </li>
+    </ul>
 </div>
 <!-- END SIDEBAR -->
 
@@ -32,6 +51,11 @@
 <script>
 
 new SL_Project({{ SL_Details|safe }});
+
+$(document).ready(function() {
+    $(document).foundation();
+    $(document).foundation('accordion', 'reflow');
+});
 
 </script>
 
