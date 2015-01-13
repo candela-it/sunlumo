@@ -100,3 +100,40 @@ html, body {
 #panelSearch .columns {
   padding: 0 !important;
 }
+
+
+#panelTools .toolbox-control {
+  height: 40px;
+  width: 75px;
+  background-color: #EEE;
+  border: solid 1px #000;
+  text-align: center;
+  vertical-align: center;
+}
+
+#panelTools .toolbox-control:hover {
+  background-color: #999;
+  cursor: pointer;
+}
+
+#panelTools .toolbox-control i {
+  font-size: 20px;
+}
+
+#panelTools .toolbox-control span {
+  font-size: 10px;
+}
+
+#panelTools .active {
+  background-color: #0F5;
+}
+
+#panelTools .toolbox-control-results {
+  width: 100px;
+  position: fixed;
+  top: 56px;
+  left: 350px;
+  background-color: #eee;
+  font-size: 12px;
+  border: solid 1px #555;
+}
