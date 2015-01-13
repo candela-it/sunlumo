@@ -14,3 +14,8 @@ QGIS_PROJECT = '/data/simple.qgs'
 
 # GetFeatureInfo pixel buffer, how many pixels are used for a search
 QGIS_GFI_BUFFER = 3
+
+QGIS_SIMILARITY_SEARCH = {
+    'Cres__Corine_LC20141202224530380': ['code_06', 'id'],
+    'points20150113152732133': ['amenity', 'name']
+}

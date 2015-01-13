@@ -155,7 +155,7 @@ class SunlumoProject(object):
         }
 
     def setTransparency(self, layer_id, transparency):
-        qgsLayer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
+        qgsLayer = self.layerRegistry.mapLayer(layer_id)
         layer_type = self.LAYERS_DATA[layer_id].get('type')
         if layer_type == 'vector':
             qgsLayer.setLayerTransparency(transparency)
