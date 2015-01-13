@@ -7,10 +7,10 @@ import json
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsRectangle,
-    QgsFeatureRequest,
-    QgsPoint,
-    QgsGeometry
+    QgsFeatureRequest
 )
+
+from django.conf import settings
 
 from .utils import change_directory
 from .project import SunlumoProject
@@ -34,17 +34,14 @@ class FeatureInfo(SunlumoProject):
             crs = QgsCoordinateReferenceSystem()
             crs.createFromSrid(params.get('srs'))
 
-            qfr = QgsFeatureRequest()
-            qfr.setFilterRect(QgsRectangle(*params.get('bbox')))
-
-            center_point = self._calcPoint(
+            search_box = self._calcSearchBox(
                 params.get('bbox'), params.get('image_size')[0],
                 params.get('image_size')[1],
                 params.get('click_point')[0], params.get('click_point')[1]
             )
 
-            geom_center_point = QgsGeometry.fromPoint(QgsPoint(*center_point))
-            geom_center_point = geom_center_point.buffer(10, 10)
+            qfr = QgsFeatureRequest()
+            qfr.setFilterRect(QgsRectangle(*search_box))
 
             found_features = {
                 'type': 'FeatureCollection', 'features': [],
@@ -69,15 +66,8 @@ class FeatureInfo(SunlumoProject):
 
                 features = layer.getFeatures(qfr)
 
-                # feature = QgsFeature()
-
-                # while features.nextFeature(feature):
-                #     print feature
-
                 for feat in features:
                     geom = feat.geometry()
-                    if not(geom.intersects(geom_center_point)):
-                        continue
 
                     json_feat = {
                         'type': 'Feature',
@@ -96,11 +86,16 @@ class FeatureInfo(SunlumoProject):
 
         return found_features
 
-    def _calcPoint(self, bbox, width, height, i, j):
+    def _calcSearchBox(self, bbox, width, height, i, j):
         x_res = (bbox[2] - bbox[0]) / width
         y_res = (bbox[3] - bbox[1]) / height
 
-        x = bbox[0] + i * x_res
-        y = bbox[1] + j * y_res
+        center_x = bbox[0] + i * x_res
+        center_y = bbox[1] + j * y_res
 
-        return (x, y)
+        return (
+            center_x - settings.QGIS_GFI_BUFFER * x_res,
+            center_y - settings.QGIS_GFI_BUFFER * y_res,
+            center_x + settings.QGIS_GFI_BUFFER * x_res,
+            center_y + settings.QGIS_GFI_BUFFER * y_res
+        )
