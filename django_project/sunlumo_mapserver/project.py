@@ -9,10 +9,23 @@ from PyQt4.QtXml import QDomDocument
 from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
-    QgsMapLayerRegistry
+    QgsMapLayerRegistry,
+    QgsCredentials
 )
 
 from .utils import change_directory
+
+
+class QgsCredentialsNull(QgsCredentials):
+    def __init__(self):
+        super(QgsCredentialsNull, self).__init__()
+        self.setInstance(self)
+
+    def request(self, realm, username, password, message):
+        LOG.warning('%s %s %s %s', realm, username, password, message)
+        return False
+
+NULLCREDENTIALS = QgsCredentialsNull()
 
 
 class SunlumoProject(object):
@@ -92,7 +105,12 @@ class SunlumoProject(object):
                     qgsLayer = QgsRasterLayer()
 
                 # read layer from XML
-                qgsLayer.readLayerXML(layer.toElement())
+                if not(qgsLayer.readLayerXML(layer.toElement())):
+                    raise RuntimeError(
+                        'Layer is not readable: {}'.format(
+                            layer.firstChildElement('id').text()
+                        )
+                    )
 
                 # get layer transparency
                 if layer_type == 'vector':
