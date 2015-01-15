@@ -7,7 +7,7 @@ from itertools import groupby
 from django.conf import settings
 
 from sunlumo_mapserver.project import SunlumoProject
-from sunlumo_mapserver.utils import change_directory
+from sunlumo_mapserver.utils import change_directory, featuresToGeoJSON
 
 from .models import SimilarityIndex
 
@@ -29,8 +29,8 @@ class Searcher(SunlumoProject):
         search_string = '81'
 
         search_layers = [
-            'points20150113152732133'
-            # 'Cres__Corine_LC20141202224530380'
+            'points20150113152732133',
+            'Cres__Corine_LC20141202224530380'
         ]
 
         with change_directory(self.project_root):
@@ -47,7 +47,7 @@ class Searcher(SunlumoProject):
                 .order_by('qgis_layer_id')[:limit]
             )
 
-            self._get_features_for_layers(similar_results)
+            return self._get_features_for_layers(similar_results)
 
     def _prepare_search_string(self, search_string):
         params = '%{}%'.format('%'.join([
@@ -74,7 +74,10 @@ class Searcher(SunlumoProject):
 
             qgsLayer.setSubsetString(filter_expression)
             qgis_features = qgsLayer.getFeatures()
-            print filter_expression
 
-            for feature in qgis_features:
-                print feature[layer_pk]
+            layer_field_names = [
+                qgsLayer.attributeDisplayName(idx)
+                for idx in qgsLayer.pendingAllAttributesList()
+            ]
+
+            return featuresToGeoJSON(layer_field_names, qgis_features)

@@ -14,6 +14,6 @@ class SimilaritySearchView(JSONResponseMixin, View):
     def get(self, request, *args, **kwargs):
 
         sl_project = Searcher('/data/simple.qgs')
-        sl_project.search({})
+        results = sl_project.search({})
 
-        return self.render_json_response([])
+        return self.render_json_response(results)

@@ -62,3 +62,33 @@ def str2bool(value):
         return valid[lower_value]
     else:
         raise ValueError('invalid literal for boolean: "%s"' % value)
+
+
+def featuresToGeoJSON(layer_field_names, features):
+    found_features = {
+        'type': 'FeatureCollection', 'features': [],
+        'crs': {
+            'type': 'name', 'properties': {
+                'name': 'urn:ogc:def:crs:EPSG::3765'
+            }
+        }
+    }
+    for feat in features:
+        geom = feat.geometry()
+
+        json_feat = {
+            'type': 'Feature',
+            'id': feat.id(),
+            'geometry': json.loads(
+                geom.exportToGeoJSON()
+            )
+        }
+        json_feat.update({'properties': dict(zip(
+            layer_field_names, [
+                attr if attr else None
+                for attr in feat.attributes()
+            ])
+        )})
+        found_features['features'].append(json_feat)
+
+    return found_features

@@ -12,7 +12,7 @@ from qgis.core import (
 
 from django.conf import settings
 
-from .utils import change_directory
+from .utils import change_directory, featuresToGeoJSON
 from .project import SunlumoProject
 
 
@@ -43,15 +43,6 @@ class FeatureInfo(SunlumoProject):
             qfr = QgsFeatureRequest()
             qfr.setFilterRect(QgsRectangle(*search_box))
 
-            found_features = {
-                'type': 'FeatureCollection', 'features': [],
-                'crs': {
-                    'type': 'name', 'properties': {
-                        'name': 'urn:ogc:def:crs:EPSG::3765'
-                    }
-                }
-            }
-
             for q_layer in params.get('query_layers'):
                 layer_id = self.getLayerIdByName(q_layer)
                 layer = self.layerRegistry.mapLayer(layer_id)
@@ -64,27 +55,9 @@ class FeatureInfo(SunlumoProject):
                     for idx in layer.pendingAllAttributesList()
                 ]
 
-                features = layer.getFeatures(qfr)
-
-                for feat in features:
-                    geom = feat.geometry()
-
-                    json_feat = {
-                        'type': 'Feature',
-                        'id': feat.id(),
-                        'geometry': json.loads(
-                            geom.exportToGeoJSON()
-                        )
-                    }
-                    json_feat.update({'properties': dict(zip(
-                        layer_field_names, [
-                            attr if attr else None
-                            for attr in feat.attributes()
-                        ])
-                    )})
-                    found_features['features'].append(json_feat)
-
-        return found_features
+                return featuresToGeoJSON(
+                    layer_field_names, layer.getFeatures(qfr)
+                )
 
     def _calcSearchBox(self, bbox, width, height, i, j):
         x_res = (bbox[2] - bbox[0]) / width
