@@ -14,31 +14,13 @@ class Command(BaseCommand):
     help = 'Reindex QGIS project layers'
 
     def handle(self, *args, **options):
-        qgis_project = settings.QGIS_PROJECT
-
         sunlumo_project = SunlumoProject(settings.QGIS_PROJECT)
+        with transaction.atomic():
+            with change_directory(sunlumo_project.project_root):
+                for l_id, mapping in settings.QGIS_SIMILARITY_SEARCH.items():
+                    qgs_layer = sunlumo_project.layerRegistry.mapLayer(l_id)
 
-        with change_directory(sunlumo_project.project_root):
-            for layerid, attributes in settings.QGIS_SIMILARITY_SEARCH.items():
-                qgs_layer = sunlumo_project.layerRegistry.mapLayer(layerid)
-
-                features = qgs_layer.getFeatures()
-                with transaction.atomic():
-                    for feature in features:
-                        text = u' '.join([
-                            self._getAttr(feature, attr)
-                            for attr in attributes
-                        ])
-                        si_record = SimilarityIndex.objects.update_or_create(
-                            qgis_project=qgis_project,
-                            qgis_layer_id=layerid,
-                            feature_id=feature.id(),
-                            defaults={'text': text}
-                        )
-                        if si_record[1]:
-                            print 'Created: ', si_record[0].pk
-                        else:
-                            print 'Updated: ', si_record[0].pk
+                    self._indexFeatures(qgs_layer.getFeatures(), l_id, mapping)
 
     def _getAttr(self, feature, attribute):
         attr_val = feature.attribute(attribute)
@@ -46,3 +28,26 @@ class Command(BaseCommand):
             return attr_val
         else:
             return ''
+
+    def _indexFeatures(self, features, layer_id, mapping):
+        qgis_project = settings.QGIS_PROJECT
+        for feature in features:
+            # indexable field is simply joined by spaces
+            text = u' '.join([
+                self._getAttr(feature, attr) for attr in mapping.get('fields')
+            ])
+            si_record = SimilarityIndex.objects.update_or_create(
+                qgis_project=qgis_project,
+                qgis_layer_id=layer_id,
+                feature_id=feature.attribute(mapping.get('pk')),
+                # update index field
+                defaults={'text': text}
+            )
+            if si_record[1]:
+                print 'Created: {} ({})'.format(
+                    si_record[0].feature_id, si_record[0].pk
+                )
+            else:
+                print 'Updated: {} ({})'.format(
+                    si_record[0].feature_id, si_record[0].pk
+                )
