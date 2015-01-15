@@ -28,12 +28,24 @@ class Searcher(SunlumoProject):
         # search_string = 'place+sv.'
         search_string = '81'
 
+        search_layers = [
+            'points20150113152732133'
+            # 'Cres__Corine_LC20141202224530380'
+        ]
+
         with change_directory(self.project_root):
 
-            similar_results = SimilarityIndex.objects.extra(
-                where=['text LIKE %s'],
-                params=[self._prepare_search_string(search_string)]
-            ).order_by('qgis_layer_id')[:limit]
+            similar_results = (
+                SimilarityIndex.objects
+                .filter(qgis_project__exact=settings.QGIS_PROJECT)
+                .filter(qgis_layer_id__in=search_layers)
+                .extra(
+                    where=['text LIKE %s'],
+                    params=[self._prepare_search_string(search_string)]
+                )
+                # groupby (itertools) requires and ordered set
+                .order_by('qgis_layer_id')[:limit]
+            )
 
             self._get_features_for_layers(similar_results)
 
