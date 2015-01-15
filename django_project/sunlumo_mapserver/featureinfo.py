@@ -56,7 +56,7 @@ class FeatureInfo(SunlumoProject):
                 layer_id = self.getLayerIdByName(q_layer)
                 layer = self.layerRegistry.mapLayer(layer_id)
 
-                # update layer fields (expressions, calulated, joined)
+                # update layer fields (expressions, calculated, joined)
                 layer.updateFields()
 
                 layer_field_names = [

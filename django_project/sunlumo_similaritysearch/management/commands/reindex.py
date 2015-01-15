@@ -34,7 +34,8 @@ class Command(BaseCommand):
         for feature in features:
             # indexable field is simply joined by spaces
             text = u' '.join([
-                self._getAttr(feature, attr) for attr in mapping.get('fields')
+                self._getAttr(feature, attr).upper()
+                for attr in mapping.get('fields')
             ])
             si_record = SimilarityIndex.objects.update_or_create(
                 qgis_project=qgis_project,

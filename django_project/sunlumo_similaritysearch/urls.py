@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 
+from .views import SimilaritySearchView
 
 urlpatterns = patterns(
     '',
-    # basic app views
-    # url(r'^...', a_view)
+    url(r'^search$', SimilaritySearchView.as_view(), name='similaritysearch')
 )
