@@ -73,6 +73,7 @@ def featuresToGeoJSON(layer_field_names, features):
             }
         }
     }
+
     for feat in features:
         geom = feat.geometry()
 
