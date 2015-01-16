@@ -2,6 +2,8 @@
 import logging
 LOG = logging.getLogger(__name__)
 
+from itertools import chain
+
 from PyQt4.QtCore import QSize
 from PyQt4.QtGui import QImage
 
@@ -17,7 +19,7 @@ from qgis.core import (
 
 from django.conf import settings
 
-from .utils import change_directory, featuresToGeoJSON
+from .utils import change_directory, featureToGeoJSON, writeGeoJSON
 from .project import SunlumoProject
 
 
@@ -33,6 +35,8 @@ class FeatureInfo(SunlumoProject):
 
     def identify(self, params):
         self.check_required_params(params)
+
+        feature_collections = []
 
         with change_directory(self.project_root):
 
@@ -107,13 +111,19 @@ class FeatureInfo(SunlumoProject):
                     for idx in layer.pendingAllAttributesList()
                 ]
 
-                return featuresToGeoJSON(
-                    layer_field_names,
-                    # visible features generator
-                    self._visibleFeatures(
-                        layer, renderContext, layer.getFeatures(qfr)
-                    )
+                # visible features generator
+                visible_features = self._visibleFeatures(
+                    layer, renderContext, layer.getFeatures(qfr)
                 )
+
+                layer_features = (
+                    featureToGeoJSON(layer_field_names, feature)
+                    for feature in visible_features
+                )
+
+                feature_collections.append(layer_features)
+
+            return writeGeoJSON(chain(*feature_collections))
 
     def _visibleFeatures(self, layer, renderContext, features):
         renderer = layer.rendererV2()

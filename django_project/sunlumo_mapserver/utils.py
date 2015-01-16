@@ -64,9 +64,10 @@ def str2bool(value):
         raise ValueError('invalid literal for boolean: "%s"' % value)
 
 
-def featuresToGeoJSON(layer_field_names, features):
-    found_features = {
-        'type': 'FeatureCollection', 'features': [],
+def writeGeoJSON(features):
+    # expand the features iterator
+    geojson = {
+        'type': 'FeatureCollection', 'features': [feat for feat in features],
         'crs': {
             'type': 'name', 'properties': {
                 'name': 'urn:ogc:def:crs:EPSG::3765'
@@ -74,22 +75,24 @@ def featuresToGeoJSON(layer_field_names, features):
         }
     }
 
-    for feat in features:
-        geom = feat.geometry()
+    return geojson
 
-        json_feat = {
-            'type': 'Feature',
-            'id': feat.id(),
-            'geometry': json.loads(
-                geom.exportToGeoJSON()
-            )
-        }
-        json_feat.update({'properties': dict(zip(
-            layer_field_names, [
-                attr if attr else None
-                for attr in feat.attributes()
-            ])
-        )})
-        found_features['features'].append(json_feat)
 
-    return found_features
+def featureToGeoJSON(layer_field_names, feature):
+    geom = feature.geometry()
+
+    json_feat = {
+        'type': 'Feature',
+        # 'id': layer_pk_field
+        'geometry': json.loads(
+            geom.exportToGeoJSON()
+        )
+    }
+    json_feat.update({'properties': dict(zip(
+        layer_field_names, [
+            attr if attr else None
+            for attr in feature.attributes()
+        ])
+    )})
+
+    return json_feat

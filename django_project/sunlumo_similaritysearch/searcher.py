@@ -2,12 +2,17 @@
 import logging
 LOG = logging.getLogger(__name__)
 
-from itertools import groupby
+from itertools import groupby, chain
 
 from django.conf import settings
 
 from sunlumo_mapserver.project import SunlumoProject
-from sunlumo_mapserver.utils import change_directory, featuresToGeoJSON
+
+from sunlumo_mapserver.utils import (
+    change_directory,
+    featureToGeoJSON,
+    writeGeoJSON
+)
 
 from .models import SimilarityIndex
 
@@ -59,6 +64,7 @@ class Searcher(SunlumoProject):
         return params
 
     def _get_features_for_layers(self, similar_results):
+        feature_collections = []
         for key, group in groupby(similar_results, lambda x: x.qgis_layer_id):
 
             qgsLayer = self.layerRegistry.mapLayer(key)
@@ -80,4 +86,10 @@ class Searcher(SunlumoProject):
                 for idx in qgsLayer.pendingAllAttributesList()
             ]
 
-            return featuresToGeoJSON(layer_field_names, qgis_features)
+            layer_geojson = (
+                featureToGeoJSON(layer_field_names, feature)
+                for feature in qgis_features
+            )
+            feature_collections.append(layer_geojson)
+
+        return writeGeoJSON(chain(*feature_collections))
