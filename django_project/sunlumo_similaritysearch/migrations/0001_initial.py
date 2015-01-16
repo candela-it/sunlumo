@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
             name='similarityindex',
             index_together=set([('qgis_project', 'qgis_layer_id', 'feature_id')]),
         ),
+        migrations.RunSQL('CREATE EXTENSION pg_trgm;'),
         migrations.RunSQL(
             'CREATE INDEX similarityindex_idx ON sunlumo_similaritysearch_similarityindex USING gin (text gin_trgm_ops);'
         )
