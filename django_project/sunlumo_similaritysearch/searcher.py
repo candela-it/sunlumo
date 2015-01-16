@@ -81,15 +81,14 @@ class Searcher(SunlumoProject):
             qgsLayer.setSubsetString(filter_expression)
             qgis_features = qgsLayer.getFeatures()
 
-            layer_field_names = [
-                qgsLayer.attributeDisplayName(idx)
-                for idx in qgsLayer.pendingAllAttributesList()
+            layer_geojson = [featureToGeoJSON(
+                feature.attribute(layer_pk), feature.geometry(), {
+                    key: feature.attribute(field) for field in
+                    settings.QGIS_SIMILARITY_SEARCH[key].get('fields')
+                })
+                for feature in qgis_features
             ]
 
-            layer_geojson = (
-                featureToGeoJSON(layer_field_names, feature)
-                for feature in qgis_features
-            )
             feature_collections.append(layer_geojson)
 
         return writeGeoJSON(chain(*feature_collections))

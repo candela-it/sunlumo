@@ -74,25 +74,15 @@ def writeGeoJSON(features):
             }
         }
     }
-
     return geojson
 
 
-def featureToGeoJSON(layer_field_names, feature):
-    geom = feature.geometry()
-
+def featureToGeoJSON(pk, geometry, properties):
     json_feat = {
         'type': 'Feature',
-        # 'id': layer_pk_field
-        'geometry': json.loads(
-            geom.exportToGeoJSON()
-        )
+        'id': pk,
+        'geometry': json.loads(geometry.exportToGeoJSON()),
+        'properties': properties
     }
-    json_feat.update({'properties': dict(zip(
-        layer_field_names, [
-            attr if attr else None
-            for attr in feature.attributes()
-        ])
-    )})
 
     return json_feat

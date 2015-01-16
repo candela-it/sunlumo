@@ -116,10 +116,15 @@ class FeatureInfo(SunlumoProject):
                     layer, renderContext, layer.getFeatures(qfr)
                 )
 
-                layer_features = (
-                    featureToGeoJSON(layer_field_names, feature)
+                layer_features = [featureToGeoJSON(
+                    feature.id(), feature.geometry(), dict(zip(
+                        layer_field_names, [
+                            attr if attr else None
+                            for attr in feature.attributes()
+                        ]
+                    )))
                     for feature in visible_features
-                )
+                ]
 
                 feature_collections.append(layer_features)
 
