@@ -30,8 +30,7 @@ class Searcher(SunlumoProject):
         # self.check_required_params(params)
 
         limit = 20
-        # search_string = 'place+sv.'
-        search_string = '81'
+        search_string = params.get('search_string', '')
 
         search_layers = [
             'points20150113152732133',
@@ -72,19 +71,21 @@ class Searcher(SunlumoProject):
 
             layer_pk = settings.QGIS_SIMILARITY_SEARCH[key].get('pk')
 
-            feature_ids = ','.join(
-                ['\'{}\''.format(rec.feature_id) for rec in group]
-            )
+            records = {rec.feature_id: rec.text for rec in group}
 
+            # construct feature IDs search condition
+            feature_ids = ','.join(
+                ['\'{}\''.format(key) for key, rec in records.items()]
+            )
             filter_expression = '{} IN ({})'.format(layer_pk, feature_ids)
 
+            # apply it to the layer
             qgsLayer.setSubsetString(filter_expression)
             qgis_features = qgsLayer.getFeatures()
 
             layer_geojson = [featureToGeoJSON(
                 feature.attribute(layer_pk), feature.geometry(), {
-                    key: feature.attribute(field) for field in
-                    settings.QGIS_SIMILARITY_SEARCH[key].get('fields')
+                    'index': records.get(feature.attribute(layer_pk), 'NoData')
                 })
                 for feature in qgis_features
             ]

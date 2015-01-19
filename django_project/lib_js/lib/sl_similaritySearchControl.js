@@ -11,6 +11,7 @@ var cookie = require('../contrib/cookie');
 var Result = function (data) {
     this.id = m.prop(data.id);
     this.geometry = m.prop(data.geometry);
+    this.index = m.prop(data.index);
 };
 
 var ResultList = Array;
@@ -19,13 +20,16 @@ Result.vm = (function () {
     var vm = {};
     vm.init = function () {
         vm.list = new ResultList();
+
+        vm.search_string = m.prop('');
     };
 
     // add layer to the list
-    vm.add = function(id, geometry) {
+    vm.add = function(id, geometry, index) {
         vm.list.push(new Result({
             'id': id,
-            'geometry': geometry
+            'geometry': geometry,
+            'index': index
         }));
     };
 
@@ -34,35 +38,59 @@ Result.vm = (function () {
 
 var xhrConfig = function(xhr) {
     xhr.setRequestHeader('Content-Type', 'application/json');
-    // read csrftoken form the cookie
+    // read csrftoken form the cookie and set header
     xhr.setRequestHeader('X-CSRFToken', cookie.get('csrftoken'));
 };
 
 Result.controller = function() {
     Result.vm.init();
 
-    this.items = Result.vm.list;
+    // this.items = Result.vm.list;
 
     this.clickSearch = function() {
         m.request({
             config: xhrConfig,
             method: 'POST',
-            url: '/api/search'
+            url: '/api/search',
+            // json encoded data
+            data: {
+                'search_string': Result.vm.search_string()
+            }
         }).then(function (response) {
+
+            Result.vm.list = new ResultList();
+
             _.forEach(response.features, function (feature) {
-                Result.vm.add(feature.id, feature.geometry);
+                Result.vm.add(feature.id, feature.geometry, feature.properties.index);
             });
         });
+    };
+
+    this.inputChanged = function (event) {
+        // set the changed value
+        Result.vm.search_string(event.originalTarget.value);
+    };
+
+    this.keypressAction = function (event) {
+        if (event.key === 'Enter') {
+            // read search string
+            Result.vm.search_string(event.originalTarget.value);
+            // execute search
+            this.clickSearch();
+        }
     };
 };
 
 Result.view = function(ctrl) {
     return m('div', {}, [
-        m('input'),
+        m('input', {
+            'onchange':ctrl.inputChanged.bind(ctrl),
+            'onkeypress':ctrl.keypressAction.bind(ctrl)
+        }),
         m('button', {'onclick':ctrl.clickSearch.bind(ctrl)}, 'Search'),
         m('ul', [
-            ctrl.items.map(function(item) {
-                return m('li', item.id());
+            Result.vm.list.map(function(item) {
+                return m('li', item.index());
             })]
         )]
     );

@@ -4,16 +4,17 @@ LOG = logging.getLogger(__name__)
 
 from django.views.generic import View
 
-from braces.views import JSONResponseMixin
+from braces.views import JSONRequestResponseMixin
 
 from .searcher import Searcher
 
 
-class SimilaritySearchView(JSONResponseMixin, View):
+class SimilaritySearchView(JSONRequestResponseMixin, View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
 
         sl_project = Searcher('/data/simple.qgs')
-        results = sl_project.search({})
+
+        results = sl_project.search(self.request_json)
 
         return self.render_json_response(results)

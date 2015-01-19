@@ -5,5 +5,8 @@ from .views import SimilaritySearchView
 
 urlpatterns = patterns(
     '',
-    url(r'^search$', SimilaritySearchView.as_view(), name='similaritysearch')
+    url(
+        r'^api/search$', SimilaritySearchView.as_view(),
+        name='similaritysearch'
+    )
 )

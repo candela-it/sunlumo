@@ -86,3 +86,10 @@ def featureToGeoJSON(pk, geometry, properties):
     }
 
     return json_feat
+
+
+def valueParser(value):
+    if not(value):
+        return ''
+    else:
+        return value
