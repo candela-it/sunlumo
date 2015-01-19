@@ -54,7 +54,7 @@ class Searcher(SunlumoProject):
             return self._get_features_for_layers(similar_results)
 
     def _prepare_search_string(self, search_string):
-        params = '%{}%'.format('%'.join([
+        params = u'%{}%'.format(u'%'.join([
             param.upper().strip() for param in search_string.split('+')
         ]))
 
