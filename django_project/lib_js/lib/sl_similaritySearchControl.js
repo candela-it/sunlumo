@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var m = require('mithril');
+var cookie = require('../contrib/cookie');
 // var ol = require('../contrib/ol');
 
 // var EVENTS = require('./events');
@@ -31,6 +32,12 @@ Result.vm = (function () {
     return vm;
 }());
 
+var xhrConfig = function(xhr) {
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    // read csrftoken form the cookie
+    xhr.setRequestHeader('X-CSRFToken', cookie.get('csrftoken'));
+};
+
 Result.controller = function() {
     Result.vm.init();
 
@@ -38,8 +45,9 @@ Result.controller = function() {
 
     this.clickSearch = function() {
         m.request({
-            method: 'GET',
-            url: '/search'
+            config: xhrConfig,
+            method: 'POST',
+            url: '/api/search'
         }).then(function (response) {
             _.forEach(response.features, function (feature) {
                 Result.vm.add(feature.id, feature.geometry);
