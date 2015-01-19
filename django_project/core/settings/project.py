@@ -16,11 +16,13 @@ QGIS_PROJECT = '/data/simple.qgs'
 QGIS_GFI_BUFFER = 3
 
 QGIS_SIMILARITY_SEARCH = {
-    'Cres__Corine_LC20141202224530380': {
+    'cres code': {
+        'layer_id': 'Cres__Corine_LC20141202224530380',
         'fields': ['code_06', 'id'],
         'pk': 'id'
     },
-    'points20150113152732133': {
+    'osm amenity': {
+        'layer_id': 'points20150113152732133',
         'fields': ['amenity', 'name'],
         'pk': 'osm_id'
     }

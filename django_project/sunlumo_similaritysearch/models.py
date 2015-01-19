@@ -7,9 +7,9 @@ from django.db import models
 
 class SimilarityIndex(models.Model):
     qgis_project = models.TextField()
-    qgis_layer_id = models.TextField()
+    index_name = models.TextField()
     feature_id = models.TextField()
     text = models.TextField()
 
     class Meta:
-        index_together = [['qgis_project', 'qgis_layer_id', 'feature_id']]
+        index_together = [['qgis_project', 'index_name', 'feature_id']]

@@ -32,23 +32,20 @@ class Searcher(SunlumoProject):
         limit = 20
         search_string = params.get('search_string')
 
-        search_layers = [
-            'points20150113152732133',
-            'Cres__Corine_LC20141202224530380'
-        ]
+        search_layers = ['cres code', 'osm amenity']
 
         with change_directory(self.project_root):
 
             similar_results = (
                 SimilarityIndex.objects
                 .filter(qgis_project__exact=settings.QGIS_PROJECT)
-                .filter(qgis_layer_id__in=search_layers)
+                .filter(index_name__in=search_layers)
                 .extra(
                     where=['text LIKE %s'],
                     params=[self._prepare_search_string(search_string)]
                 )
                 # groupby (itertools) requires and ordered set
-                .order_by('qgis_layer_id')[:limit]
+                .order_by('index_name')[:limit]
             )
 
             return self._get_features_for_layers(similar_results)
@@ -64,9 +61,11 @@ class Searcher(SunlumoProject):
 
     def _get_features_for_layers(self, similar_results):
         feature_collections = []
-        for key, group in groupby(similar_results, lambda x: x.qgis_layer_id):
+        for key, group in groupby(similar_results, lambda x: x.index_name):
 
-            qgsLayer = self.layerRegistry.mapLayer(key)
+            layer_id = settings.QGIS_SIMILARITY_SEARCH[key].get('layer_id')
+
+            qgsLayer = self.layerRegistry.mapLayer(layer_id)
             qgsLayer.updateFields()
 
             layer_pk = settings.QGIS_SIMILARITY_SEARCH[key].get('pk')

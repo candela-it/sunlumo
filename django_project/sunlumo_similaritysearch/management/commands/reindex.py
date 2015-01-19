@@ -17,10 +17,13 @@ class Command(BaseCommand):
         sunlumo_project = SunlumoProject(settings.QGIS_PROJECT)
         with transaction.atomic():
             with change_directory(sunlumo_project.project_root):
-                for l_id, mapping in settings.QGIS_SIMILARITY_SEARCH.items():
+                for s_ind, mapping in settings.QGIS_SIMILARITY_SEARCH.items():
+                    l_id = mapping.get('layer_id')
                     qgs_layer = sunlumo_project.layerRegistry.mapLayer(l_id)
 
-                    self._indexFeatures(qgs_layer.getFeatures(), l_id, mapping)
+                    self._indexFeatures(
+                        qgs_layer.getFeatures(), s_ind, mapping
+                    )
 
     def _getAttr(self, feature, attribute):
         attr_val = feature.attribute(attribute)
@@ -29,7 +32,7 @@ class Command(BaseCommand):
         else:
             return ''
 
-    def _indexFeatures(self, features, layer_id, mapping):
+    def _indexFeatures(self, features, index_name, mapping):
         qgis_project = settings.QGIS_PROJECT
         for feature in features:
             # indexable field is simply joined by spaces
@@ -39,7 +42,7 @@ class Command(BaseCommand):
             ])
             si_record = SimilarityIndex.objects.update_or_create(
                 qgis_project=qgis_project,
-                qgis_layer_id=layer_id,
+                index_name=index_name,
                 feature_id=feature.attribute(mapping.get('pk')),
                 # update index field
                 defaults={'text': text}

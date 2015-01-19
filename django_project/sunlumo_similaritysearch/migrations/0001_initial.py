@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('qgis_project', models.TextField()),
-                ('qgis_layer_id', models.TextField()),
+                ('index_name', models.TextField()),
                 ('feature_id', models.TextField()),
                 ('text', models.TextField()),
             ],
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterIndexTogether(
             name='similarityindex',
-            index_together=set([('qgis_project', 'qgis_layer_id', 'feature_id')]),
+            index_together=set([('qgis_project', 'index_name', 'feature_id')]),
         ),
         migrations.RunSQL('CREATE EXTENSION pg_trgm;'),
         migrations.RunSQL(

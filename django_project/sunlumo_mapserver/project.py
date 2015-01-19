@@ -4,6 +4,8 @@ LOG = logging.getLogger(__name__)
 
 import os
 
+from django.conf import settings
+
 from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (
@@ -165,11 +167,17 @@ class SunlumoProject(object):
         else:
             return None
 
+    def _readSimilarityIndexes(self):
+        similarity_index = settings.QGIS_SIMILARITY_SEARCH
+
+        return [key for key in similarity_index.keys()]
+
     def getDetails(self):
         return {
             'map': self.project_file,
             'layers': self.LAYERS_DATA,
-            'layers_order': self.LAYERS
+            'layers_order': self.LAYERS,
+            'similarity_indices': self._readSimilarityIndexes()
         }
 
     def setTransparency(self, layer_id, transparency):
