@@ -22,6 +22,8 @@ Result.vm = (function () {
         vm.list = new ResultList();
 
         vm.search_string = m.prop('');
+
+        vm.map_file = m.prop('');
     };
 
     // add layer to the list
@@ -54,6 +56,7 @@ Result.controller = function() {
             url: '/api/search',
             // json encoded data
             data: {
+                'map_file': Result.vm.map_file(),
                 'search_string': Result.vm.search_string()
             }
         }).then(function (response) {
@@ -131,7 +134,10 @@ var SL_SimilaritySearchControl = function (map, options) {
 
 SL_SimilaritySearchControl.prototype = {
     _init: function() {
-        // m.redraw(true);
+        // set map file for search requests
+        // this assumes that Result.vm has been initialized by Mithril controler
+        // TODO: refactor viewmodel to be shared with SimilaritySearchControl
+        Result.vm.map_file(this.options.map);
     }
 };
 

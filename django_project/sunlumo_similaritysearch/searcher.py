@@ -30,7 +30,7 @@ class Searcher(SunlumoProject):
         # self.check_required_params(params)
 
         limit = 20
-        search_string = params.get('search_string', '')
+        search_string = params.get('search_string')
 
         search_layers = [
             'points20150113152732133',
@@ -55,7 +55,7 @@ class Searcher(SunlumoProject):
 
     def _prepare_search_string(self, search_string):
         params = '%{}%'.format('%'.join([
-            param.upper() for param in search_string.split('+')
+            param.upper().strip() for param in search_string.split('+')
         ]))
 
         LOG.info('Similarity search params: %s', params)
