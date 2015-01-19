@@ -59,7 +59,7 @@ SL_GetFeatureInfoControl.prototype = {
                 url: data.url
             }).then(function (response) {
                 // reset data of the previous source
-                self.SL_GFI_Source.clear();
+                self.SL_GFI_Source.clear(true);
                 // add new features
                 self.SL_GFI_Source.addFeatures(geojsonFormat.readFeatures(response));
             });
