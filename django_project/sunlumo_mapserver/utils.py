@@ -62,3 +62,34 @@ def str2bool(value):
         return valid[lower_value]
     else:
         raise ValueError('invalid literal for boolean: "%s"' % value)
+
+
+def writeGeoJSON(features):
+    # expand the features iterator
+    geojson = {
+        'type': 'FeatureCollection', 'features': [feat for feat in features],
+        'crs': {
+            'type': 'name', 'properties': {
+                'name': 'urn:ogc:def:crs:EPSG::3765'
+            }
+        }
+    }
+    return geojson
+
+
+def featureToGeoJSON(pk, geometry, properties):
+    json_feat = {
+        'type': 'Feature',
+        'id': pk,
+        'geometry': json.loads(geometry.exportToGeoJSON()),
+        'properties': properties
+    }
+
+    return json_feat
+
+
+def valueParser(value):
+    if not(value):
+        return ''
+    else:
+        return value
