@@ -19,13 +19,15 @@ class SimilaritySearchView(JSONRequestResponseMixin, View):
 
         map_file = request_json.get('map_file')
         search_string = request_json.get('search_string')
+        search_layers = request_json.get('search_layers')
 
         if not(map_file):
             raise Http404
 
         params = {
             'map_file': map_file,
-            'search_string': search_string
+            'search_string': search_string,
+            'search_layers': search_layers
         }
 
         return params
@@ -36,6 +38,6 @@ class SimilaritySearchView(JSONRequestResponseMixin, View):
 
         sl_project = Searcher(params.get('map_file'))
 
-        results = sl_project.search(self.request_json)
+        results = sl_project.search(params)
 
         return self.render_json_response(results)

@@ -5,38 +5,61 @@ var m = require('mithril');
 var cookie = require('../contrib/cookie');
 var ol = require('../contrib/ol');
 
-var EVENTS = require('./events');
+// internal events
+var jvents = require('jvent');
 
+var events = new jvents();
 
-var Result = function (data) {
+var SearchResult = function (data) {
     this.id = m.prop(data.id);
     this.geojson = m.prop(data.geojson);
-    this.index = m.prop(data.index);
+    this.index_value = m.prop(data.index_value);
 };
 
-var ResultList = Array;
+var SearchResultCollection = Array;
 
-Result.vm = (function () {
+
+var SimilarityIndex = function (data) {
+    this.index_name = m.prop(data.index_name);
+    this.visible = m.prop(data.visible);
+};
+
+var SimilarityIndexCollection = Array;
+
+
+// Similarity ViewModel, Controller and View
+var SimilaritySearch = {};
+
+SimilaritySearch.vm = (function () {
     var vm = {};
     vm.init = function () {
-        vm.list = new ResultList();
+        vm.result_list = new SearchResultCollection();
+        vm.index_list = new SimilarityIndexCollection();
 
         vm.search_string = m.prop('');
-
         vm.map_file = m.prop('');
-
         vm.resultSource = null;
 
         vm.geojsonFormat = new ol.format.GeoJSON();
     };
 
-    // add layer to the list
-    vm.add = function(id, geojson, index) {
-        vm.list.push(new Result({
+    // add layer to the result_list
+    vm.add = function(id, geojson, index_value) {
+        vm.result_list.push(new SearchResult({
             'id': id,
             'geojson': geojson,
-            'index': index
+            'index_value': index_value
         }));
+    };
+
+    vm.getSearchLayers = function() {
+        var search_layers = [];
+        _.forEach(SimilaritySearch.vm.index_list, function (index) {
+            if (index.visible() === true) {
+                search_layers.push(index.index_name());
+            }
+        });
+        return search_layers;
     };
 
     return vm;
@@ -48,8 +71,7 @@ var xhrConfig = function(xhr) {
     xhr.setRequestHeader('X-CSRFToken', cookie.get('csrftoken'));
 };
 
-Result.controller = function() {
-    Result.vm.init();
+SimilaritySearch.controller = function() {
 
     this.clickSearch = function() {
         m.request({
@@ -58,60 +80,77 @@ Result.controller = function() {
             url: '/api/search',
             // json encoded data
             data: {
-                'map_file': Result.vm.map_file(),
-                'search_string': Result.vm.search_string()
+                'map_file': SimilaritySearch.vm.map_file(),
+                'search_string': SimilaritySearch.vm.search_string(),
+                'search_layers': SimilaritySearch.vm.getSearchLayers()
             }
         }).then(function (response) {
             // clear current result list
-            Result.vm.list = new ResultList();
+            SimilaritySearch.vm.result_list = new SearchResultCollection();
 
-            _.forEach(response.features, function (feature) {
-                Result.vm.add(feature.id, feature, feature.properties.index);
+            _.forEach(response.features, function (feature_geojson) {
+                SimilaritySearch.vm.add(
+                    feature_geojson.id, feature_geojson, feature_geojson.properties.index_value
+                );
             });
         });
     };
 
     this.inputChanged = function (event) {
         // set the changed value
-        Result.vm.search_string(event.originalTarget.value);
+        SimilaritySearch.vm.search_string(event.originalTarget.value);
     };
 
     this.keypressAction = function (event) {
         if (event.key === 'Enter') {
             // read search string
-            Result.vm.search_string(event.originalTarget.value);
+            SimilaritySearch.vm.search_string(event.originalTarget.value);
             // execute search
             this.clickSearch();
         }
     };
     this.clickResult = function (item) {
-        Result.vm.resultSource.clear(true);
-        Result.vm.resultSource.addFeatures(
-            Result.vm.geojsonFormat.readFeatures(item.geojson())
+        SimilaritySearch.vm.resultSource.clear(true);
+        SimilaritySearch.vm.resultSource.addFeatures(
+            SimilaritySearch.vm.geojsonFormat.readFeatures(item.geojson())
         );
 
-        EVENTS.emit('.map.fitExtent', {'extent': Result.vm.resultSource.getExtent()});
+        events.emit('.map.fitExtent', {'extent': SimilaritySearch.vm.resultSource.getExtent()});
+    };
+
+    this.clickIndex = function (index) {
+        if (index.visible() === true) {
+            index.visible(false);
+        } else {
+            index.visible(true);
+        }
     };
 };
 
-Result.view = function(ctrl) {
+SimilaritySearch.view = function(ctrl) {
     return m('div', {}, [
+        SimilaritySearch.vm.index_list.map(function(index) {
+                return m('label', index.index_name(), [
+                    m('input[type=checkbox]', {
+                        'onclick': ctrl.clickIndex.bind(ctrl, index),
+                        'checked': index.visible()
+                    })
+                ]);
+        }),
         m('input', {
             'onchange':ctrl.inputChanged.bind(ctrl),
             'onkeypress':ctrl.keypressAction.bind(ctrl)
         }),
         m('button', {'onclick':ctrl.clickSearch.bind(ctrl)}, 'Search'),
         m('ul', [
-            Result.vm.list.map(function(item) {
+            SimilaritySearch.vm.result_list.map(function(item) {
                 return m('li', {
                     'onclick': ctrl.clickResult.bind(ctrl, item)
-                }, item.index());
+                }, item.index_value());
             })]
         )]
     );
 };
-
-m.module(document.getElementById('panelSearch'), {controller: Result.controller, view: Result.view});
 
 var SL_SimilaritySearchControl = function (map, options) {
     // default options
@@ -155,16 +194,26 @@ SL_SimilaritySearchControl.prototype = {
             source: this.SL_Result_Source
         });
 
-        // set map file for search requests
-        // this assumes that Result.vm has been initialized by Mithril controler
-        // TODO: refactor viewmodel to be shared with SimilaritySearchControl
-        Result.vm.map_file(this.options.map);
+        // initiliaze viewmodel
+        SimilaritySearch.vm.init();
 
-        Result.vm.resultSource = this.SL_Result_Source;
+        SimilaritySearch.vm.map_file(this.options.map);
+
+        SimilaritySearch.vm.resultSource = this.SL_Result_Source;
+
+        // Add available indices to the viewmodel
+        _.forEach(this.options.similarity_indices, function (index) {
+            SimilaritySearch.vm.index_list.push(new SimilarityIndex({
+                'index_name': index,
+                'visible': true
+            }));
+        });
+
+        m.module(document.getElementById('panelSearch'), {controller: SimilaritySearch.controller, view: SimilaritySearch.view});
     },
     _handleEvents: function() {
         var self = this;
-        EVENTS.on('.map.fitExtent', function (options) {
+        events.on('.map.fitExtent', function (options) {
             self.map.getView().fitExtent(options.extent, self.map.getSize());
         });
     }

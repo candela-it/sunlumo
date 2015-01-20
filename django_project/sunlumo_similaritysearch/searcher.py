@@ -32,7 +32,7 @@ class Searcher(SunlumoProject):
         limit = 20
         search_string = params.get('search_string')
 
-        search_layers = ['cres code', 'osm amenity']
+        search_layers = params.get('search_layers')
 
         with change_directory(self.project_root):
 
@@ -84,7 +84,9 @@ class Searcher(SunlumoProject):
 
             layer_geojson = [featureToGeoJSON(
                 feature.attribute(layer_pk), feature.geometry(), {
-                    'index': records.get(feature.attribute(layer_pk), 'NoData')
+                    'index_value': records.get(
+                        feature.attribute(layer_pk), 'NoData'
+                    )
                 })
                 for feature in qgis_features
             ]
