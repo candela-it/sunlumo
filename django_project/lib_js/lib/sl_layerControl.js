@@ -22,10 +22,10 @@ var Group = function (data) {
     this.type = m.prop(data.type);
     this.name = m.prop(data.name);
     this.visible = m.prop(data.visible);
+    this.collapsed = m.prop(data.collapsed);
     this.layers = m.prop(data.layers);
 
     this.query = m.prop(false);
-    this.collapsed = m.prop(false);
 };
 
 Layer.vm = (function () {
@@ -162,6 +162,14 @@ Layer.controller = function() {
             item.showLayerDetails(true);
         }
     };
+
+    this.toggleGroupCollapse = function(item) {
+        if (item.collapsed()) {
+            item.collapsed(false);
+        } else {
+            item.collapsed(true);
+        }
+    };
 };
 
 var renderLayerItem = function (ctrl, item, dragging) {
@@ -217,6 +225,15 @@ var renderLayerItem = function (ctrl, item, dragging) {
 };
 
 
+var addGroupLayers = function (ctrl, item, dragging) {
+    if (!(item.collapsed())) {
+        return item.layers().map(function (groupLayer) {
+            return renderLayerItem(ctrl, groupLayer, dragging);
+        });
+    }
+    return [];
+};
+
 var renderGroupItem = function (ctrl, item, dragging) {
     return m('div.group', {}, [
         m('div', {
@@ -236,12 +253,19 @@ var renderGroupItem = function (ctrl, item, dragging) {
             })
         ]),
         m('div', {'class': 'group-name'}, [item.name()]),
-            // add group layers
-            item.layers().map(function (groupLayer) {
-                return renderLayerItem(ctrl, groupLayer, dragging);
+
+        m('div', {
+            'onclick': ctrl.toggleGroupCollapse.bind(ctrl, item),
+            'class': 'group-control'
+        }, [
+            m('i', {
+                'class': item.collapsed() ? 'fi-plus' : 'fi-minus'
             })
-        ]
-    );
+        ]),
+
+        // add group layers
+        addGroupLayers(ctrl, item, dragging)
+    ]);
 };
 
 Layer.view = function(ctrl) {
@@ -356,7 +380,8 @@ SL_LayerControl.prototype = {
                     'type': 'group',
                     'name': group.name,
                     'visible': group.visible,
-                    'layers': groupLayers
+                    'layers': groupLayers,
+                    'collapsed' : group.collapsed
                     })
                 );
             }

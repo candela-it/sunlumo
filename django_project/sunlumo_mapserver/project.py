@@ -80,10 +80,19 @@ class SunlumoProject(object):
                     True if grp_visible_val == 'Qt::Checked' else False
                 )
 
+                grp_open_val = self._getAttr(lItem, 'open').value()
+                if grp_open_val == 'true':
+                    grp_collapsed = False
+                elif grp_open_val == 'false':
+                    grp_collapsed = True
+                else:
+                    raise RuntimeError('Unknown value for grp_open')
+
                 group_data = {
                     'group': {
                         'name': group_name,
-                        'visible': grp_visible
+                        'visible': grp_visible,
+                        'collapsed': grp_collapsed
                     }
                 }
 
