@@ -32,6 +32,7 @@
   },
   "author": "Candela-IT",
   "license": "MIT",
+  
   "browser": {
     "jquery": "./lib_js/vendor/jquery.js",
     "modernizr": "./lib_js/vendor/modernizr.js",

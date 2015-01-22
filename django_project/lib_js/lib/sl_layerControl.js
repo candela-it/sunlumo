@@ -4,7 +4,14 @@ var _ = require('lodash');
 var m = require('mithril');
 var ol = require('../contrib/ol');
 
+// global events
 var EVENTS = require('./events');
+
+// local events
+var jvents = require('jvent');
+
+var events = new jvents();
+
 
 
 var Layer = function (data) {
@@ -102,7 +109,7 @@ Layer.controller = function() {
     };
     this.dragEnd = function() {
         this.sort(this.items, undefined);
-        EVENTS.emit('layers.updated', {
+        events.emit('.layers.updated', {
             'layers': this.items
         });
     };
@@ -113,7 +120,7 @@ Layer.controller = function() {
         } else {
             item.visible(true);
         }
-        EVENTS.emit('layers.updated');
+        events.emit('.layers.updated');
     };
 
     this.queryLayerToggle = function (item) {
@@ -155,13 +162,13 @@ Layer.controller = function() {
             });
         }
 
-        EVENTS.emit('layers.updated');
+        events.emit('.layers.updated');
     };
 
     this.layerTransparency = function (item, e) {
         item.transparency(e.target.value);
 
-        EVENTS.emit('layers.updated');
+        events.emit('.layers.updated');
     };
 
     this.mouseOver = function(item) {
@@ -433,7 +440,7 @@ SL_LayerControl.prototype = {
 
     _initEvents: function () {
         var self = this;
-        EVENTS.on('layers.updated', function() {
+        events.on('.layers.updated', function() {
             self.SL_Source.updateParams({
                 'LAYERS':self.getLayersParam(),
                 'TRANSPARENCIES': self.getTransparencyParam()
