@@ -32,8 +32,8 @@ NULLCREDENTIALS = QgsCredentialsNull()
 
 class SunlumoProject(object):
 
+    LAYER_TREE = []  # hierarchical Layer datastructure
     LAYERS_DATA = {}  # generic Layer datastructure
-    LAYERS = []  # initial layer order
 
     def __init__(self, project_file):
         self.layerRegistry = QgsMapLayerRegistry.instance()
@@ -42,29 +42,84 @@ class SunlumoProject(object):
         self.project_root = os.path.abspath(os.path.dirname(project_file))
         self._parseProject(project_file)
 
+    def _readLegendLayer(self, layer_xml):
+        layer_name = self._getAttr(layer_xml, 'name').value()
+
+        visible_val = self._getAttr(layer_xml, 'checked').value()
+        visible = True if visible_val == 'Qt::Checked' else False
+
+        layer_id = self._getAttr(
+            layer_xml.firstChild().firstChild(), 'layerid'
+        ).value()
+
+        return (layer_id, layer_name, visible)
+
     def _readLegend(self):
         # clear layers
-        self.LAYERS = []
+        self.LAYER_TREE = []
+        self.LAYERS_DATA = {}
 
         lItems = self.doc.elementsByTagName('legend').at(0).childNodes()
         for i in xrange(lItems.size()):
             lItem = lItems.at(i)
             if lItem.nodeName() == 'legendlayer':
-                layer_name = self._getAttr(lItem, 'name').value()
+                layer_id, layer_name, visible = self._readLegendLayer(lItem)
 
-                visible_val = self._getAttr(lItem, 'checked').value()
-                visible = True if visible_val == 'Qt::Checked' else False
-
-                layer_id = self._getAttr(
-                    lItem.firstChild().firstChild(), 'layerid'
-                ).value()
+                self.LAYER_TREE.append({'layer': layer_id})
 
                 self.LAYERS_DATA[layer_id] = {
                     'layer_name': layer_name,
                     'visible': visible
                 }
-                # add layer_id to the LAYERS list
-                self.LAYERS.append(layer_id)
+
+            elif lItem.nodeName() == 'legendgroup':
+                group_name = self._getAttr(lItem, 'name').value()
+
+                grp_visible_val = self._getAttr(lItem, 'checked').value()
+                grp_visible = (
+                    True if grp_visible_val == 'Qt::Checked' else False
+                )
+
+                grp_open_val = self._getAttr(lItem, 'open').value()
+                if grp_open_val == 'true':
+                    grp_collapsed = False
+                elif grp_open_val == 'false':
+                    grp_collapsed = True
+                else:
+                    raise RuntimeError('Unknown value for grp_open')
+
+                group_data = {
+                    'group': {
+                        'name': group_name,
+                        'visible': grp_visible,
+                        'collapsed': grp_collapsed
+                    }
+                }
+
+                groupLayers = lItem.childNodes()
+
+                group_layer_list = []
+                for sub_layer_idx in xrange(groupLayers.size()):
+                    subItem = groupLayers.at(sub_layer_idx)
+                    if subItem.nodeName() == 'legendlayer':
+                        layer_id, layer_name, visible = (
+                            self._readLegendLayer(subItem)
+                        )
+
+                        self.LAYERS_DATA[layer_id] = {
+                            'layer_name': layer_name,
+                            'visible': visible
+                        }
+
+                        group_layer_list.append({'layer': layer_id})
+
+                    else:
+                        raise RuntimeError('Unknown sublegend item')
+
+                group_data['group'].update({
+                    'layers': group_layer_list
+                })
+                self.LAYER_TREE.append(group_data)
             else:
                 raise RuntimeError('Unknown legend item')
 
@@ -176,7 +231,7 @@ class SunlumoProject(object):
         return {
             'map': self.project_file,
             'layers': self.LAYERS_DATA,
-            'layers_order': self.LAYERS,
+            'layer_tree': self.LAYER_TREE,
             'similarity_indices': self._readSimilarityIndexes()
         }
 
