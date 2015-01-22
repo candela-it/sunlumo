@@ -39,6 +39,9 @@ class Renderer(SunlumoProject):
                 QSize(*params.get('image_size')),
                 QImage.Format_ARGB32_Premultiplied
             )
+            dpm = 1 / 0.00028
+            img.setDotsPerMeterX(dpm)
+            img.setDotsPerMeterY(dpm)
 
             # set background color
             bgcolor = params.get('bgcolor')
@@ -57,6 +60,7 @@ class Renderer(SunlumoProject):
             map_settings.setDestinationCrs(crs)
             map_settings.setCrsTransformEnabled(True)
             map_settings.setExtent(QgsRectangle(*params.get('bbox')))
+            map_settings.setOutputDpi(img.logicalDpiX())
             map_settings.setOutputSize(img.size())
             map_settings.setMapUnits(crs.mapUnits())
 

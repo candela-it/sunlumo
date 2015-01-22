@@ -4,15 +4,30 @@ LOG = logging.getLogger(__name__)
 
 import os
 
+from django.conf import settings
+
 from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
-    QgsMapLayerRegistry
+    QgsMapLayerRegistry,
+    QgsCredentials
 )
 
 from .utils import change_directory
+
+
+class QgsCredentialsNull(QgsCredentials):
+    def __init__(self):
+        super(QgsCredentialsNull, self).__init__()
+        self.setInstance(self)
+
+    def request(self, realm, username, password, message):
+        LOG.warning('%s %s %s %s', realm, username, password, message)
+        return False
+
+NULLCREDENTIALS = QgsCredentialsNull()
 
 
 class SunlumoProject(object):
@@ -92,7 +107,12 @@ class SunlumoProject(object):
                     qgsLayer = QgsRasterLayer()
 
                 # read layer from XML
-                qgsLayer.readLayerXML(layer.toElement())
+                if not(qgsLayer.readLayerXML(layer.toElement())):
+                    raise RuntimeError(
+                        'Layer is not readable: {}'.format(
+                            layer.firstChildElement('id').text()
+                        )
+                    )
 
                 # get layer transparency
                 if layer_type == 'vector':
@@ -147,15 +167,21 @@ class SunlumoProject(object):
         else:
             return None
 
+    def _readSimilarityIndexes(self):
+        similarity_index = settings.QGIS_SIMILARITY_SEARCH
+
+        return [key for key in similarity_index.keys()]
+
     def getDetails(self):
         return {
             'map': self.project_file,
             'layers': self.LAYERS_DATA,
-            'layers_order': self.LAYERS
+            'layers_order': self.LAYERS,
+            'similarity_indices': self._readSimilarityIndexes()
         }
 
     def setTransparency(self, layer_id, transparency):
-        qgsLayer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
+        qgsLayer = self.layerRegistry.mapLayer(layer_id)
         layer_type = self.LAYERS_DATA[layer_id].get('type')
         if layer_type == 'vector':
             qgsLayer.setLayerTransparency(transparency)

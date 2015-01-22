@@ -9,6 +9,29 @@ html, body {
   display: none;
 }
 
+.accordion .accordion-navigation > a, .accordion dd > a {
+  padding: 3px 5px;
+}
+
+.panel .heading {
+  position: relative;
+  clear: left;
+  width: 100%;
+  background-color: #333;
+  font-size: 14px;
+  color: #FFF;
+  padding: 3px 10px;
+  text-transform: uppercase;
+}
+
+.panel .content {
+  position: relative;
+  clear: left;
+  width: 100%;
+  padding: 3px;
+  border: solid 1px #333;
+}
+
 #map {
     position: fixed;
     top: 45px;
@@ -89,4 +112,44 @@ html, body {
 
 .deactivated {
   color: rgba(0,0,0,0.2) !important;
+}
+
+
+#panelSearch {
+  margin: 10px;
+  padding: 0;
+}
+
+#panelSearch .columns {
+  padding: 0 !important;
+}
+
+
+#panelTools .controlHolder {
+  width: 100px;
+  position: relative;
+  float: left;
+}
+
+#panelTools .button {
+  margin: 0;
+  padding: 5px 10px;
+}
+
+#panelTools .button i {
+  font-size: 24px;
+}
+
+#panelTools .controlButton {
+  width: 65px;
+}
+
+#panelTools .toolbox-control-results {
+  width: 200px;
+  position: fixed;
+  top: 56px;
+  left: 350px;
+  z-index: 2;
+  padding:0 !important;
+  border: none !important;
 }

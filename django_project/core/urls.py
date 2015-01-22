@@ -16,7 +16,8 @@ urlpatterns = patterns(
 
     # include application urls
     url(r'', include('sunlumo_mapserver.urls')),
-    url(r'', include('sunlumo_webclient.urls'))
+    url(r'', include('sunlumo_webclient.urls')),
+    url(r'', include('sunlumo_similaritysearch.urls'))
 )
 
 # expose static files and uploded media if DEBUG is active
