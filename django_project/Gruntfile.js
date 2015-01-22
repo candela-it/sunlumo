@@ -1,32 +1,11 @@
-// var
-//     shims = require("./shims"),
-//     sharedModules = Object.keys(shims).concat([
-//       // place all modules you want in the lib build here
-//       // "dustjs-linkedin"
-//     ]);
-
-
 module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
-            // contrib: {
-            //     files: {
-            //         'core/base_static/js/vendor.module.js': ['lib_js/vendor/*.js'],
-            //     },
-            //     options: {
-            //         transform: ["browserify-shim"],
-            //         require: sharedModules
-            //     }
-            // },
             project: {
                 src: 'lib_js/lib/app.js',
-                dest: 'core/base_static/js/app.module.js',
-                // options: {
-                //     transform: ["browserify-shim"],
-                    // require: sharedModules
-                // }
+                dest: 'core/base_static/js/app.module.js'
             },
             tests: {
                 src: [ 'lib_js/tests/browser/test_suite.js' ],
@@ -65,8 +44,8 @@ module.exports = function(grunt) {
         },
         watch: {
             project: {
-                files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
-                tasks: ['default', 'tests'],
+                files: ['lib_js/lib/*.js', 'lib_css/*.css'],
+                tasks: ['default'],
                 options: {
                     spawn: false,
                 },
