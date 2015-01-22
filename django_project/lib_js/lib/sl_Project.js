@@ -10,6 +10,7 @@ require('./proj');
 var SL_LayerControl = require('./sl_layerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
 var SL_DistanceToolControl = require('./sl_distanceToolControl');
+var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
 
 
 var SL_Project = function (options) {
@@ -59,6 +60,7 @@ SL_Project.prototype = {
                 projection: projection,
                 center: ol.proj.transform([14.5, 44.7], 'EPSG:4326', 'EPSG:3765'),
                 zoom: 3,
+                maxZoom: 13,  // optimal for EPSG:3765
                 extent: extent
             })
         });
@@ -76,6 +78,10 @@ SL_Project.prototype = {
         this.map.addLayer(qgis_GFI_layer.SL_GFI_Layer);
 
         new SL_DistanceToolControl(this.map, this.options);
+
+        // add similarity search control
+        var qgis_Similarity_layer = new SL_SimilaritySearchControl(this.map, this.options);
+        this.map.addLayer(qgis_Similarity_layer.SL_Result_Layer);
 
         // propagate map events
         this.map.on('singleclick', function(evt) {

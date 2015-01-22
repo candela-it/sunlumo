@@ -6,6 +6,8 @@ import json
 
 from django.views.generic import TemplateView
 from django.conf import settings
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 from sunlumo_mapserver.project import SunlumoProject
 
@@ -21,3 +23,7 @@ class IndexView(TemplateView):
         context['SL_Details'] = json.dumps(project.getDetails())
 
         return context
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(IndexView, self).dispatch(*args, **kwargs)
