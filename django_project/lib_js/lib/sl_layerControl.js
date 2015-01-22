@@ -23,6 +23,9 @@ var Group = function (data) {
     this.name = m.prop(data.name);
     this.visible = m.prop(data.visible);
     this.layers = m.prop(data.layers);
+
+    this.query = m.prop(false);
+    this.collapsed = m.prop(false);
 };
 
 Layer.vm = (function () {
@@ -104,6 +107,40 @@ Layer.controller = function() {
         }
     };
 
+    this.queryGroupToggle = function(item) {
+          if (item.query()) {
+            item.query(false);
+
+            _.forEach(item.layers(), function (layer) {
+                layer.query(false);
+            });
+        } else {
+            item.query(true);
+
+            _.forEach(item.layers(), function (layer) {
+                layer.query(true);
+            });
+        }
+    };
+
+    this.groupToggle = function(item) {
+        if (item.visible()) {
+            item.visible(false);
+
+            _.forEach(item.layers(), function (layer) {
+                layer.visible(false);
+            });
+        } else {
+            item.visible(true);
+
+            _.forEach(item.layers(), function (layer) {
+                layer.visible(true);
+            });
+        }
+
+        EVENTS.emit('layers.updated');
+    };
+
     this.layerTransparency = function (item, e) {
         item.transparency(e.target.value);
 
@@ -179,6 +216,34 @@ var renderLayerItem = function (ctrl, item, dragging) {
     ]);
 };
 
+
+var renderGroupItem = function (ctrl, item, dragging) {
+    return m('div.group', {}, [
+        m('div', {
+            'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
+            'onclick': ctrl.groupToggle.bind(ctrl, item)
+        }, [
+            m('i', {
+                'class': 'fi-eye'
+            })
+        ]),
+        m('div', {
+            'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
+            'onclick': ctrl.queryGroupToggle.bind(ctrl, item)
+        }, [
+            m('i', {
+                'class': 'fi-info'
+            })
+        ]),
+        m('div', {'class': 'group-name'}, [item.name()]),
+            // add group layers
+            item.layers().map(function (groupLayer) {
+                return renderLayerItem(ctrl, groupLayer, dragging);
+            })
+        ]
+    );
+};
+
 Layer.view = function(ctrl) {
     return m('div', {'class': 'layer_list'}, [
         Layer.vm.layerTree.map(function (treeItem) {
@@ -189,13 +254,7 @@ Layer.view = function(ctrl) {
                 return renderLayerItem(ctrl, treeItem, dragging);
 
             } else {
-                return m('div.group', {}, [
-                    m('div', {'class': 'layer-name'}, [treeItem.name()]),
-                    // add group layers
-                    treeItem.layers().map(function (groupLayer) {
-                        return renderLayerItem(ctrl, groupLayer, dragging);
-                    })
-                ]);
+                return renderGroupItem(ctrl, treeItem, dragging);
             }
         })
     ]);
