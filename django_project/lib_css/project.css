@@ -95,6 +95,10 @@ html, body {
   padding: 4px 5px 2px 0px;
 }
 
+#panelLayers div.group:hover {
+  background-color: #EEEEEE;
+}
+
 #panelLayers div.group .layer {
   font-size: 12px;
   font-weight: normal;
@@ -103,7 +107,7 @@ html, body {
 }
 
 #panelLayers div.group-name {
-  margin-left: 4px;
+  margin-left: 10px;
   display: inline-block;
   line-height: 18px;
   text-transform: uppercase;
@@ -115,7 +119,7 @@ html, body {
 }
 
 #panelLayers div.dragging {
-  background: #EEE;
+  background: #FBB;
 }
 
 #panelLayers .layer-control {

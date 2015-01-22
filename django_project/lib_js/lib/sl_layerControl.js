@@ -6,6 +6,7 @@ var ol = require('../contrib/ol');
 
 var EVENTS = require('./events');
 
+
 var Layer = function (data) {
     this.type = m.prop(data.type);
     this.l_id = m.prop(data.l_id);
@@ -41,14 +42,15 @@ Layer.vm = (function () {
 
 Layer.controller = function() {
 
-    this.items = Layer.vm.list;
-    this.dragging = m.prop(undefined);
+    this.items = Layer.vm.layerTree;
 
-    this.sort = function (layers, dragging) {
+    this.dragged_item = m.prop();
+
+    this.sort = function (layers, dragged_item) {
         // set new layers
         this.items = layers;
         // track dragging element
-        this.dragging = m.prop(dragging);
+        this.dragged_item = m.prop(dragged_item);
     };
 
     this.dragStart = function(e) {
@@ -58,30 +60,45 @@ Layer.controller = function() {
             return false; // block dragging
         }
 
-        // get the data-id of the dragged element
-        this.dragged = Number(e.currentTarget.dataset.id);
+        // get the index (position in a list) of the dragged element
+        this.cur_dragged = Number(e.currentTarget.dataset.id);
         e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', null);
+
+        // HACK: don't show dragging ghost image
+        var canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 1;
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 1, 1);
+        e.dataTransfer.setDragImage(canvas, 0, 0);
+
+        // we need to set some data to trigger ondragover element
+        e.dataTransfer.setData('text/html', undefined);
+
     };
 
     this.dragOver = function(e) {
-        e.preventDefault();
-
+        // element that's being currently dragged over
         var over = e.currentTarget;
-        var dragging = this.dragging();
-        var from = isFinite(dragging) ? dragging : this.dragged;
-        var to = Number(over.dataset.id); // ????
+
+        var dragged_item = this.dragged_item();
+
+        var previous_pos = isFinite(dragged_item) ? dragged_item : this.cur_dragged;
+        var next_pos = Number(over.dataset.id);
 
         if((e.clientY - over.offsetTop) > (over.offsetHeight / 2)) {
-            to++;
+            next_pos++;
         }
-        if(from < to) {
-            to--;
+        if(previous_pos < next_pos) {
+            next_pos--;
         }
 
         var layers = this.items;
-        layers.splice(to, 0, layers.splice(from, 1)[0]);
-        this.sort(layers, to);
+        layers.splice(next_pos, 0, layers.splice(previous_pos, 1)[0]);
+        this.sort(layers, next_pos);
+
+        // it's important to prevent event bubbling as it would trigger ondragstart
+        // when dragging over 'draggable' elements
+        return false;
     };
     this.dragEnd = function() {
         this.sort(this.items, undefined);
@@ -172,17 +189,25 @@ Layer.controller = function() {
     };
 };
 
-var renderLayerItem = function (ctrl, item, dragging) {
-    return m('div.layer', {
-        // 'data-id': index,
-        'class': dragging,
-        'draggable': 'true',
-        'ondragstart': ctrl.dragStart.bind(ctrl),
-        'ondragover': ctrl.dragOver.bind(ctrl),
-        'ondragend': ctrl.dragEnd.bind(ctrl),
+var renderLayerItem = function (index, ctrl, item, dragging) {
+    // group layer handler
+    var properties = {
         'onmouseenter': ctrl.mouseOver.bind(ctrl, item),
         'onmouseleave': ctrl.mouseOut.bind(ctrl, item)
-    }, [
+    };
+
+    if (index !== undefined) {
+        _.extend(properties, {
+            'data-id': index,
+            'class': dragging,
+            'draggable': 'true',
+            'ondragstart': ctrl.dragStart.bind(ctrl),
+            'ondragover': ctrl.dragOver.bind(ctrl),
+            'ondragend': ctrl.dragEnd.bind(ctrl)
+        });
+    }
+
+    return m('div.layer', properties, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
             'onclick': ctrl.layerToggle.bind(ctrl, item)
@@ -228,14 +253,22 @@ var renderLayerItem = function (ctrl, item, dragging) {
 var addGroupLayers = function (ctrl, item, dragging) {
     if (!(item.collapsed())) {
         return item.layers().map(function (groupLayer) {
-            return renderLayerItem(ctrl, groupLayer, dragging);
+            // set undefined index that will not setup drag events on group layers
+            return renderLayerItem(undefined, ctrl, groupLayer, dragging);
         });
     }
     return [];
 };
 
-var renderGroupItem = function (ctrl, item, dragging) {
-    return m('div.group', {}, [
+var renderGroupItem = function (index, ctrl, item, dragging) {
+    return m('div.group', {
+        'data-id': index,
+        'class': dragging,
+        'draggable': 'true',
+        'ondragstart': ctrl.dragStart.bind(ctrl),
+        'ondragover': ctrl.dragOver.bind(ctrl),
+        'ondragend': ctrl.dragEnd.bind(ctrl),
+    }, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
             'onclick': ctrl.groupToggle.bind(ctrl, item)
@@ -270,15 +303,16 @@ var renderGroupItem = function (ctrl, item, dragging) {
 
 Layer.view = function(ctrl) {
     return m('div', {'class': 'layer_list'}, [
-        Layer.vm.layerTree.map(function (treeItem) {
-            // var dragging = (index === ctrl.dragging()) ? 'dragging' : '';
-            var dragging = false;
+        Layer.vm.layerTree.map(function (treeItem, index) {
+            // is the current treeItem dragged
+            var dragging = (index === ctrl.dragged_item()) ? 'dragging' : '';
+
 
             if (treeItem.type() === 'layer') {
-                return renderLayerItem(ctrl, treeItem, dragging);
+                return renderLayerItem(index, ctrl, treeItem, dragging);
 
             } else {
-                return renderGroupItem(ctrl, treeItem, dragging);
+                return renderGroupItem(index, ctrl, treeItem, dragging);
             }
         })
     ]);
