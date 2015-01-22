@@ -87,14 +87,39 @@ html, body {
   color: #000;
   padding: 4px 5px 2px 0px;
 }
+
+#panelLayers div.group {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  padding: 4px 5px 2px 0px;
 }
+
+#panelLayers div.group:hover {
+  background-color: #EEEEEE;
+}
+
+#panelLayers div.group .layer {
+  font-size: 12px;
+  font-weight: normal;
+  color: #000;
+  padding: 4px 5px 2px 20px;
+}
+
+#panelLayers div.group-name {
+  margin-left: 10px;
+  display: inline-block;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
 
 #panelLayers div.layer:hover {
   background-color: #EEEEEE;
 }
 
 #panelLayers div.dragging {
-  background: #EEE;
+  background: #FBB;
 }
 
 #panelLayers .layer-control {
@@ -102,6 +127,19 @@ html, body {
   font-size: 16px;
   color: #000;
   cursor: pointer;
+  line-height: 18px;
+  margin-left: 5px;
+}
+
+#panelLayers .group-control {
+  position: relative;
+  float: right;
+  clear: right;
+
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  color: #000;
   line-height: 18px;
   margin-left: 5px;
 }

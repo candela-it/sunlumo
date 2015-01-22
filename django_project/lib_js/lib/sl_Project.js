@@ -59,7 +59,7 @@ SL_Project.prototype = {
             view: new ol.View({
                 projection: projection,
                 center: ol.proj.transform([14.5, 44.7], 'EPSG:4326', 'EPSG:3765'),
-                zoom: 3,
+                zoom: 5,
                 maxZoom: 13,  // optimal for EPSG:3765
                 extent: extent
             })
