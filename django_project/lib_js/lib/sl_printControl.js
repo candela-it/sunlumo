@@ -222,9 +222,6 @@ SL_PrintControl.prototype = {
         }
 
         this.createPrintAreaNodes(this.SL_PrintArea_Feature);
-
-        // Zoom to PrintArea_Feature.
-        this.map.getView().fitGeometry(this.SL_PrintArea_Feature.getGeometry(), this.map.getSize());
     },
 
     getAreaDimensionsForScale: function(printOptions) {
