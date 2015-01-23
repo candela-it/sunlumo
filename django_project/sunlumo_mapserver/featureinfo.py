@@ -3,6 +3,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 from itertools import chain
+from collections import OrderedDict
 
 from PyQt4.QtCore import QSize
 from PyQt4.QtGui import QImage
@@ -117,7 +118,7 @@ class FeatureInfo(SunlumoProject):
                 )
 
                 layer_features = [featureToGeoJSON(
-                    feature.id(), feature.geometry(), dict(zip(
+                    feature.id(), feature.geometry(), OrderedDict(zip(
                         layer_field_names, [
                             attr if attr else None
                             for attr in feature.attributes()
