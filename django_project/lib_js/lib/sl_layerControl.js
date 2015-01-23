@@ -12,8 +12,6 @@ var jvents = require('jvent');
 
 var events = new jvents();
 
-
-
 var Layer = function (data) {
     this.type = m.prop(data.type);
     this.l_id = m.prop(data.l_id);
@@ -445,6 +443,11 @@ SL_LayerControl.prototype = {
                 'LAYERS':self.getLayersParam(),
                 'TRANSPARENCIES': self.getTransparencyParam()
             });
+
+            EVENTS.emit('read.layers.and.transparencies', {
+                'layers': self.getLayersParam(),
+                'transparencies': self.getTransparencyParam()
+            });
         });
 
         EVENTS.on('map.singleclick', function(data) {
@@ -458,6 +461,15 @@ SL_LayerControl.prototype = {
             // emit updated url to the GFI control
             EVENTS.emit('qgis.gfi.url.changed', {
                 'url': url
+            });
+        });
+
+
+        EVENTS.on('print.area.updated', function() {
+            // send back layers.and.transparencies
+            EVENTS.emit('read.layers.and.transparencies', {
+                'layers': self.getLayersParam(),
+                'transparencies': self.getTransparencyParam()
             });
         });
 
