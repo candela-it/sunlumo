@@ -88,10 +88,20 @@ PrintControl.vm = (function() {
 PrintControl.controller = function() {
     this.onScaleClick = function(item) {
         PrintControl.vm.selected_scale = item;
+        // Automatically show print area.
+        events.emit('.showPrintArea', {
+            'scale': PrintControl.vm.selected_scale,
+            'layout':PrintControl.vm.selected_layout
+        });
     };
 
     this.onPrintLayoutClick = function(item) {
         PrintControl.vm.selected_layout = item;
+        // Automatically show print area.
+        events.emit('.showPrintArea', {
+            'scale': PrintControl.vm.selected_scale,
+            'layout':PrintControl.vm.selected_layout
+        });
     };
 
     this.onShowPrintAreaClick = function() {
