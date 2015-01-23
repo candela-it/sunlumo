@@ -114,6 +114,10 @@ PrintControl.controller = function() {
     this.onPrintClick = function() {
 
     };
+
+    this.onHidePrintAreaClick = function() {
+        events.emit('.hidePrintArea');
+    };
 };
 
 PrintControl.view = function(ctrl) {
@@ -146,6 +150,10 @@ PrintControl.view = function(ctrl) {
         m('button', {
             'onclick': ctrl.onPrintClick.bind(ctrl)
         }, 'PRINT'),
+        m('br'),
+        m('button', {
+            'onclick': ctrl.onHidePrintAreaClick.bind(ctrl)
+        }, 'HIDE'),
     ]);
 };
 
@@ -205,8 +213,13 @@ SL_PrintControl.prototype = {
 
     _handleEvents: function() {
         var self = this;
+
         events.on('.showPrintArea', function (options) {
             self.onShowPrintArea(options);
+        });
+
+        events.on('.hidePrintArea', function () {
+            self.onHidePrintArea();
         });
     },
 
@@ -220,6 +233,8 @@ SL_PrintControl.prototype = {
             this.SL_PrintArea_Source.addFeature(this.SL_PrintArea_Feature);
             this.printAreaExist = true;
         }
+
+        this.SL_PrintArea_Layer.setVisible(true);
 
         this.createPrintAreaNodes(this.SL_PrintArea_Feature);
     },
@@ -279,6 +294,10 @@ SL_PrintControl.prototype = {
         }
 
         this.SL_PrintArea_Source.addFeatures(this.printAreaNodes);
+    },
+
+    onHidePrintArea: function() {
+        this.SL_PrintArea_Layer.setVisible(false);
     }
 };
 
