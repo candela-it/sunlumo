@@ -182,7 +182,7 @@ html, body {
   width: 65px;
 }
 
-#panelTools .toolbox-control-results {
+.toolbox-control-results {
   width: 200px;
   position: fixed;
   top: 56px;
@@ -192,7 +192,23 @@ html, body {
   border: none !important;
 }
 
-#panelTools .toolbox-control-results .item {
+.toolbox-control-results .item {
   display: block;
   font-size: 12px;
+}
+
+.toolbox-control-results .content {
+  overflow: auto;
+  height: 400px;
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 0px;
+  right: 5px;
+}
+
+.feature-result {
+  display: block;
+  position: relative;
 }

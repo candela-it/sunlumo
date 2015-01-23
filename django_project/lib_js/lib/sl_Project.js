@@ -13,7 +13,6 @@ var SL_DistanceToolControl = require('./sl_distanceToolControl');
 var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
 var SL_PrintControl = require('./sl_printControl');
 
-
 var SL_Project = function (options) {
     // default options
     this.options = {
@@ -59,9 +58,9 @@ SL_Project.prototype = {
             target: 'map',
             view: new ol.View({
                 projection: projection,
-                center: ol.proj.transform([14.5, 44.7], 'EPSG:4326', 'EPSG:3765'),
-                zoom: 5,
-                maxZoom: 13,  // optimal for EPSG:3765
+                center: ol.proj.transform([17.02, 43.5], 'EPSG:4326', 'EPSG:3765'),
+                zoom: 6,
+                maxZoom: 14,  // optimal for EPSG:3765
                 extent: extent
             })
         });
