@@ -88,10 +88,20 @@ PrintControl.vm = (function() {
 PrintControl.controller = function() {
     this.onScaleClick = function(item) {
         PrintControl.vm.selected_scale = item;
+        // Automatically show print area.
+        events.emit('.showPrintArea', {
+            'scale': PrintControl.vm.selected_scale,
+            'layout':PrintControl.vm.selected_layout
+        });
     };
 
     this.onPrintLayoutClick = function(item) {
         PrintControl.vm.selected_layout = item;
+        // Automatically show print area.
+        events.emit('.showPrintArea', {
+            'scale': PrintControl.vm.selected_scale,
+            'layout':PrintControl.vm.selected_layout
+        });
     };
 
     this.onShowPrintAreaClick = function() {
@@ -212,9 +222,6 @@ SL_PrintControl.prototype = {
         }
 
         this.createPrintAreaNodes(this.SL_PrintArea_Feature);
-
-        // Zoom to PrintArea_Feature.
-        this.map.getView().fitGeometry(this.SL_PrintArea_Feature.getGeometry(), this.map.getSize());
     },
 
     getAreaDimensionsForScale: function(printOptions) {
