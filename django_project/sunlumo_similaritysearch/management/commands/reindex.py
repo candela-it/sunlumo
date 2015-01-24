@@ -20,6 +20,7 @@ class Command(BaseCommand):
                 for s_ind, mapping in settings.QGIS_SIMILARITY_SEARCH.items():
                     l_id = mapping.get('layer_id')
                     qgs_layer = sunlumo_project.layerRegistry.mapLayer(l_id)
+                    qgs_layer.dataProvider().setEncoding('UTF-8')
 
                     self._indexFeatures(
                         qgs_layer.getFeatures(), s_ind, mapping

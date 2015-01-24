@@ -66,6 +66,7 @@ class Searcher(SunlumoProject):
             layer_id = settings.QGIS_SIMILARITY_SEARCH[key].get('layer_id')
 
             qgsLayer = self.layerRegistry.mapLayer(layer_id)
+            qgsLayer.dataProvider().setEncoding('UTF-8')
             qgsLayer.updateFields()
 
             layer_pk = settings.QGIS_SIMILARITY_SEARCH[key].get('pk')
