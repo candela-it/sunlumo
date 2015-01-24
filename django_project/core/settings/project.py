@@ -16,14 +16,29 @@ QGIS_PROJECT = '/data/lovrec.qgs'
 QGIS_GFI_BUFFER = 3
 
 QGIS_SIMILARITY_SEARCH = {
-    'cres code': {
-        'layer_id': 'Cres__Corine_LC20141202224530380',
-        'fields': ['code_06', 'id'],
-        'pk': 'id'
+    'kucni broj': {
+        'layer_id': 'KUCNI_BROJEVI20150122212721727',
+        'fields': ['ULICA', 'KUCNI_BROJ'],
+        'pk': 'fid'
     },
-    'osm amenity': {
-        'layer_id': 'points20150113152732133',
-        'fields': ['amenity', 'name'],
-        'pk': 'osm_id'
+    'ko lovrec': {
+        'layer_id': 'KO_LOVREC_BR_CESTICA20150122212721703',
+        'fields': ['BROJ_KC'],
+        'pk': 'fid'
+    },
+    'ko medovdolac': {
+        'layer_id': 'KO_MEDOVDOLAC_BR_CESTICA20150122212721721',
+        'fields': ['BROJ_KC'],
+        'pk': 'fid'
+    },
+    'ko opanci': {
+        'layer_id': 'KO_OPANCI_BR_CESTICA20150122212721712',
+        'fields': ['BROJ_KC'],
+        'pk': 'fid'
+    },
+    'ko studenci': {
+        'layer_id': 'KO_STUDENCI_BR_CESTICA20150122212721737',
+        'fields': ['BROJ_KC'],
+        'pk': 'fid'
     }
 }
