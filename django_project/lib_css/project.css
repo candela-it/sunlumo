@@ -5,6 +5,12 @@ html, body {
     height: 100%;
 }
 
+.logo {
+  height: 35px;
+  margin-right: 5px;
+  margin-top: 2px;
+}
+
 .hide {
   display: none;
 }

@@ -7,6 +7,7 @@ var ol = require('../contrib/ol');
 // initialize projections
 require('./proj');
 
+var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
 var SL_DistanceToolControl = require('./sl_distanceToolControl');
@@ -92,6 +93,9 @@ SL_Project.prototype = {
             EVENTS.emit('map.singleclick', {
                 'coordinate': evt.coordinate
             });
+        });
+        this.map.on('change:view', function(evt) {
+            console.log('test');
         });
     },
 };

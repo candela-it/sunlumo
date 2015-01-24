@@ -137,6 +137,7 @@ SL_GetFeatureInfoControl.prototype = {
         m.module(document.getElementById('resultsToolControl'), {controller: ResultsDisplay.controller, view: ResultsDisplay.view});
 
         EVENTS.on('qgis.gfi.url.changed', function(data) {
+            EVENTS.emit('qgs.spinner.activate');
             m.request({
                 method: 'GET',
                 url: data.url
@@ -150,6 +151,7 @@ SL_GetFeatureInfoControl.prototype = {
                 var features = ResultsDisplay.vm.set(response);
                 self.SL_GFI_Source.addFeatures(features);
                 ResultsDisplay.vm.control.active(true);
+                EVENTS.emit('qgs.spinner.deactivate');
             });
         });
 
