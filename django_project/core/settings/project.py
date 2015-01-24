@@ -10,7 +10,7 @@ INSTALLED_APPS += (
 
 
 # QGIS project definition
-QGIS_PROJECT = '/data/simple.qgs'
+QGIS_PROJECT = '/data/lovrec.qgs'
 
 # GetFeatureInfo pixel buffer, how many pixels are used for a search
 QGIS_GFI_BUFFER = 3

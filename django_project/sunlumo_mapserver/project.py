@@ -34,6 +34,8 @@ class SunlumoProject(object):
 
     LAYER_TREE = []  # hierarchical Layer datastructure
     LAYERS_DATA = {}  # generic Layer datastructure
+    LAYOUTS = []
+    LAYOUTS_DATA = {}
 
     def __init__(self, project_file):
         self.layerRegistry = QgsMapLayerRegistry.instance()
@@ -147,6 +149,8 @@ class SunlumoProject(object):
         self._readLegend()
         self._parseLayers()
 
+        self._parseLayouts()
+
     def _parseLayers(self):
         with change_directory(self.project_root):
             # remove map layers
@@ -194,13 +198,28 @@ class SunlumoProject(object):
                     LOG.debug('Loaded layer: %s', qgsLayer.id())
 
     def _parseLayouts(self):
-        available_layouts = []
+        self.LAYOUTS = []
+        self.LAYOUTS_DATA = {}
+
         with change_directory(self.project_root):
             for layout in self._iterateOverTagByName('Composer'):
-                available_layouts.append(
-                    self._getAttr(layout, 'title').value()
+                layout_name = self._getAttr(layout, 'title').value()
+
+                self.LAYOUTS.append(layout_name)
+
+                composerMapItem = (
+                    layout
+                    .firstChildElement('Composition')
+                    .firstChildElement('ComposerMap')
+                    .firstChildElement('ComposerItem')
                 )
-        return available_layouts
+                width = self._getAttr(composerMapItem, 'width').value()
+                height = self._getAttr(composerMapItem, 'height').value()
+
+                self.LAYOUTS_DATA[layout_name] = {
+                    'width': width,
+                    'height': height
+                }
 
     def getLayoutbyName(self, name):
         for layout in self._iterateOverTagByName('Composer'):
@@ -232,6 +251,8 @@ class SunlumoProject(object):
             'map': self.project_file,
             'layers': self.LAYERS_DATA,
             'layer_tree': self.LAYER_TREE,
+            'layouts': self.LAYOUTS,
+            'layouts_data': self.LAYOUTS_DATA,
             'similarity_indices': self._readSimilarityIndexes()
         }
 
