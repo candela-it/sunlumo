@@ -204,11 +204,29 @@ html, body {
 
 .toggle-icon {
   position: absolute;
-  top: 0px;
+  top: 0;
+  right: 5px;
+}
+
+.locate-icon {
+  position: absolute;
+  bottom: 0;
   right: 5px;
 }
 
 .feature-result {
   display: block;
   position: relative;
+}
+
+.mouse-pointer {
+  cursor: pointer;
+}
+
+.head {
+  background-color: #dfdfdf;
+}
+
+.head:hover {
+  background-color: #c5c5c5;
 }

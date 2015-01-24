@@ -11,13 +11,19 @@ var ResultsDisplay = function() {
     this.active = m.prop(false);
 };
 
+var geojsonFormat = new ol.format.GeoJSON();
+
 var Feature = function(data) {
     var self = this;
     this.properties = {};
     _.forEach(data.properties, function(value, attribute) {
         self.properties[attribute] = m.prop(value);
     });
+    this.id = m.prop(data.id);
+    this.geom = m.prop(data.geometry);
+    this.OLFeature = geojsonFormat.readFeature(data);
     this.toggled = m.prop(false);
+
     this.toggle = function() {
         if (self.toggled()) {
             self.toggled(false);
@@ -41,6 +47,9 @@ ResultsDisplay.vm = (function() {
         _.each(data.features, function(item) {
             vm.list.push(new Feature(item));
         });
+        return _.map(vm.list, function(feat) {
+                return feat.OLFeature;
+            });
     };
     return vm;
 })();
@@ -122,8 +131,6 @@ SL_GetFeatureInfoControl.prototype = {
             source: this.SL_GFI_Source
         });
 
-        var geojsonFormat = new ol.format.GeoJSON();
-
         ResultsDisplay.vm.init();
 
 
@@ -136,11 +143,18 @@ SL_GetFeatureInfoControl.prototype = {
             }).then(function (response) {
                 // reset data of the previous source
                 self.SL_GFI_Source.clear(true);
+
+                EVENTS.emit('qgis.featureoverlay.clear');
+
                 // add new features
-                self.SL_GFI_Source.addFeatures(geojsonFormat.readFeatures(response));
-                ResultsDisplay.vm.set(response);
+                var features = ResultsDisplay.vm.set(response);
+                self.SL_GFI_Source.addFeatures(features);
                 ResultsDisplay.vm.control.active(true);
             });
+        });
+
+        EVENTS.on('qgis.gfi.zoomTo', function(data) {
+            self.map.getView().fitExtent(data.extent, self.map.getSize());
         });
     }
 };
