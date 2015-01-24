@@ -86,7 +86,7 @@ class Searcher(SunlumoProject):
             layer_geojson = [featureToGeoJSON(
                 feature.attribute(layer_pk), feature.geometry(), {
                     'index_value': records.get(
-                        feature.attribute(layer_pk), 'NoData'
+                        unicode(feature.attribute(layer_pk)), 'NoData'
                     )
                 })
                 for feature in qgis_features
