@@ -149,6 +149,7 @@ class PrintPDFView(UpperParamsMixin, View):
 
         try:
             bbox = [float(a) for a in self.req_params.get('BBOX').split(',')]
+            srs = int(self.req_params.get('SRS').split(':')[-1])
             layers = [
                 layer.strip()
                 for layer in self.req_params.get('LAYERS').split(',')
@@ -173,7 +174,8 @@ class PrintPDFView(UpperParamsMixin, View):
             'layout': layout,
             'map_file': map_file,
             'layers': layers,
-            'transparencies': transparencies
+            'transparencies': transparencies,
+            'srs': srs
         }
 
     def get(self, request, *args, **kwargs):
