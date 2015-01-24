@@ -12,7 +12,7 @@ var SL_GFIControl = require('./sl_getfeatureinfoControl');
 var SL_DistanceToolControl = require('./sl_distanceToolControl');
 var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
 var SL_PrintControl = require('./sl_printControl');
-
+var SL_FeatureOverlay = require('./sl_FeatureOverlay');
 
 var SL_Project = function (options) {
     // default options
@@ -85,6 +85,7 @@ SL_Project.prototype = {
         this.map.addLayer(qgis_Similarity_layer.SL_Result_Layer);
 
         new SL_PrintControl(this.map, this.options);
+        new SL_FeatureOverlay(this.map, this.options);
 
         // propagate map events
         this.map.on('singleclick', function(evt) {

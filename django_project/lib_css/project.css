@@ -182,7 +182,7 @@ html, body {
   width: 65px;
 }
 
-#panelTools .toolbox-control-results {
+.toolbox-control-results {
   width: 200px;
   position: fixed;
   top: 56px;
@@ -190,4 +190,43 @@ html, body {
   z-index: 2;
   padding:0 !important;
   border: none !important;
+}
+
+.toolbox-control-results .item {
+  display: block;
+  font-size: 12px;
+}
+
+.toolbox-control-results .content {
+  overflow: auto;
+  height: 400px;
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 0;
+  right: 5px;
+}
+
+.locate-icon {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+}
+
+.feature-result {
+  display: block;
+  position: relative;
+}
+
+.mouse-pointer {
+  cursor: pointer;
+}
+
+.head {
+  background-color: #dfdfdf;
+}
+
+.head:hover {
+  background-color: #c5c5c5;
 }

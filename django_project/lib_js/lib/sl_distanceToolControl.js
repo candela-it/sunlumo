@@ -14,10 +14,6 @@ var DistanceTool = function () {
 var Result = function(data) {
     this.order = m.prop(data.order);
     this.result = m.prop(data.result);
-
-    this.update = function(result) {
-        this.result(result);
-    };
 };
 
 var ResultList = Array;
@@ -35,13 +31,12 @@ DistanceTool.vm = (function () {
             'order': order,
             'result': result
         }));
-        console.log('added');
     };
 
     vm.update = function(result) {
         var lastResult = vm.list.length -1;
-        vm.list[lastResult].update(result);
-        console.log('updated');
+        vm.list[lastResult].result(result);
+        m.redraw();
     };
 
     return vm;
@@ -100,11 +95,9 @@ DistanceTool.view = function(ctrl) {
                 ])
             ]),
             m('div', {}, [
-                m('ul', {}, [
-                    DistanceTool.vm.list.map(function(item) {
-                        return m('li', {}, item.result());
-                    })
-                ])
+                DistanceTool.vm.list.map(function(item) {
+                    return m('div', { 'class': 'item'}, item.order() + '. ' + item.result());
+                })
             ])
         ])
     ])];
