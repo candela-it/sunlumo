@@ -19,6 +19,11 @@ html, body {
   padding: 3px 5px;
 }
 
+.accordion .accordion-navigation > .content {
+  height: 600px;
+  overflow: auto;
+}
+
 .panel .heading {
   position: relative;
   clear: left;
