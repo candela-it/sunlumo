@@ -12,11 +12,15 @@ SL_SpinnerComponent.vm = (function() {
     };
 
     vm.deactivate = function() {
+        m.startComputation();
         vm.active(false);
+        m.endComputation();
     };
 
     vm.activate = function() {
+        m.startComputation();
         vm.active(true);
+        m.endComputation();
     };
     return vm;
 })();
