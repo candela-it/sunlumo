@@ -77,8 +77,8 @@ DistanceTool.view = function(ctrl) {
     }, [
         m('i', { 'class': 'fi-foot'})
     ]),
-    m('div', {
-        'class': (ctrl.control.active()) ? 'toolbox-control-results panel' : 'toolbox-control-results panel hide'
+    m('div.toolbox-control-results.panel.DistanceTool', {
+        'class': (ctrl.control.active()) ? '' : 'hide'
     }, [
         m('div', { 'class': 'heading' }, 'Alati za mjerenje'),
         m('div', { 'class': 'content' }, [
