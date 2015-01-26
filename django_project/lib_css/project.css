@@ -19,6 +19,11 @@ html, body {
   padding: 3px 5px;
 }
 
+.accordion .accordion-navigation > .content {
+  height: 600px;
+  overflow: auto;
+}
+
 .panel .heading {
   position: relative;
   clear: left;
@@ -191,11 +196,19 @@ html, body {
 .toolbox-control-results {
   width: 200px;
   position: fixed;
-  top: 56px;
-  left: 350px;
   z-index: 2;
   padding:0 !important;
   border: none !important;
+}
+
+.GFITool {
+  top: 56px;
+  left: 350px;
+}
+
+.DistanceTool {
+  top: 56px;
+  right: 15px;
 }
 
 .toolbox-control-results .item {

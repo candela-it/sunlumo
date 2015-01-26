@@ -74,8 +74,8 @@ ResultsDisplay.controller = function() {
 
 ResultsDisplay.view = function(ctrl) {
     return [
-        m('div', {
-        'class': (ResultsDisplay.vm.control.active()) ? 'toolbox-control-results panel' : 'toolbox-control-results panel hide'
+        m('div.toolbox-control-results.panel.GFITool', {
+        'class': (ResultsDisplay.vm.control.active()) ? '' : 'hide'
         }, [
             m('div', { 'class': 'heading' }, 'Izabrano'),
             m('div', { 'class': 'content' }, [
