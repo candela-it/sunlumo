@@ -10,6 +10,7 @@ var ol = require('../contrib/ol');
 require('./proj');
 
 var UI_LayerControl = require('./ui/layerControl');
+var UI_SimilaritySearch = require('./ui/similaritySearch');
 
 var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
@@ -111,6 +112,12 @@ SL_Project.prototype = {
         m.module(document.getElementById('panelLayers'), {
             controller: function () {return ui_lc.controller;},
             view: function (ctrl) {return [ui_lc.view(ctrl)];},
+        });
+
+        var ui_ss = new UI_SimilaritySearch(this.options);
+        m.module(document.getElementById('panelSearch'), {
+            controller: function () {return ui_ss.controller;},
+            view: function (ctrl) {return [ui_ss.view(ctrl)];},
         });
     }
 };

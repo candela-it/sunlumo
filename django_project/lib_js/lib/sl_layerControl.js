@@ -111,10 +111,10 @@ SL_LayerControl.prototype = {
 
         EVENTS.on('print.area.updated', function() {
             // send back layers.and.transparencies
-            EVENTS.emit('read.layers.and.transparencies', {
-                'layers': self.getLayersParam(),
-                'transparencies': self.getTransparencyParam()
-            });
+            // EVENTS.emit('read.layers.and.transparencies', {
+            //     'layers': self.getLayersParam(),
+            //     'transparencies': self.getTransparencyParam()
+            // });
         });
 
     },
