@@ -6,15 +6,15 @@ var m = require('mithril');
 // global events
 var EVENTS = require('../events');
 
-var layerContorlViewModel = require('./models/layerControl');
+var layerControlViewModel = require('./models/layerControl');
 
 var View = require('./views/layerControl');
 
 
-
 var Controller = function(options) {
-    // initialize VM
-    this.vm = new layerContorlViewModel(options);
+    // initialize VM, and that's all a controller should EVER do, everything
+    // else is handled by the vm and model
+    this.vm = new layerControlViewModel(options);
 };
 
 

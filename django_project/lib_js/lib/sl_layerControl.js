@@ -70,30 +70,28 @@ SL_LayerControl.prototype = {
     _init: function () {
         var self = this;
         this._initQGISLayer();
+    },
 
-        // init the viewmodel
-
-        // this.SL_Source.updateParams({
-        //     'LAYERS':this.getLayersParam(),
-        //     'MAP': this.options.map,
-        //     'TRANSPARENCIES': this.getTransparencyParam()
-        // });
-
-        // initialize mithril module
+    _updateSourceParams: function(options) {
+        this.SL_Source.updateParams({
+            'LAYERS':options.layers,
+            'TRANSPARENCIES': options.transparencies,
+            'MAP': this.options.map
+        });
     },
 
     _initEvents: function () {
         var self = this;
-        events.on('.layers.updated', function() {
-            self.SL_Source.updateParams({
-                'LAYERS':self.getLayersParam(),
-                'TRANSPARENCIES': self.getTransparencyParam()
-            });
 
-            EVENTS.emit('read.layers.and.transparencies', {
-                'layers': self.getLayersParam(),
-                'transparencies': self.getTransparencyParam()
-            });
+        EVENTS.on('layers.updated', function(options) {
+            self._updateSourceParams(options);
+            // EVENTS.emit('read.layers.and.transparencies', {
+            //     'layers': self.getLayersParam(),
+            //     'transparencies': self.getTransparencyParam()
+            // });
+        });
+        EVENTS.on('layers.initialized', function(options) {
+            self._updateSourceParams(options);
         });
 
         EVENTS.on('map.singleclick', function(data) {

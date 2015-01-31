@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 
 var VIEW = function (ctrl) {
+    // do not add anything else to the VIEW, it should never initialize anything
     return render(ctrl);
 };
 
@@ -29,8 +30,8 @@ var render = function(ctrl) {
 var renderLayerItem = function (ctrl, index, item, dragging) {
     // group layer handler
     var properties = {
-        'onmouseenter': ctrl.vm.mouseOver.bind(ctrl, item),
-        'onmouseleave': ctrl.vm.mouseOut.bind(ctrl, item)
+        'onmouseenter': ctrl.vm.ev_mouseOver.bind(ctrl, item),
+        'onmouseleave': ctrl.vm.ev_mouseOut.bind(ctrl, item)
     };
 
     if (index !== undefined) {
@@ -38,16 +39,16 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             'data-id': index,
             'class': dragging,
             'draggable': 'true',
-            'ondragstart': ctrl.vm.dragStart.bind(ctrl),
-            'ondragover': ctrl.vm.dragOver.bind(ctrl),
-            'ondragend': ctrl.vm.dragEnd.bind(ctrl)
+            'ondragstart': ctrl.vm.ev_dragStart.bind(ctrl),
+            'ondragover': ctrl.vm.ev_dragOver.bind(ctrl),
+            'ondragend': ctrl.vm.ev_dragEnd.bind(ctrl)
         });
     }
 
     return m('div.layer', properties, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.vm.layerToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.ev_layerToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-eye'
@@ -55,7 +56,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
         ]),
         m('div', {
             'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.vm.queryLayerToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.ev_queryLayerToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-info'
@@ -67,7 +68,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
 
         m('div', {
             'class':  (item.showLayerControl()) ? 'layer-control layer-settings-control' : 'layer-control layer-settings-control hide',
-            'onclick': ctrl.vm.toggleShowControl.bind(ctrl, item)
+            'onclick': ctrl.vm.ev_toggleShowControl.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-widget'
@@ -80,7 +81,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             m('input[type=range]', {
                 'draggable': false,
                 'value': item.transparency(),
-                'onchange': ctrl.vm.layerTransparency.bind(ctrl, item)
+                'onchange': ctrl.vm.ev_layerTransparency.bind(ctrl, item)
             })
         ])
     ]);
@@ -101,13 +102,13 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         'data-id': index,
         'class': dragging,
         'draggable': 'true',
-        'ondragstart': ctrl.vm.dragStart.bind(ctrl),
-        'ondragover': ctrl.vm.dragOver.bind(ctrl),
-        'ondragend': ctrl.vm.dragEnd.bind(ctrl),
+        'ondragstart': ctrl.vm.ev_dragStart.bind(ctrl),
+        'ondragover': ctrl.vm.ev_dragOver.bind(ctrl),
+        'ondragend': ctrl.vm.ev_dragEnd.bind(ctrl),
     }, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.vm.groupToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.ev_groupToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-eye'
@@ -115,7 +116,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         ]),
         m('div', {
             'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.vm.queryGroupToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.ev_queryGroupToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-info'
@@ -124,7 +125,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         m('div', {'class': 'group-name'}, [item.name()]),
 
         m('div', {
-            'onclick': ctrl.vm.toggleGroupCollapse.bind(ctrl, item),
+            'onclick': ctrl.vm.ev_toggleGroupCollapse.bind(ctrl, item),
             'class': 'group-control'
         }, [
             m('i', {

@@ -37,14 +37,13 @@ var VIEWMODEL = function (options) {
 VIEWMODEL.prototype = {
     init: function (options) {
         var self = this;
-        this.options = options;
 
+        this.options = options;
         this.layers = this.options.layers;
 
         this.layerTree = [];
 
         this.dragged_item = m.prop();
-        this.items = this.layerTree;
 
         _.forEach(this.options.layer_tree, function (treeItem) {
             if (treeItem.layer) {
@@ -85,7 +84,19 @@ VIEWMODEL.prototype = {
             }
         });
 
+        // control has been initialized
+        EVENTS.emit('layers.initialized', {
+            'layers': this.getLayersParam(),
+            'transparencies': this.getTransparencyParam()
+        });
 
+    },
+
+    emitLayersUpdated: function() {
+        EVENTS.emit('layers.updated', {
+            'layers': this.getLayersParam(),
+            'transparencies': this.getTransparencyParam()
+        });
     },
 
     getLayersParam: function () {
@@ -158,12 +169,12 @@ VIEWMODEL.prototype = {
 
     sort: function (layers, dragged_item) {
         // set new layers
-        this.items = layers;
+        this.layerTree = layers;
         // track dragging element
         this.dragged_item = m.prop(dragged_item);
     },
 
-    dragStart: function(e) {
+    ev_dragStart: function(e) {
         // Fix for Firefox (maybe others), prevents dragstart event bubbling
         // on range input elements
         if (document.activeElement.type === 'range') {
@@ -171,7 +182,7 @@ VIEWMODEL.prototype = {
         }
 
         // get the index (position in a list) of the dragged element
-        this.cur_dragged = Number(e.currentTarget.dataset.id);
+        this.vm.cur_dragged = Number(e.currentTarget.dataset.id);
         e.dataTransfer.effectAllowed = 'move';
 
         // HACK: don't show dragging ghost image
@@ -186,13 +197,13 @@ VIEWMODEL.prototype = {
 
     },
 
-    dragOver: function(e) {
+    ev_dragOver: function(e) {
         // element that's being currently dragged over
         var over = e.currentTarget;
 
-        var dragged_item = this.dragged_item();
+        var dragged_item = this.vm.dragged_item();
 
-        var previous_pos = isFinite(dragged_item) ? dragged_item : this.cur_dragged;
+        var previous_pos = isFinite(dragged_item) ? dragged_item : this.vm.cur_dragged;
         var next_pos = Number(over.dataset.id);
 
         if((e.clientY - over.offsetTop) > (over.offsetHeight / 2)) {
@@ -202,32 +213,31 @@ VIEWMODEL.prototype = {
             next_pos--;
         }
 
-        var layers = this.items;
+        var layers = this.vm.layerTree;
         layers.splice(next_pos, 0, layers.splice(previous_pos, 1)[0]);
-        this.sort(layers, next_pos);
+        this.vm.sort(layers, next_pos);
 
         // it's important to prevent event bubbling as it would trigger ondragstart
         // when dragging over 'draggable' elements
         return false;
     },
 
-    dragEnd: function() {
-        this.sort(this.items, undefined);
-        EVENTS.emit('layers.updated', {
-            'layers': this.items
-        });
+    ev_dragEnd: function() {
+        this.vm.sort(this.vm.layerTree, undefined);
+
+        this.vm.emitLayersUpdated();
     },
 
-    layerToggle: function (item) {
+    ev_layerToggle: function (item) {
         if (item.visible()) {
             item.visible(false);
         } else {
             item.visible(true);
         }
-        EVENTS.emit('.layers.updated');
+        this.vm.emitLayersUpdated();
     },
 
-    queryLayerToggle: function (item) {
+    ev_queryLayerToggle: function (item) {
         if (item.query()) {
             item.query(false);
         } else {
@@ -235,7 +245,7 @@ VIEWMODEL.prototype = {
         }
     },
 
-    queryGroupToggle: function(item) {
+    ev_queryGroupToggle: function(item) {
           if (item.query()) {
             item.query(false);
 
@@ -251,7 +261,7 @@ VIEWMODEL.prototype = {
         }
     },
 
-    groupToggle: function(item) {
+    ev_groupToggle: function(item) {
         if (item.visible()) {
             item.visible(false);
 
@@ -266,24 +276,24 @@ VIEWMODEL.prototype = {
             });
         }
 
-        EVENTS.emit('layers.updated');
+        this.vm.emitLayersUpdated();
     },
 
-    layerTransparency: function (item, e) {
+    ev_layerTransparency: function (item, e) {
         item.transparency(e.target.value);
 
-        EVENTS.emit('layers.updated');
+        this.vm.emitLayersUpdated();
     },
 
-    mouseOver: function(item) {
+    ev_mouseOver: function(item) {
         item.showLayerControl(true);
     },
 
-    mouseOut: function(item) {
+    ev_mouseOut: function(item) {
         item.showLayerControl(false);
     },
 
-    toggleShowControl: function(item) {
+    ev_toggleShowControl: function(item) {
         if (item.showLayerDetails()) {
             item.showLayerDetails(false);
         } else {
@@ -291,7 +301,7 @@ VIEWMODEL.prototype = {
         }
     },
 
-    toggleGroupCollapse: function(item) {
+    ev_toggleGroupCollapse: function(item) {
         if (item.collapsed()) {
             item.collapsed(false);
         } else {
