@@ -26,15 +26,16 @@ var Group = function (data) {
 };
 
 
-var VIEWMODEL = function () {
-    this.init();
+var VIEWMODEL = function (options) {
+    this.init(options);
 };
 
 VIEWMODEL.prototype = {
     init: function (options) {
         var self = this;
+        this.options = options;
 
-        this.layers = options.layers;
+        this.layers = this.options.layers;
 
         this.layerTree = [];
 

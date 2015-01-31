@@ -73,14 +73,13 @@ SL_LayerControl.prototype = {
 
         // init the viewmodel
 
-        this.SL_Source.updateParams({
-            'LAYERS':this.getLayersParam(),
-            'MAP': this.options.map,
-            'TRANSPARENCIES': this.getTransparencyParam()
-        });
+        // this.SL_Source.updateParams({
+        //     'LAYERS':this.getLayersParam(),
+        //     'MAP': this.options.map,
+        //     'TRANSPARENCIES': this.getTransparencyParam()
+        // });
 
         // initialize mithril module
-        // m.module(document.getElementById('panelLayers'), {controller: Layer.controller, view: Layer.view});
     },
 
     _initEvents: function () {

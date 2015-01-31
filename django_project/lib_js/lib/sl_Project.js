@@ -2,6 +2,8 @@
 
 var EVENTS = require('./events');
 
+var m = require('mithril');
+
 var ol = require('../contrib/ol');
 
 // initialize projections
@@ -104,7 +106,12 @@ SL_Project.prototype = {
     },
 
     _initUI: function() {
+        // layer control
         var ui_lc = new UI_LayerControl(this.options);
+        m.module(document.getElementById('panelLayers'), {
+            controller: function () {return ui_lc.controller;},
+            view: function (ctrl) {return [ui_lc.view(ctrl)];},
+        });
     }
 };
 
