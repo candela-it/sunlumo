@@ -13,7 +13,7 @@ var render = function(ctrl) {
     return m('div', {'class': 'layer_list'}, [
         ctrl.vm.layerTree.map(function (treeItem, index) {
             // is the current treeItem dragged
-            var dragging = (index === ctrl.dragged_item()) ? 'dragging' : '';
+            var dragging = (index === ctrl.vm.dragged_item()) ? 'dragging' : '';
 
 
             if (treeItem.type() === 'layer') {
@@ -29,8 +29,8 @@ var render = function(ctrl) {
 var renderLayerItem = function (ctrl, index, item, dragging) {
     // group layer handler
     var properties = {
-        'onmouseenter': ctrl.mouseOver.bind(ctrl, item),
-        'onmouseleave': ctrl.mouseOut.bind(ctrl, item)
+        'onmouseenter': ctrl.vm.mouseOver.bind(ctrl, item),
+        'onmouseleave': ctrl.vm.mouseOut.bind(ctrl, item)
     };
 
     if (index !== undefined) {
@@ -38,16 +38,16 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             'data-id': index,
             'class': dragging,
             'draggable': 'true',
-            'ondragstart': ctrl.dragStart.bind(ctrl),
-            'ondragover': ctrl.dragOver.bind(ctrl),
-            'ondragend': ctrl.dragEnd.bind(ctrl)
+            'ondragstart': ctrl.vm.dragStart.bind(ctrl),
+            'ondragover': ctrl.vm.dragOver.bind(ctrl),
+            'ondragend': ctrl.vm.dragEnd.bind(ctrl)
         });
     }
 
     return m('div.layer', properties, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.layerToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.layerToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-eye'
@@ -55,7 +55,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
         ]),
         m('div', {
             'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.queryLayerToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.queryLayerToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-info'
@@ -67,7 +67,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
 
         m('div', {
             'class':  (item.showLayerControl()) ? 'layer-control layer-settings-control' : 'layer-control layer-settings-control hide',
-            'onclick': ctrl.toggleShowControl.bind(ctrl, item)
+            'onclick': ctrl.vm.toggleShowControl.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-widget'
@@ -80,7 +80,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             m('input[type=range]', {
                 'draggable': false,
                 'value': item.transparency(),
-                'onchange': ctrl.layerTransparency.bind(ctrl, item)
+                'onchange': ctrl.vm.layerTransparency.bind(ctrl, item)
             })
         ])
     ]);
@@ -101,13 +101,13 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         'data-id': index,
         'class': dragging,
         'draggable': 'true',
-        'ondragstart': ctrl.dragStart.bind(ctrl),
-        'ondragover': ctrl.dragOver.bind(ctrl),
-        'ondragend': ctrl.dragEnd.bind(ctrl),
+        'ondragstart': ctrl.vm.dragStart.bind(ctrl),
+        'ondragover': ctrl.vm.dragOver.bind(ctrl),
+        'ondragend': ctrl.vm.dragEnd.bind(ctrl),
     }, [
         m('div', {
             'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.groupToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.groupToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-eye'
@@ -115,7 +115,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         ]),
         m('div', {
             'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
-            'onclick': ctrl.queryGroupToggle.bind(ctrl, item)
+            'onclick': ctrl.vm.queryGroupToggle.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fi-info'
@@ -124,7 +124,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         m('div', {'class': 'group-name'}, [item.name()]),
 
         m('div', {
-            'onclick': ctrl.toggleGroupCollapse.bind(ctrl, item),
+            'onclick': ctrl.vm.toggleGroupCollapse.bind(ctrl, item),
             'class': 'group-control'
         }, [
             m('i', {
