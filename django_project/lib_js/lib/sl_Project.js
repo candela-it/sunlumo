@@ -7,6 +7,8 @@ var ol = require('../contrib/ol');
 // initialize projections
 require('./proj');
 
+var UI_LayerControl = require('./ui/layerControl');
+
 var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
@@ -34,12 +36,14 @@ var SL_Project = function (options) {
 
     // initialize the client
     this._init();
+    this._initUI();
 };
 
 
 SL_Project.prototype = {
 
     _init: function (){
+
         // initialize
 
         var projection = ol.proj.get('EPSG:3765');
@@ -98,6 +102,10 @@ SL_Project.prototype = {
             console.log('test');
         });
     },
+
+    _initUI: function() {
+        var ui_lc = new UI_LayerControl(this.options);
+    }
 };
 
 module.exports = SL_Project;
