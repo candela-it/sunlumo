@@ -99,6 +99,12 @@ VIEWMODEL.prototype = {
         });
     },
 
+    emitQueryLayersUpdated: function () {
+        EVENTS.emit('query.layers.updated', {
+            'query_layers': this.getQueryLayersParam()
+        });
+    },
+
     getLayersParam: function () {
         // return comma concatenated string of visible layers
         var visible_layers = [];
@@ -243,10 +249,11 @@ VIEWMODEL.prototype = {
         } else {
             item.query(true);
         }
+        this.vm.emitQueryLayersUpdated();
     },
 
     ev_queryGroupToggle: function(item) {
-          if (item.query()) {
+        if (item.query()) {
             item.query(false);
 
             _.forEach(item.layers(), function (layer) {
@@ -259,6 +266,7 @@ VIEWMODEL.prototype = {
                 layer.query(true);
             });
         }
+        this.vm.emitQueryLayersUpdated();
     },
 
     ev_groupToggle: function(item) {

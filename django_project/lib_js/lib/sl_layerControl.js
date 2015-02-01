@@ -94,12 +94,16 @@ SL_LayerControl.prototype = {
             self._updateSourceParams(options);
         });
 
+        EVENTS.on('query.layers.updated', function(options) {
+            self.queryLayersParam = options.query_layers;
+        });
+
         EVENTS.on('map.singleclick', function(data) {
             var viewResolution = self.map.getView().getResolution();
             var url = self.SL_Source.getGetFeatureInfoUrl(
                 data.coordinate, viewResolution, self.map.getView().getProjection(), {
                    'INFO_FORMAT': 'application/json',
-                   'QUERY_LAYERS': self.getQueryLayersParam()
+                   'QUERY_LAYERS': self.queryLayersParam
                });
 
             // emit updated url to the GFI control
