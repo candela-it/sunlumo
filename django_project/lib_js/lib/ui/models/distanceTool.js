@@ -13,7 +13,6 @@ var DistanceTool = function () {
 };
 
 
-
 var Result = function(data) {
     this.order = m.prop(data.order);
     this.result = m.prop(data.result);

@@ -11,7 +11,7 @@ var VIEW = function (ctrl) {
 
 var render = function(ctrl) {
     return [
-        m('div.toolbox-control-results.panel', {
+        m('div.toolbox-control-results.panel.GFITool', {
         'class': (ctrl.vm.control.active()) ? '' : 'hide'
         }, [
             m('div', { 'class': 'heading' }, 'Izabrano'),

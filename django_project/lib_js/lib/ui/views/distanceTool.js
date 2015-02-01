@@ -17,8 +17,8 @@ var render = function(ctrl) {
         }, [
             m('i', { 'class': 'fi-foot'})
         ]),
-        m('div', {
-            'class': (ctrl.vm.control.active()) ? 'toolbox-control-results panel' : 'toolbox-control-results panel hide'
+        m('div.toolbox-control-results.panel.DistanceTool', {
+            'class': (ctrl.vm.control.active()) ? '' : 'hide'
         }, [
             m('div', { 'class': 'heading' }, 'Alati za mjerenje'),
             m('div', { 'class': 'content' }, [

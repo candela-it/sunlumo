@@ -65,6 +65,13 @@ SL_LayerControl.prototype = {
             transparent:true,
             source: this.SL_Source
         });
+
+        this.SL_QGIS_Layer.on('change', function() {
+            EVENTS.emit('qgs.spinner.activate');
+        });
+        this.SL_QGIS_Layer.on('postcompose', function() {
+            EVENTS.emit('qgs.spinner.deactivate');
+        });
     },
 
     _init: function () {
@@ -82,7 +89,6 @@ SL_LayerControl.prototype = {
 
     _initEvents: function () {
         var self = this;
-
         EVENTS.on('layers.updated', function(options) {
             self._updateSourceParams(options);
             // EVENTS.emit('read.layers.and.transparencies', {

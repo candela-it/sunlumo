@@ -6,7 +6,6 @@ var ol = require('../contrib/ol');
 
 var EVENTS = require('./events');
 
-
 var SL_GetFeatureInfoControl = function (map, options) {
     // default options
     this.options = {

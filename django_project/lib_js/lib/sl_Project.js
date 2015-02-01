@@ -68,6 +68,10 @@ SL_Project.prototype = {
 
         this.map = new ol.Map({
             target: 'map',
+            logo: {
+                src: '/static/images/candelaIT_logo.png',
+                href: 'http://candela-it.com'
+            },
             view: new ol.View({
                 projection: projection,
                 center: ol.proj.transform([17.02, 43.5], 'EPSG:4326', 'EPSG:3765'),
