@@ -39,12 +39,18 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             },
-            project: ['lib_js/lib/*.js'],
+            project: [
+                'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
+                'lib_js/lib/ui/models/*.js'
+            ],
             tests: ['lib_js/tests/*.js']
         },
         watch: {
             project: {
-                files: ['lib_js/lib/*.js', 'lib_css/*.css'],
+                files: [
+                    'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
+                    'lib_js/lib/ui/models/*.js', 'lib_css/*.css'
+                ],
                 tasks: ['default'],
                 options: {
                     spawn: false,

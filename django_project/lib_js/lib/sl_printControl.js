@@ -7,189 +7,6 @@ var ol = require('../contrib/ol');
 // global events
 var EVENTS = require('./events');
 
-// internal events
-var jvents = require('jvent');
-
-var events = new jvents();
-
-
-// serialize object to parameters list
-// this should be moved to the generic utils package
-
-var seralizeObjectToParams = function (obj) {
-    var str = '';
-    for (var key in obj) {
-        if(obj.hasOwnProperty(key)) {
-            if (str !== '') {
-                str += '&';
-            }
-            str += key + '=' + encodeURIComponent(obj[key]);
-        }
-    }
-    return str;
-};
-
-
-var PrintLayout = function(data) {
-    this.name = m.prop(data.name);
-    this.width = m.prop(data.width);
-    this.height = m.prop(data.height);
-};
-
-var PrintLayoutCollection = Array;
-
-var Scales = [
-    {
-        scale: 500,
-        display: '1:500'
-    },
-    {
-        scale: 1000,
-        display: '1:1000'
-    },
-    {
-        scale: 2000,
-        display: '1:2000'
-    },
-    {
-        scale: 5000,
-        display: '1:5000'
-    },
-    {
-        scale: 10000,
-        display: '1:10000'
-    },
-    {
-        scale: 25000,
-        display: '1:25000'
-    },
-    {
-        scale: 50000,
-        display: '1:50000'
-    },
-    {
-        scale: 100000,
-        display: '1:100000'
-    }
-];
-
-// PrintControl ViewModel, Controller and View
-var PrintControl = {};
-
-PrintControl.vm = (function() {
-    var vm = {};
-
-    vm.params = {
-        'bbox': undefined,
-        'layers': undefined,
-        'transparencies': undefined,
-        'map': undefined,
-        'layout': undefined,
-        'srs': 'EPSG:3765'
-    };
-
-    vm.printUrl = m.prop(undefined);
-
-    vm.init = function() {
-        vm.layouts_list = new PrintLayoutCollection();
-        // Set initial scale option.
-        vm.selected_scale = Scales[0];
-        vm.selected_layout = undefined;
-    };
-
-    // add layout to layouts list.
-    vm.add = function(name, width, height) {
-        vm.layouts_list.push(new PrintLayout({
-            'name': name,
-            'width': width,
-            'height': height
-        }));
-    };
-
-    vm.updatePrintUrl = function () {
-        var printParam = seralizeObjectToParams(vm.params);
-
-        var url = '/printpdf?';
-
-        var printUrl = url + printParam;
-
-        vm.printUrl(printUrl);
-    };
-
-    return vm;
-}());
-
-PrintControl.controller = function() {
-    this.onScaleClick = function(item) {
-        PrintControl.vm.selected_scale = item;
-        // Automatically show print area.
-        events.emit('.showPrintArea', {
-            'scale': PrintControl.vm.selected_scale,
-            'layout':PrintControl.vm.selected_layout
-        });
-    };
-
-    this.onPrintLayoutClick = function(item) {
-        PrintControl.vm.selected_layout = item;
-        // Automatically show print area.
-        events.emit('.showPrintArea', {
-            'scale': PrintControl.vm.selected_scale,
-            'layout':PrintControl.vm.selected_layout
-        });
-    };
-
-    this.onShowPrintAreaClick = function() {
-        events.emit('.showPrintArea', {
-            'scale': PrintControl.vm.selected_scale,
-            'layout':PrintControl.vm.selected_layout
-        });
-    };
-
-    this.onHidePrintAreaClick = function() {
-        events.emit('.hidePrintArea');
-    };
-};
-
-PrintControl.view = function(ctrl) {
-    return m('div', {}, [
-        m('label', 'Scale'),
-        m('select', {
-            'name': 'print-scales'
-        }, [
-            Scales.map(function(item) {
-                return m('option', {
-                    'value': item.scale,
-                    'onclick': ctrl.onScaleClick.bind(ctrl, item)
-                }, item.display);
-            })
-        ]),
-        m('label', 'Layout'),
-        m('select', {
-            'name': 'print-layouts'
-        }, [
-            PrintControl.vm.layouts_list.map(function(item) {
-                return m('option', {
-                    'value': item.name(),
-                    'onclick': ctrl.onPrintLayoutClick.bind(ctrl, item)
-                }, item.name());
-            })
-        ]),
-        m('button', {
-            'onclick': ctrl.onShowPrintAreaClick.bind(ctrl)
-        }, 'SHOW PRINT AREA'),
-        m('a', {
-            // generate printUrl
-            'href': PrintControl.vm.printUrl()
-        }, [
-            m('button', ['PRINT']),
-        ]),
-        m('br'),
-        m('button', {
-            'onclick': ctrl.onHidePrintAreaClick.bind(ctrl)
-        }, 'HIDE'),
-    ]);
-};
-
 var SL_PrintControl = function(map, options) {
     // default options
     this.options = {
@@ -233,59 +50,34 @@ SL_PrintControl.prototype = {
 
         this.map.addLayer(this.SL_PrintArea_Layer);
 
-        this.SL_PrintArea_Feature = null;
+        this.SL_PrintArea_Feature = undefined;
         this.printAreaExist = false;
 
-        // initiliaze viewmodel
-        PrintControl.vm.init();
-
-        PrintControl.vm.params.map = this.options.map;
-
-        _.forEach(this.options.layouts, function(layout) {
-            var layout_data = self.options.layouts_data[layout];
-
-            PrintControl.vm.add(
-                layout, Number(layout_data.width), Number(layout_data.height)
-            );
-        });
-
-        // Set initial layout option.
-        PrintControl.vm.selected_layout = PrintControl.vm.layouts_list[0];
-        PrintControl.vm.params.layout = PrintControl.vm.layouts_list[0].name();
 
         // Add Drag interaction for PrintControl Features to map.
         this.map.addInteraction(new Drag(this));
 
-        m.module(document.getElementById('panelPrint'), {controller: PrintControl.controller, view: PrintControl.view});
+        // m.module(document.getElementById('panelPrint'), {controller: PrintControl.controller, view: PrintControl.view});
     },
 
     _handleEvents: function() {
         var self = this;
 
-        events.on('.showPrintArea', function (options) {
+        EVENTS.on('print.show', function (options) {
             self.onShowPrintArea(options);
         });
 
-        events.on('.hidePrintArea', function () {
+        EVENTS.on('print.hide', function () {
             self.onHidePrintArea();
         });
 
-        events.on('.updatedPrintArea', function () {
-            // update vm bbox
-            PrintControl.vm.params.bbox = self.SL_PrintArea_Feature.getGeometry().getExtent();
+        // EVENTS.on('read.layers.and.transparencies', function(params) {
+        //     PrintControl.vm.params.layers = params.layers;
+        //     PrintControl.vm.params.transparencies = params.transparencies;
+        //     PrintControl.vm.updatePrintUrl();
 
-            m.startComputation();
-            // emit event to pull selected map_layers and transparencies
-            EVENTS.emit('print.area.updated');
-        });
-
-        EVENTS.on('read.layers.and.transparencies', function(params) {
-            PrintControl.vm.params.layers = params.layers;
-            PrintControl.vm.params.transparencies = params.transparencies;
-            PrintControl.vm.updatePrintUrl();
-
-            m.endComputation();
-        });
+        //     m.endComputation();
+        // });
     },
 
     onShowPrintArea: function(options) {
@@ -340,7 +132,9 @@ SL_PrintControl.prototype = {
                     fourthVertex
                     ]]);
         }
-        events.emit('.updatedPrintArea');
+        EVENTS.emit('print.area.updated', {
+            'bbox': this.SL_PrintArea_Feature.getGeometry().getExtent()
+        });
     },
 
     createPrintAreaNodes: function(printArea) {
@@ -453,7 +247,9 @@ Drag.prototype.handleDragEvent = function(evt) {
         this.coordinate_[0] = evt.coordinate[0];
         this.coordinate_[1] = evt.coordinate[1];
 
-        events.emit('.updatedPrintArea');
+        EVENTS.emit('print.area.updated', {
+            'bbox': this.SL_PrintArea_Feature.getGeometry().getExtent()
+        });
     }
 };
 

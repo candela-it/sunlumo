@@ -2,10 +2,18 @@
 
 var EVENTS = require('./events');
 
+var m = require('mithril');
+
 var ol = require('../contrib/ol');
 
 // initialize projections
 require('./proj');
+
+var UI_LayerControl = require('./ui/layerControl');
+var UI_SimilaritySearch = require('./ui/similaritySearch');
+var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
+var UI_PrintControl = require('./ui/printControl');
+var UI_DistanceTool = require('./ui/distanceTool');
 
 var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
@@ -34,12 +42,14 @@ var SL_Project = function (options) {
 
     // initialize the client
     this._init();
+    this._initUI();
 };
 
 
 SL_Project.prototype = {
 
     _init: function (){
+
         // initialize
 
         var projection = ol.proj.get('EPSG:3765');
@@ -102,6 +112,44 @@ SL_Project.prototype = {
             console.log('test');
         });
     },
+
+    _initUI: function() {
+        // layer control
+        var ui_lc = new UI_LayerControl(this.options);
+        m.module(document.getElementById('panelLayers'), {
+            controller: function () {return ui_lc.controller;},
+            view: function (ctrl) {return [ui_lc.view(ctrl)];},
+        });
+
+        var ui_ss = new UI_SimilaritySearch(this.options);
+        m.module(document.getElementById('panelSearch'), {
+            controller: function () {return ui_ss.controller;},
+            view: function (ctrl) {return [ui_ss.view(ctrl)];},
+        });
+
+        var ui_gfi = new UI_GetFeatureInfo(this.options);
+        m.module(document.getElementById('resultsToolControl'), {
+            controller: function () {return ui_gfi.controller;},
+            view: function (ctrl) {return [ui_gfi.view(ctrl)];},
+        });
+
+        // printControl depends on active layers and transparencies so we need
+        // to pass them as initialState
+        var ui_pc = new UI_PrintControl(this.options, {
+            'layers': ui_lc.controller.vm.getLayersParam(),
+            'transparencies': ui_lc.controller.vm.getTransparencyParam()
+        });
+        m.module(document.getElementById('panelPrint'), {
+            controller: function () {return ui_pc.controller;},
+            view: function (ctrl) {return [ui_pc.view(ctrl)];},
+        });
+
+        var ui_dt = new UI_DistanceTool(this.options);
+        m.module(document.getElementById('distanceToolControl'), {
+            controller: function () {return ui_dt.controller;},
+            view: function (ctrl) {return [ui_dt.view(ctrl)];},
+        });
+    }
 };
 
 module.exports = SL_Project;
