@@ -44,7 +44,7 @@ var VIEWMODEL = function(options) {
 };
 
 VIEWMODEL.prototype = {
-    init: function() {
+    init: function(options) {
         this.list = new FeatureList();
         this.control = new ResultsDisplay();
     },

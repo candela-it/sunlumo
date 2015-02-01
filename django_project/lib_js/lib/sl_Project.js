@@ -12,6 +12,7 @@ require('./proj');
 var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
+var UI_PrintControl = require('./ui/printControl');
 
 var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
@@ -125,6 +126,17 @@ SL_Project.prototype = {
         m.module(document.getElementById('resultsToolControl'), {
             controller: function () {return ui_gfi.controller;},
             view: function (ctrl) {return [ui_gfi.view(ctrl)];},
+        });
+
+        // printControl depends on active layers and transparencies so we need
+        // to pass them as initialState
+        var ui_pc = new UI_PrintControl(this.options, {
+            'layers': ui_lc.controller.vm.getLayersParam(),
+            'transparencies': ui_lc.controller.vm.getTransparencyParam()
+        });
+        m.module(document.getElementById('panelPrint'), {
+            controller: function () {return ui_pc.controller;},
+            view: function (ctrl) {return [ui_pc.view(ctrl)];},
         });
     }
 };
