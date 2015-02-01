@@ -13,6 +13,7 @@ var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
 var UI_PrintControl = require('./ui/printControl');
+var UI_DistanceTool = require('./ui/distanceTool');
 
 var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_LayerControl = require('./sl_layerControl');
@@ -137,6 +138,12 @@ SL_Project.prototype = {
         m.module(document.getElementById('panelPrint'), {
             controller: function () {return ui_pc.controller;},
             view: function (ctrl) {return [ui_pc.view(ctrl)];},
+        });
+
+        var ui_dt = new UI_DistanceTool(this.options);
+        m.module(document.getElementById('distanceToolControl'), {
+            controller: function () {return ui_dt.controller;},
+            view: function (ctrl) {return [ui_dt.view(ctrl)];},
         });
     }
 };

@@ -4,106 +4,6 @@ var m = require('mithril');
 var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 
-var DistanceTool = function () {
-    this.active = m.prop(false);
-    this.controlType = m.prop('LineString');
-};
-
-
-
-var Result = function(data) {
-    this.order = m.prop(data.order);
-    this.result = m.prop(data.result);
-};
-
-var ResultList = Array;
-
-DistanceTool.vm = (function () {
-    var vm = {};
-    vm.init = function () {
-        vm.list = new ResultList();
-    };
-
-    // add layer to the list
-    vm.add = function(result) {
-        var order = vm.list.length + 1;
-        vm.list.push(new Result({
-            'order': order,
-            'result': result
-        }));
-    };
-
-    vm.update = function(result) {
-        var lastResult = vm.list.length -1;
-        vm.list[lastResult].result(result);
-        m.redraw();
-    };
-
-    return vm;
-}());
-
-DistanceTool.controller = function() {
-    DistanceTool.vm.init();
-
-    this.control = new DistanceTool();
-
-    this.toggleControl = function() {
-        if (this.control.active()) {
-            this.control.active(false);
-            EVENTS.emit('control.DistanceTool.deactivate');
-        } else {
-            this.control.active(true);
-            EVENTS.emit('control.DistanceTool.activate', {
-                'CtrlType': this.control.controlType()
-            });
-        }
-    };
-
-    this.toggleControlType = function(CtrlType) {
-        if (CtrlType !== this.control.controlType()) {
-            this.control.controlType(CtrlType);
-            EVENTS.emit('control.DistanceTool.changedType', {
-                'CtrlType': this.control.controlType()
-            });
-        }
-    };
-};
-
-DistanceTool.view = function(ctrl) {
-    return [
-    m('div', {
-        'class': (ctrl.control.active()) ? 'button small controlButton' : 'button small info controlButton',
-        'onclick': ctrl.toggleControl.bind(ctrl)
-    }, [
-        m('i', { 'class': 'fi-foot'})
-    ]),
-    m('div', {
-        'class': (ctrl.control.active()) ? 'toolbox-control-results panel' : 'toolbox-control-results panel hide'
-    }, [
-        m('div', { 'class': 'heading' }, 'Alati za mjerenje'),
-        m('div', { 'class': 'content' }, [
-            m('div', { 'class': 'text-center' }, [
-                m('ul', { 'class': 'button-group'}, [
-                    m('li', {}, m('a', {
-                        'class': (ctrl.control.controlType() === 'LineString') ? 'button tiny' : 'button tiny info',
-                        'onclick': ctrl.toggleControlType.bind(ctrl, 'LineString')
-                    }, 'Udaljenost')),
-                    m('li', {}, m('a', {
-                        'class': (ctrl.control.controlType() === 'Polygon') ? 'button tiny' : 'button tiny info',
-                        'onclick': ctrl.toggleControlType.bind(ctrl, 'Polygon')
-                    }, 'Površina')),
-                ])
-            ]),
-            m('div', {}, [
-                DistanceTool.vm.list.map(function(item) {
-                    return m('div', { 'class': 'item'}, item.order() + '. ' + item.result());
-                })
-            ])
-        ])
-    ])];
-};
-
-m.module(document.getElementById('distanceToolControl'), {controller: DistanceTool.controller, view: DistanceTool.view});
 
 var SL_DistanceToolControl = function (map, options) {
     // default options
@@ -162,10 +62,14 @@ SL_DistanceToolControl.prototype = {
             type: /** @type {ol.geom.GeometryType} */ (CtrlType)
         });
         this.draw.on('drawstart', function(evt) {
-            DistanceTool.vm.add(self.returnResult(evt.feature));
+            EVENTS.emit('distance.draw.start', {
+                'result': self.returnResult(evt.feature)
+            });
         });
         this.draw.on('drawend', function(evt) {
-            DistanceTool.vm.update(self.returnResult(evt.feature));
+            EVENTS.emit('distance.draw.update', {
+                'result': self.returnResult(evt.feature)
+            });
         });
     },
 
