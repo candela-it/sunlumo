@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var m = require('mithril');
-var ol = require('../../../contrib/ol');
 
 // global events
 var EVENTS = require('../../events');
@@ -45,6 +44,7 @@ var VIEWMODEL = function(options) {
 
 VIEWMODEL.prototype = {
     init: function(options) {
+        this.options = options;
         this.list = new FeatureList();
         this.control = new ResultsDisplay();
     },

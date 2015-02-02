@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var m = require('mithril');
-var ol = require('../../../contrib/ol');
 var cookie = require('../../../contrib/cookie');
 
 // global events

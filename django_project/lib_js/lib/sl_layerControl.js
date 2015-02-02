@@ -1,16 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
-var m = require('mithril');
 var ol = require('../contrib/ol');
 
 // global events
 var EVENTS = require('./events');
-
-// local events
-var jvents = require('jvent');
-
-var events = new jvents();
 
 
 var SL_LayerControl = function (map, options) {
@@ -75,7 +69,6 @@ SL_LayerControl.prototype = {
     },
 
     _init: function () {
-        var self = this;
         this._initQGISLayer();
     },
 

@@ -1,6 +1,5 @@
 'use strict';
 
-var m = require('mithril');
 var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 

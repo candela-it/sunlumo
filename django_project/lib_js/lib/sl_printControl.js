@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-var m = require('mithril');
 var ol = require('../contrib/ol');
 
 // global events
@@ -41,7 +39,6 @@ var SL_PrintControl = function(map, options) {
 
 SL_PrintControl.prototype = {
     _init: function() {
-        var self = this;
         this.SL_PrintArea_Source = new ol.source.Vector();
 
         this.SL_PrintArea_Layer = new ol.layer.Vector({
@@ -57,7 +54,6 @@ SL_PrintControl.prototype = {
         // Add Drag interaction for PrintControl Features to map.
         this.map.addInteraction(new Drag(this));
 
-        // m.module(document.getElementById('panelPrint'), {controller: PrintControl.controller, view: PrintControl.view});
     },
 
     _handleEvents: function() {
@@ -209,9 +205,10 @@ ol.inherits(Drag, ol.interaction.Pointer);
 Drag.prototype.handleDownEvent = function(evt) {
     var map = evt.map;
 
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
-          return feature;
+    var feature = map.forEachFeatureAtPixel(
+        evt.pixel,
+        function (feature) {
+            return feature;
         });
 
     if (feature) {
@@ -237,11 +234,11 @@ Drag.prototype.handleDragEvent = function(evt) {
 
         geometry.translate(deltaX, deltaY);
 
-        this.printControl.SL_PrintArea_Source.forEachFeature(function(feat) {
-            if (feat.getProperties().isPrintAreaNode) {
-                var node_geometry = feat.getGeometry().translate(deltaX, deltaY);
-            }
-        });
+        // this.printControl.SL_PrintArea_Source.forEachFeature(function(feat) {
+            // if (feat.getProperties().isPrintAreaNode) {
+            //     var node_geometry = feat.getGeometry().translate(deltaX, deltaY);
+            // }
+        // });
 
 
         this.coordinate_[0] = evt.coordinate[0];
@@ -260,10 +257,12 @@ Drag.prototype.handleDragEvent = function(evt) {
 Drag.prototype.handleMoveEvent = function(evt) {
     if (this.cursor_) {
       var map = evt.map;
-      var feature = map.forEachFeatureAtPixel(evt.pixel,
-          function(feature, layer) {
+      var feature = map.forEachFeatureAtPixel(
+        evt.pixel,
+        function(feature) {
             return feature;
-          });
+        }
+    );
       var element = evt.map.getTargetElement();
       if (feature) {
         if (element.style.cursor !== this.cursor_) {
@@ -282,7 +281,7 @@ Drag.prototype.handleMoveEvent = function(evt) {
  * @param {ol.MapBrowserEvent} evt Map browser event.
  * @return {boolean} `false` to stop the drag sequence.
  */
-Drag.prototype.handleUpEvent = function(evt) {
+Drag.prototype.handleUpEvent = function() {
     this.coordinate_ = null;
     this.feature_ = null;
     return false;

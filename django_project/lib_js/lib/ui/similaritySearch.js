@@ -1,11 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-var m = require('mithril');
-
-// global events
-var EVENTS = require('../events');
-
 var ViewModel = require('./models/similaritySearch');
 
 var View = require('./views/similaritySearch');

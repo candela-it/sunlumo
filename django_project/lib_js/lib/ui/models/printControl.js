@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var m = require('mithril');
-var ol = require('../../../contrib/ol');
 
 // global events
 var EVENTS = require('../../events');

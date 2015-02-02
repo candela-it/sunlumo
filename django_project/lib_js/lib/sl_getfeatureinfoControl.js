@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
 var m = require('mithril');
 var ol = require('../contrib/ol');
 

@@ -1,11 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-var m = require('mithril');
-
-// global events
-var EVENTS = require('../events');
-
 var layerControlViewModel = require('./models/layerControl');
 
 var View = require('./views/layerControl');
