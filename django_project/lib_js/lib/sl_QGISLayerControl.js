@@ -7,7 +7,7 @@ var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 
 
-var SL_LayerControl = function (sl_map, options) {
+var SL_QGISLayerControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
@@ -42,7 +42,7 @@ var SL_LayerControl = function (sl_map, options) {
 };
 
 
-SL_LayerControl.prototype = {
+SL_QGISLayerControl.prototype = {
 
     _initQGISLayer: function () {
         this.SL_Source = new ol.source.ImageWMS({
@@ -102,9 +102,9 @@ SL_LayerControl.prototype = {
         });
 
         EVENTS.on('map.singleclick', function(data) {
-            var viewResolution = self.map.getView().getResolution();
+            var viewResolution = self.sl_map.map.getView().getResolution();
             var url = self.SL_Source.getGetFeatureInfoUrl(
-                data.coordinate, viewResolution, self.map.getView().getProjection(), {
+                data.coordinate, viewResolution, self.sl_map.map.getView().getProjection(), {
                    'INFO_FORMAT': 'application/json',
                    'QUERY_LAYERS': self.queryLayersParam
                });
@@ -131,4 +131,4 @@ SL_LayerControl.prototype = {
     }
 };
 
-module.exports = SL_LayerControl;
+module.exports = SL_QGISLayerControl;

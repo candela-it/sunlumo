@@ -51,6 +51,8 @@ SL_GetFeatureInfoControl.prototype = {
             source: this.SL_GFI_Source
         });
 
+        this.sl_map.addControlOverlayLayer(this.SL_GFI_Layer);
+
         // propagate map events
         this.sl_map.map.on('singleclick', function(evt) {
             EVENTS.emit('map.singleclick', {

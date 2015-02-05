@@ -11,8 +11,8 @@ var UI_SimilaritySearch = require('./ui/similaritySearch');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
 var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
+var UI_SpinnerComponent = require('./ui/spinnerComponent');
 
-// var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_Map = require('./sl_map');
 var SL_QGISLayerControl = require('./sl_QGISLayerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
@@ -101,6 +101,12 @@ SL_Project.prototype = {
         m.module(document.getElementById('distanceToolControl'), {
             controller: function () {return ui_dt.controller;},
             view: function (ctrl) {return [ui_dt.view(ctrl)];},
+        });
+
+        var ui_spin = new UI_SpinnerComponent(this.options);
+        m.module(document.getElementById('logo'), {
+            controller: function () {return ui_spin.controller;},
+            view: function (ctrl) {return [ui_spin.view(ctrl)];},
         });
     }
 };
