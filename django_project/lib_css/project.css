@@ -61,63 +61,58 @@ html, body {
   margin-left: 0;
 }
 
-#panelLayers {
-  padding: 0 !important;
-  margin: 2px 2px;
-}
-
-#panelLayers div.layer-details {
+div.layer-details {
   display: inline-block;
   margin-top: 5px;
   padding: 0 0 0 10px;
 }
 
-#panelLayers div.layer-name {
+div.layer-name {
   margin-left: 10px;
   display: inline-block;
   line-height: 18px;
   text-transform: uppercase;
 }
 
-#panelLayers div.layer-settings-control {
+div.layer-settings-control {
   position: relative;
   float: right;
   clear: right;
 }
 
 
-#panelLayers div.layer_list {
-  margin:0;
+div.layer_list {
+  padding: 0 !important;
+  margin: 2px 2px;
   width: 100%;
   display: inline-block;
-  padding:0;
 }
 
-#panelLayers div.layer {
+div.layer {
   font-size: 12px;
   color: #000;
   padding: 4px 5px 2px 0px;
 }
 
-#panelLayers div.group {
+div.group {
   font-size: 16px;
   font-weight: bold;
   color: #000;
   padding: 4px 5px 2px 0px;
 }
 
-#panelLayers div.group:hover {
+div.group:hover {
   background-color: #EEEEEE;
 }
 
-#panelLayers div.group .layer {
+div.group .layer {
   font-size: 12px;
   font-weight: normal;
   color: #000;
   padding: 4px 5px 2px 20px;
 }
 
-#panelLayers div.group-name {
+div.group-name {
   margin-left: 10px;
   display: inline-block;
   line-height: 18px;
@@ -125,15 +120,15 @@ html, body {
 }
 
 
-#panelLayers div.layer:hover {
+div.layer:hover {
   background-color: #EEEEEE;
 }
 
-#panelLayers div.dragging {
+div.dragging {
   background: #FBB;
 }
 
-#panelLayers .layer-control {
+.layer-control {
   display: inline-block;
   font-size: 16px;
   color: #000;
@@ -142,7 +137,7 @@ html, body {
   margin-left: 5px;
 }
 
-#panelLayers .group-control {
+.group-control {
   position: relative;
   float: right;
   clear: right;
@@ -155,7 +150,7 @@ html, body {
   margin-left: 5px;
 }
 
-#panelLayers .layer-control:hover {
+.layer-control:hover {
   color: #000;
 }
 
