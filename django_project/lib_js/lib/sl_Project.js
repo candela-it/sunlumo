@@ -6,9 +6,6 @@ var m = require('mithril');
 
 var ol = require('../contrib/ol');
 
-// initialize projections
-require('./proj');
-
 var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
@@ -16,6 +13,7 @@ var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
 
 // var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
+var SL_Map = require('./sl_map');
 var SL_LayerControl = require('./sl_layerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
 var SL_DistanceToolControl = require('./sl_distanceToolControl');
@@ -50,64 +48,25 @@ SL_Project.prototype = {
 
     _init: function (){
 
-        // initialize
-
-        var projection = ol.proj.get('EPSG:3765');
-
-        var extent = [208311.05, 4614890.75, 724721.78, 5159767.36];
-        projection.setExtent(extent);
-
-        var dgu_dof = new ol.layer.Tile({
-            extent: extent,
-            source: new ol.source.TileWMS(({
-                url: 'http://geoportal.dgu.hr/wms',
-                params: {'LAYERS': 'DOF', 'TILED':true, 'FORMAT':'image/jpeg'}
-                // serverType: 'geoserver'
-            }))
-        });
-
-        this.map = new ol.Map({
-            target: 'map',
-            logo: {
-                src: '/static/images/candelaIT_logo.png',
-                href: 'http://candela-it.com'
-            },
-            view: new ol.View({
-                projection: projection,
-                center: ol.proj.transform([17.02, 43.5], 'EPSG:4326', 'EPSG:3765'),
-                zoom: 6,
-                maxZoom: 14,  // optimal for EPSG:3765
-                extent: extent
-            })
-        });
-
-        this.map.addLayer(dgu_dof);
-
+        var sl_map = new SL_Map(this.options);
 
         // these two layers should be added as last overlays
         // add qgis_layer to the map
-        var qgis_layer = new SL_LayerControl(this.map, this.options);
-        this.map.addLayer(qgis_layer.SL_QGIS_Layer);
+        var qgis_layer = new SL_LayerControl(sl_map.map, this.options);
+        sl_map.map.addLayer(qgis_layer.SL_QGIS_Layer);
 
         // // add qgis_GFIControl Layer to the map
-        var qgis_GFI_layer = new SL_GFIControl(this.map, this.options);
-        this.map.addLayer(qgis_GFI_layer.SL_GFI_Layer);
+        var qgis_GFI_layer = new SL_GFIControl(sl_map.map, this.options);
+        sl_map.map.addLayer(qgis_GFI_layer.SL_GFI_Layer);
 
-        new SL_DistanceToolControl(this.map, this.options);
+        new SL_DistanceToolControl(sl_map.map, this.options);
 
         // // add similarity search control
-        var qgis_Similarity_layer = new SL_SimilaritySearchControl(this.map, this.options);
-        this.map.addLayer(qgis_Similarity_layer.SL_Result_Layer);
+        var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map.map, this.options);
+        sl_map.map.addLayer(qgis_Similarity_layer.SL_Result_Layer);
 
-        new SL_PrintControl(this.map, this.options);
-        new SL_FeatureOverlay(this.map, this.options);
-
-        // propagate map events
-        this.map.on('singleclick', function(evt) {
-            EVENTS.emit('map.singleclick', {
-                'coordinate': evt.coordinate
-            });
-        });
+        new SL_PrintControl(sl_map.map, this.options);
+        new SL_FeatureOverlay(sl_map.map, this.options);
     },
 
     _initUI: function() {

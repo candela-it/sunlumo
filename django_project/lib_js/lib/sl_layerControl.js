@@ -51,6 +51,7 @@ SL_LayerControl.prototype = {
                 'VERSION':'1.1.1',
                 'FORMAT':'image/png'
             },
+            serverType: 'qgis',
             ratio: 1
         });
 
