@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         },
         cssmin: {
             contrib: {
-                src: ['lib_css/normalize.css', 'lib_css/foundation.css', 'lib_css/ol.css', 'lib_css/foundation-icons.css'],
+                src: ['lib_css/ol.css'],
                 dest: 'core/base_static/css/contrib.module.css'
             },
             project: {

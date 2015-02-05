@@ -31,16 +31,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Candela-IT",
-  "license": "MIT",
-  "browser": {
-    "jquery": "./lib_js/vendor/jquery.js",
-    "modernizr": "./lib_js/vendor/modernizr.js",
-    "foundation": "./lib_js/vendor/foundation.js"
-  },
-  "browserify-shim": "./lib_js/shims.js",
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  }
+  "license": "MIT"
 }
