@@ -4,13 +4,13 @@ var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 
 
-var SL_DistanceToolControl = function (map, options) {
+var SL_DistanceToolControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
     };
 
-    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+    if (!sl_map || Object.getOwnPropertyNames(sl_map).length === 0) {
         throw new Error('SL_DistanceToolControl map parameter must be defined');
     }
 
@@ -27,7 +27,7 @@ var SL_DistanceToolControl = function (map, options) {
     }
 
     // internal reference to the map object
-    this.map = map;
+    this.sl_map = sl_map;
 
     // initialize the distance tool control
     this._init();
@@ -74,11 +74,11 @@ SL_DistanceToolControl.prototype = {
 
     _activateControl: function(CtrlType) {
         this._initControl(CtrlType);
-        this.map.addInteraction(this.draw);
+        this.sl_map.map.addInteraction(this.draw);
     },
 
     _deactivateControl: function() {
-        this.map.removeInteraction(this.draw);
+        this.sl_map.map.removeInteraction(this.draw);
     },
 
     _changeControlType: function(CtrlType) {

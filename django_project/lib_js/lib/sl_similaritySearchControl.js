@@ -5,13 +5,13 @@ var ol = require('../contrib/ol');
 // global events
 var EVENTS = require('./events');
 
-var SL_SimilaritySearchControl = function (map, options) {
+var SL_SimilaritySearchControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
     };
 
-    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+    if (!sl_map || Object.getOwnPropertyNames(sl_map).length === 0) {
         throw new Error('SL_SimilaritySearchControl map parameter must be defined');
     }
 
@@ -28,7 +28,7 @@ var SL_SimilaritySearchControl = function (map, options) {
     }
 
     // internal reference to the map object
-    this.map = map;
+    this.sl_map = sl_map;
 
     // initialize the getfeatureinfo control
     this._init();
@@ -48,6 +48,8 @@ SL_SimilaritySearchControl.prototype = {
         });
 
         this.geojsonFormat = new ol.format.GeoJSON();
+
+        this.sl_map.addControlOverlayLayer(this.SL_Result_Layer);
     },
 
     _handleEvents: function() {
@@ -59,8 +61,8 @@ SL_SimilaritySearchControl.prototype = {
             self.SL_Result_Source.clear(true);
             self.SL_Result_Source.addFeatures(feature);
 
-            self.map.getView().fitExtent(
-                self.SL_Result_Source.getExtent(), self.map.getSize()
+            self.sl_map.map.getView().fitExtent(
+                self.SL_Result_Source.getExtent(), self.sl_map.map.getSize()
             );
         });
     }

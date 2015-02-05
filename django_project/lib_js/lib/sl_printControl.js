@@ -5,13 +5,13 @@ var ol = require('../contrib/ol');
 // global events
 var EVENTS = require('./events');
 
-var SL_PrintControl = function(map, options) {
+var SL_PrintControl = function(sl_map, options) {
     // default options
     this.options = {
         // initial module options
     };
 
-    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+    if (!sl_map || Object.getOwnPropertyNames(sl_map).length === 0) {
         throw new Error('SL_PrintControl map parameter must be defined');
     }
 
@@ -28,7 +28,7 @@ var SL_PrintControl = function(map, options) {
     }
 
     // internal reference to the map object
-    this.map = map;
+    this.sl_map = sl_map;
 
     // initialize the getfeatureinfo control
     this._init();
@@ -45,14 +45,14 @@ SL_PrintControl.prototype = {
             source: this.SL_PrintArea_Source
         });
 
-        this.map.addLayer(this.SL_PrintArea_Layer);
+        this.sl_map.addControlOverlayLayer(this.SL_PrintArea_Layer);
 
         this.SL_PrintArea_Feature = undefined;
         this.printAreaExist = false;
 
 
         // Add Drag interaction for PrintControl Features to map.
-        this.map.addInteraction(new Drag(this));
+        this.sl_map.map.addInteraction(new Drag(this));
 
     },
 
@@ -66,18 +66,10 @@ SL_PrintControl.prototype = {
         EVENTS.on('print.hide', function () {
             self.onHidePrintArea();
         });
-
-        // EVENTS.on('read.layers.and.transparencies', function(params) {
-        //     PrintControl.vm.params.layers = params.layers;
-        //     PrintControl.vm.params.transparencies = params.transparencies;
-        //     PrintControl.vm.updatePrintUrl();
-
-        //     m.endComputation();
-        // });
     },
 
     onShowPrintArea: function(options) {
-        var view_center = this.map.getView().getCenter();
+        var view_center = this.sl_map.map.getView().getCenter();
         var area_dimensions = this.getAreaDimensionsForScale(options);
         this.createPrintArea(view_center, area_dimensions);
 

@@ -7,13 +7,13 @@ var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 
 
-var SL_LayerControl = function (map, options) {
+var SL_LayerControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
     };
 
-    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+    if (!sl_map || Object.getOwnPropertyNames(sl_map).length === 0) {
         throw new Error('SL_LayerControl map parameter must be defined');
     }
 
@@ -29,7 +29,7 @@ var SL_LayerControl = function (map, options) {
     }
 
     // internal reference to the map object
-    this.map = map;
+    this.sl_map = sl_map;
 
     // check if we got right flavour of options
     this._checkOptions();
@@ -67,6 +67,9 @@ SL_LayerControl.prototype = {
         this.SL_QGIS_Layer.on('postcompose', function() {
             EVENTS.emit('qgs.spinner.deactivate');
         });
+
+        // add QGIS Layer to the map
+        this.sl_map.addQGISLayer(this.SL_QGIS_Layer);
     },
 
     _init: function () {
@@ -110,15 +113,6 @@ SL_LayerControl.prototype = {
             EVENTS.emit('qgis.gfi.url.changed', {
                 'url': url
             });
-        });
-
-
-        EVENTS.on('print.area.updated', function() {
-            // send back layers.and.transparencies
-            // EVENTS.emit('read.layers.and.transparencies', {
-            //     'layers': self.getLayersParam(),
-            //     'transparencies': self.getTransparencyParam()
-            // });
         });
 
     },

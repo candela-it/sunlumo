@@ -8,6 +8,21 @@ var ol = require('../contrib/ol');
 var EVENTS = require('./events');
 
 var SL_Map = function (options) {
+
+    this.baseLayers = new ol.layer.Group();
+    this.baseLayerCollection = new ol.Collection();
+    this.baseLayers.setLayers(this.baseLayerCollection);
+
+    this.qgisOverlay = new ol.layer.Group();
+    this.qgisOverlayCollection = new ol.Collection();
+    this.qgisOverlay.setLayers(this.qgisOverlayCollection);
+
+    this.controlOverlays = new ol.layer.Group();
+    this.controlOverlaysCollection = new ol.Collection();
+    this.controlOverlays.setLayers(this.controlOverlaysCollection);
+
+
+
     // default options
     this.options = {
         // initial module options
@@ -37,11 +52,11 @@ SL_Map.prototype = {
         var extent = [250515.0793, 4698849.3024, 747014.5638, 5163391.4419];
         projection.setExtent(extent);
 
-        var dgu_dof = new ol.layer.Tile({
+        var dgu_dof = new ol.layer.Image({
             extent: extent,
-            source: new ol.source.TileWMS(({
+            source: new ol.source.ImageWMS(({
                 url: 'http://geoportal.dgu.hr/wms',
-                params: {'LAYERS': 'DOF', 'TILED':true, 'FORMAT':'image/jpeg'},
+                params: {'LAYERS': 'DOF', 'FORMAT':'image/jpeg'},
                 serverType: 'geoserver'
             }))
         });
@@ -61,15 +76,33 @@ SL_Map.prototype = {
             })
         });
 
-        this.map.addLayer(dgu_dof);
+        this.map.addLayer(this.baseLayers);
+        this.map.addLayer(this.qgisOverlay);
+        this.map.addLayer(this.controlOverlays);
 
-        // propagate map events
-        this.map.on('singleclick', function(evt) {
-            EVENTS.emit('map.singleclick', {
-                'coordinate': evt.coordinate
-            });
-        });
-    }
+        this.addBaseLayer(dgu_dof);
+    },
+
+    addBaseLayer: function (layer) {
+        this.baseLayerCollection.push(layer);
+    },
+    removeBaseLayer: function (layer) {
+        this.baseLayerCollection.remove(layer);
+    },
+
+    addQGISLayer: function (layer) {
+        this.qgisOverlayCollection.push(layer);
+    },
+    removeQGISLayer: function (layer) {
+        this.qgisOverlayCollection.remove(layer);
+    },
+
+    addControlOverlayLayer: function (layer) {
+        this.controlOverlaysCollection.push(layer);
+    },
+    removeControlOverlayLayer: function (layer) {
+        this.controlOverlaysCollection.remove(layer);
+    },
 };
 
 module.exports = SL_Map;

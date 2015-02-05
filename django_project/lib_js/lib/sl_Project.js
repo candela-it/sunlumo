@@ -14,7 +14,7 @@ var UI_DistanceTool = require('./ui/distanceTool');
 
 // var SL_SpinnerComponent = require('./sl_SpinnerComponent.js');
 var SL_Map = require('./sl_map');
-var SL_LayerControl = require('./sl_layerControl');
+var SL_QGISLayerControl = require('./sl_QGISLayerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
 var SL_DistanceToolControl = require('./sl_distanceToolControl');
 var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
@@ -52,21 +52,18 @@ SL_Project.prototype = {
 
         // these two layers should be added as last overlays
         // add qgis_layer to the map
-        var qgis_layer = new SL_LayerControl(sl_map.map, this.options);
-        sl_map.map.addLayer(qgis_layer.SL_QGIS_Layer);
+        var qgis_layer = new SL_QGISLayerControl(sl_map, this.options);
 
         // // add qgis_GFIControl Layer to the map
-        var qgis_GFI_layer = new SL_GFIControl(sl_map.map, this.options);
-        sl_map.map.addLayer(qgis_GFI_layer.SL_GFI_Layer);
+        var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
 
-        new SL_DistanceToolControl(sl_map.map, this.options);
+        new SL_DistanceToolControl(sl_map, this.options);
 
-        // // add similarity search control
-        var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map.map, this.options);
-        sl_map.map.addLayer(qgis_Similarity_layer.SL_Result_Layer);
+        // add similarity search control
+        var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map, this.options);
 
-        new SL_PrintControl(sl_map.map, this.options);
-        new SL_FeatureOverlay(sl_map.map, this.options);
+        new SL_PrintControl(sl_map, this.options);
+        new SL_FeatureOverlay(sl_map, this.options);
     },
 
     _initUI: function() {
