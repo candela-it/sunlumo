@@ -61,4 +61,9 @@
 @import "contrib/font-awesome/animated";
 @import "contrib/font-awesome/rotated-flipped";
 @import "contrib/font-awesome/stacked";
-@import "contrib/font-awesome/icons";
+
+// import all icons
+// @import "contrib/font-awesome/icons";
+
+// or we can only import font icons that are used
+@import "fa_fonts";
