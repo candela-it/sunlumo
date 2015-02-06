@@ -39,7 +39,7 @@ var displayView = function(ctrl) {
                 ),
                 m('div.item.toggle-icon', { 'onclick': ctrl.vm.ev_toggleItem.bind(ctrl, item) },  [
                     m('i.mouse-pointer', {
-                        'class': item.toggled() ? 'fi-minus' : 'fi-plus'
+                        'class': item.toggled() ? 'fa fa-minus' : 'fa fa-plus'
                     })
                 ]),
                 m('div.item.locate-icon',
@@ -48,7 +48,7 @@ var displayView = function(ctrl) {
                         'class': item.toggled() ? '' : 'hide'
                     },
                     [
-                        m('i.mouse-pointer.fi-marker')
+                        m('i.mouse-pointer.fa.fa-map-marker')
                     ]
                 )
             ]);

@@ -14,7 +14,7 @@ var render = function(ctrl) {
             'class': (ctrl.vm.control.active()) ? 'button small controlButton' : 'button small info controlButton',
             'onclick': ctrl.vm.ev_toggleControl.bind(ctrl)
         }, [
-            m('i', { 'class': 'fi-foot'})
+            m('i', { 'class': 'fa fa-arrows'})
         ]),
         m('div.toolbox-control-results.panel.DistanceTool', {
             'class': (ctrl.vm.control.active()) ? '' : 'hide'

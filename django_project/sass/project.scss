@@ -1,4 +1,15 @@
+@charset "UTF-8";
 @import "base";
+
+#map {
+    position: fixed;
+    top: 45px;
+    bottom: 0px;
+    left: 300px;
+    right: 0px;
+    margin: 0;
+    padding: 0;
+}
 
 .logo {
   height: 35px;
@@ -6,8 +17,8 @@
   margin-top: 2px;
 }
 
-.hide {
-  display: none;
+div.hide {
+  display: none !important;
 }
 
 .accordion .accordion-navigation > a, .accordion dd > a {
@@ -36,16 +47,6 @@
   width: 100%;
   padding: 3px;
   border: solid 1px #333;
-}
-
-#map {
-    position: fixed;
-    top: 45px;
-    bottom: 0px;
-    left: 300px;
-    right: 0px;
-    margin: 0;
-    padding: 0;
 }
 
 #sidebar {
@@ -123,7 +124,7 @@ div.dragging {
   background: #FBB;
 }
 
-.layer-control {
+div.layer-control {
   display: inline-block;
   font-size: 16px;
   color: #000;
@@ -132,7 +133,7 @@ div.dragging {
   margin-left: 5px;
 }
 
-.group-control {
+div.group-control {
   position: relative;
   float: right;
   clear: right;
@@ -145,7 +146,7 @@ div.dragging {
   margin-left: 5px;
 }
 
-.layer-control:hover {
+div.layer-control:hover {
   color: #000;
 }
 

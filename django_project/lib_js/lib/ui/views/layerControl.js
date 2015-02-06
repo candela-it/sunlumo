@@ -51,7 +51,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             'onclick': ctrl.vm.ev_layerToggle.bind(ctrl, item)
         }, [
             m('i', {
-                'class': 'fi-eye'
+                'class': 'fa fa-eye'
             })
         ]),
         m('div', {
@@ -59,7 +59,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             'onclick': ctrl.vm.ev_queryLayerToggle.bind(ctrl, item)
         }, [
             m('i', {
-                'class': 'fi-info'
+                'class': 'fa fa-info-circle'
             })
         ]),
         m('div', {
@@ -71,7 +71,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
             'onclick': ctrl.vm.ev_toggleShowControl.bind(ctrl, item)
         }, [
             m('i', {
-                'class': 'fi-widget'
+                'class': 'fa fa-cog'
             })
         ]),
         m('div', {
@@ -111,7 +111,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
             'onclick': ctrl.vm.ev_groupToggle.bind(ctrl, item)
         }, [
             m('i', {
-                'class': 'fi-eye'
+                'class': 'fa fa-eye'
             })
         ]),
         m('div', {
@@ -119,7 +119,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
             'onclick': ctrl.vm.ev_queryGroupToggle.bind(ctrl, item)
         }, [
             m('i', {
-                'class': 'fi-info'
+                'class': 'fa fa-info-circle'
             })
         ]),
         m('div', {'class': 'group-name'}, [item.name()]),
@@ -129,7 +129,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
             'class': 'group-control'
         }, [
             m('i', {
-                'class': item.collapsed() ? 'fi-plus' : 'fi-minus'
+                'class': item.collapsed() ? 'fa fa-plus' : 'fa fa-minus'
             })
         ]),
 
