@@ -49,7 +49,9 @@ SL_QGISLayerControl.prototype = {
             url: '/getmap',
             params: {
                 'VERSION':'1.1.1',
-                'FORMAT':'image/png'
+                'FORMAT':'image/jpeg',
+                'BGCOLOR': 'FFFFFF',
+                'TRANSPARENT': false
             },
             serverType: 'qgis',
             ratio: 1
@@ -57,7 +59,6 @@ SL_QGISLayerControl.prototype = {
 
         this.SL_QGIS_Layer = new ol.layer.Image({
             // extent: extent,
-            transparent:true,
             source: this.SL_Source
         });
 

@@ -52,15 +52,6 @@ SL_Map.prototype = {
         var extent = [250515.0793, 4698849.3024, 747014.5638, 5163391.4419];
         projection.setExtent(extent);
 
-        var dgu_dof = new ol.layer.Image({
-            extent: extent,
-            source: new ol.source.ImageWMS(({
-                url: 'http://geoportal.dgu.hr/wms',
-                params: {'LAYERS': 'DOF', 'FORMAT':'image/jpeg'},
-                serverType: 'geoserver'
-            }))
-        });
-
         this.map = new ol.Map({
             target: 'map',
             logo: {
@@ -79,8 +70,6 @@ SL_Map.prototype = {
         this.map.addLayer(this.baseLayers);
         this.map.addLayer(this.qgisOverlay);
         this.map.addLayer(this.controlOverlays);
-
-        this.addBaseLayer(dgu_dof);
     },
 
     addBaseLayer: function (layer) {
