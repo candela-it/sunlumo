@@ -10,13 +10,13 @@ var VIEW = function (ctrl) {
 };
 
 var render = function(ctrl) {
-    return m('ul.sl-accordion', [
+    return m('div.sl-accordion', [
         ctrl.vm.components.map(function(component, index) {
-            return m('li.accordion-navigation', [
+            return m('div.accordion-navigation', [
                 m('a', {
                     'onclick': ctrl.vm.ev_toggleOpen.bind(ctrl, component)
                 }, [component.title()]),
-                m('div', {'class': component.open() ? '' : 'hide'}, [
+                m('div.content', {'class': component.open() ? 'active' : ''}, [
                     // render component view
                     component.view(component.controller)
                 ])

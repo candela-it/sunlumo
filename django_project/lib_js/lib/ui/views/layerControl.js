@@ -11,7 +11,7 @@ var VIEW = function (ctrl) {
 
 
 var render = function(ctrl) {
-    return m('div', {'class': 'layer_list'}, [
+    return m('div.layer-list', [
         ctrl.vm.layerTree.map(function (treeItem, index) {
             // is the current treeItem dragged
             var dragging = (index === ctrl.vm.dragged_item()) ? 'dragging' : '';

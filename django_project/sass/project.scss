@@ -1,12 +1,13 @@
 @charset "UTF-8";
 @import "base";
+@import "settings";
 @import "utils";
 
 
 #map {
     position: fixed;
-    top: rem-calc(45);
-    left: rem-calc(300);
+    top: $navbar-height;
+    left: $navbar-width;
     bottom: 0;
     right: 0;
     margin: 0;
@@ -16,6 +17,7 @@
 #refresh-notification {
     padding-right: rem-calc(8);
     padding-top: rem-calc(3);
+
     .spinner {
         color: $white-smoke;
     }
@@ -31,11 +33,12 @@
     .accordion-navigation {
         @include accordion-navigation($padding: rem-calc(5));
         .content {
-            @include accordion-content();
+            @include accordion-content($padding: rem-calc(0));
             height: rem-calc(600);
             overflow: auto;
         }
     }
+
 }
 
 
@@ -60,193 +63,206 @@
 }
 
 #sidebar {
-    width: rem-calc(300);
+    position: fixed;
+    width: $navbar-width;
+    top: $navbar-height;
+    left:0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+
+    overflow: auto;
+    ul {
+        margin-left: 0;
+    }
 }
 
-#sidebar ul {
-  margin-left: 0;
-}
+.layer-list {
+    padding: rem-calc(2);
+    margin: 0;
+    width: 100%;
+    display: inline-block;
 
-div.layer-details {
-  display: inline-block;
-  margin-top: rem-calc(5);
-  padding: 0 0 0 rem-calc(10);
-}
+    .layer-details {
+        display: inline-block;
+        margin-top: rem-calc(5);
+        padding: 0 0 0 rem-calc(10);
+    }
 
-div.layer-name {
-  margin-left: rem-calc(10);
-  display: inline-block;
-  line-height: rem-calc(18);
-  text-transform: uppercase;
-}
+    .layer-name {
+        margin-left: rem-calc(10);
+        display: inline-block;
+        line-height: rem-calc(18);
+        text-transform: uppercase;
+    }
 
-div.layer-settings-control {
-  position: relative;
-  float: right;
-  clear: right;
-}
-
-
-div.layer_list {
-  padding: 0 !important;
-  margin: rem-calc(2) rem-calc(2);
-  width: 100%;
-  display: inline-block;
-}
-
-div.layer {
-  font-size: rem-calc(12);
-  color: $black;
-  padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
-}
-
-div.group {
-  font-size: rem-calc(16);
-  font-weight: bold;
-  color: $black;
-  padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
-}
-
-div.group:hover {
-  background-color: #EEEEEE;
-}
-
-div.group .layer {
-  font-size: rem-calc(12);
-  font-weight: normal;
-  color: #000;
-  padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(20);
-}
-
-div.group-name {
-  margin-left: rem-calc(10);
-  display: inline-block;
-  line-height: rem-calc(18);
-  text-transform: uppercase;
-}
+    .layer-settings-control {
+        position: relative;
+        float: right;
+        clear: right;
+    }
 
 
-div.layer:hover {
-  background-color: #EEEEEE;
-}
+    .layer {
+        font-size: rem-calc(12);
+        color: $black;
+        padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
 
-div.dragging {
-  background: #FBB;
-}
+        &:hover {
+            background-color: $smoke;
+        }
+    }
 
-div.layer-control {
-  display: inline-block;
-  font-size: rem-calc(16);
-  color: #000;
-  cursor: pointer;
-  line-height: rem-calc(18);
-  margin-left: rem-calc(5);
-}
+    .group {
+        font-size: rem-calc(16);
+        font-weight: bold;
+        color: $black;
+        padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
 
-div.group-control {
-  position: relative;
-  float: right;
-  clear: right;
+        &:hover {
+            background-color: $smoke;
+        }
 
-  cursor: pointer;
-  display: inline-block;
-  font-size: rem-calc(16);
-  color: #000;
-  line-height: rem-calc(18);
-  margin-left: rem-calc(5);
-}
+        .layer {
+            font-size: rem-calc(12);
+            font-weight: normal;
+            color: $black;
+            padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(20);
+        }
+    }
 
-div.layer-control:hover {
-  color: #000;
+    .group-name {
+            margin-left: rem-calc(10);
+            display: inline-block;
+            line-height: rem-calc(18);
+            text-transform: uppercase;
+    }
+
+
+    .dragging {
+        background: #FBB;
+    }
+
+    .layer-control {
+        display: inline-block;
+        font-size: rem-calc(16);
+        color: $black;
+        cursor: pointer;
+        line-height: rem-calc(18);
+        margin-left: rem-calc(5);
+
+        i:hover {
+            color: scale-color($alert-color, $lightness: 50%) !important;
+        }
+    }
+
+    .group-control {
+        position: relative;
+        float: right;
+        clear: right;
+
+        cursor: pointer;
+        display: inline-block;
+        font-size: rem-calc(16);
+        color: $black;
+        line-height: rem-calc(18);
+        margin-left: rem-calc(5);
+
+        i:hover {
+            color: scale-color($alert-color, $lightness: 50%) !important;
+        }
+    }
 }
 
 .deactivated {
-  color: rgba(0,0,0,0.2) !important;
+    color: scale-color($black, $lightness: 85%) !important;
 }
 
 
 #panelSearch {
-  margin: rem-calc(10);
-  padding: 0;
+    margin: rem-calc(10);
+    padding: 0;
 }
 
 #panelSearch .columns {
-  padding: 0 !important;
+    padding: 0 !important;
 }
 
 
 #panelTools .controlHolder {
-  width: rem-calc(100);
-  position: relative;
-  float: left;
+    width: rem-calc(100);
+    position: relative;
+    float: left;
 }
 
 #panelTools .button {
-  margin: 0;
-  padding: rem-calc(5) rem-calc(10);
+    margin: 0;
+    padding: rem-calc(5) rem-calc(10);
 }
 
 #panelTools .button i {
-  font-size: rem-calc(24);
+    font-size: rem-calc(24);
 }
 
 #panelTools .controlButton {
-  width: rem-calc(65);
+    width: rem-calc(65);
 }
 
 .toolbox-control-results {
-  width: rem-calc(200);
-  position: fixed;
-  z-index: 2;
-  padding:0 !important;
-  border: none !important;
+    width: rem-calc(200);
+    position: fixed;
+    z-index: 2;
+    padding:0 !important;
+    border: none !important;
 }
 
 .GFITool {
-  top: rem-calc(56);
-  left: rem-calc(350);
+    top: rem-calc(56);
+    left: rem-calc(350);
 }
 
 .DistanceTool {
-  top: rem-calc(56);
-  right: rem-calc(15);
+    top: rem-calc(56);
+    right: rem-calc(15);
 }
 
-.toolbox-control-results .item {
-  display: block;
-  font-size: rem-calc(12);
+.toolbox-control-results {
+    .item {
+        display: block;
+        font-size: rem-calc(12);
+    }
+    .content {
+        overflow: auto;
+        height: rem-calc(400);
+    }
 }
 
-.toolbox-control-results .content {
-  overflow: auto;
-  height: rem-calc(400);
-}
 
 .toggle-icon {
-  position: absolute;
-  top: 0;
-  right: rem-calc(5);
+    position: absolute;
+    top: 0;
+    right: rem-calc(5);
 }
 
 .locate-icon {
-  position: absolute;
-  bottom: 0;
-  right: rem-calc(5);
+    position: absolute;
+    bottom: 0;
+    right: rem-calc(5);
 }
 
 .feature-result {
-  display: block;
-  position: relative;
+    display: block;
+    position: relative;
 }
 
 .mouse-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .head {
-  background-color: #dfdfdf;
+    background-color: #dfdfdf;
 }
 
 .head:hover {
-  background-color: #c5c5c5;
+    background-color: #c5c5c5;
 }
