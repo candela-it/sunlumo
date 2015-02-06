@@ -110,7 +110,7 @@ SL_Project.prototype = {
         // });
 
         var ui_spin = new UI_SpinnerComponent(this.options);
-        m.module(document.getElementById('logo'), {
+        m.module(document.getElementById('refresh-notification'), {
             controller: function () {return ui_spin.controller;},
             view: function (ctrl) {return [ui_spin.view(ctrl)];},
         });

@@ -11,13 +11,16 @@
     padding: 0;
 }
 
-.logo {
-  height: 35px;
-  margin-right: 5px;
-  margin-top: 2px;
+#refresh-notification {
+    padding-right: 8px;
+    padding-top: 3px;
+    .spinner {
+        color: $white-smoke;
+    }
 }
 
-div.hide {
+
+.hide {
   display: none !important;
 }
 

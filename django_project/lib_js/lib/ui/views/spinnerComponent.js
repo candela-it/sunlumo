@@ -10,8 +10,7 @@ var VIEW = function (ctrl) {
 };
 
 var render = function(ctrl) {
-    return  m('img.logo', {
-        'src': '/static/img/spinner7.gif',
+    return  m('i.spinner.fa.fa-2x.fa-refresh.fa-pulse', {
         'class': (ctrl.vm.active()) ? '' : 'hide'
     });
 };
