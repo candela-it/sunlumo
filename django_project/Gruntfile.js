@@ -53,19 +53,21 @@ module.exports = function(grunt) {
             tests: ['lib_js/tests/*.js']
         },
         watch: {
-            project: {
+            project_js: {
                 files: [
                     'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
-                    'lib_js/lib/ui/models/*.js', 'sass/*.scss', 'sass/contrib/foundation/*.scss'
+                    'lib_js/lib/ui/models/*.js'
                 ],
-                tasks: ['default'],
+                tasks: ['build_js'],
                 options: {
                     spawn: false,
                 },
             },
-            tests: {
-                files: ['lib_js/lib/*.js', 'sass/*.scss', 'lib_js/tests/*.js'],
-                tasks: ['default', 'tests', 'mocha_phantomjs'],
+            project_css: {
+                files: [
+                     'sass/*.scss', 'sass/contrib/foundation/*.scss'
+                ],
+                tasks: ['build_css'],
                 options: {
                     spawn: false,
                 },
@@ -114,6 +116,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compass');
 
     grunt.registerTask('default', ['jshint:project', 'browserify:project', 'compass', 'cssmin']);
-    grunt.registerTask('tests', ['jshint:tests', 'browserify:tests']);
+    grunt.registerTask('build_js', ['jshint:project', 'browserify:project']);
+    grunt.registerTask('build_css', ['compass', 'cssmin']);
+    grunt.registerTask('test', ['jshint:tests', 'browserify:tests']);
     grunt.registerTask('build', ['browserify:project', 'compass', 'cssmin', 'uglify']);
 };
