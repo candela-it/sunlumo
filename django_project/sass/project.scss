@@ -1,5 +1,7 @@
 @charset "UTF-8";
 @import "base";
+@import "utils";
+
 
 #map {
     position: fixed;
@@ -25,34 +27,35 @@
 }
 
 .sl-accordion {
-    @include accordion-container;
+    @include accordion-container();
     .accordion-navigation {
         @include accordion-navigation($padding: rem-calc(5));
         .content {
-            @include accordion-content;
+            @include accordion-content();
             height: rem-calc(600);
             overflow: auto;
         }
     }
 }
 
-.panel {
+
+.sl-panel {
+    @include panel();
     .heading {
-      position: relative;
-      clear: left;
-      width: 100%;
-      background-color: #333;
-      font-size: rem-calc(14);
-      color: #FFF;
-      padding: rem-calc(3) rem-calc(10);
-      text-transform: uppercase;
+        // this class is defined in _utils partial
+        @extend .relative-clear-left-100;
+
+        background-color: $oil;
+        font-size: rem-calc(14);
+        color: $white;
+        padding: rem-calc(3) rem-calc(10);
+        text-transform: uppercase;
     }
     .content {
-        position: relative;
-        clear: left;
-        width: 100%;
+        @extend .relative-clear-left-100;
+
         padding: rem-calc(3);
-        border: solid rem-calc(1) #333;
+        border: solid rem-calc(1) $oil;
     }
 }
 

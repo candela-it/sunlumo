@@ -16,7 +16,7 @@ var render = function(ctrl) {
         }, [
             m('i', { 'class': 'fa fa-arrows'})
         ]),
-        m('div.toolbox-control-results.panel.DistanceTool', {
+        m('div.toolbox-control-results.sl-panel.DistanceTool', {
             'class': (ctrl.vm.control.active()) ? '' : 'hide'
         }, [
             m('div', { 'class': 'heading' }, 'Alati za mjerenje'),
