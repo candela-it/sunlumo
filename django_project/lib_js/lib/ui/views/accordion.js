@@ -10,7 +10,7 @@ var VIEW = function (ctrl) {
 };
 
 var render = function(ctrl) {
-    return m('ul.accordion', [
+    return m('ul.sl-accordion', [
         ctrl.vm.components.map(function(component, index) {
             return m('li.accordion-navigation', [
                 m('a', {

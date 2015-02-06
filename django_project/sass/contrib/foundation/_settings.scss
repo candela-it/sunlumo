@@ -317,7 +317,7 @@ $include-html-global-classes: $include-html-classes;
 // 01. Accordion
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// $include-html-accordion-classes: $include-html-classes;
+$include-html-accordion-classes: false;
 
 // $accordion-navigation-padding: rem-calc(16);
 // $accordion-navigation-bg-color: $silver;

@@ -24,32 +24,36 @@
   display: none !important;
 }
 
-.accordion .accordion-navigation > a, .accordion dd > a {
-  padding: rem-calc(3) rem-calc(5);
+.sl-accordion {
+    @include accordion-container;
+    .accordion-navigation {
+        @include accordion-navigation($padding: rem-calc(5));
+        .content {
+            @include accordion-content;
+            height: rem-calc(600);
+            overflow: auto;
+        }
+    }
 }
 
-.accordion .accordion-navigation > .content {
-  height: rem-calc(600);
-  overflow: auto;
-}
-
-.panel .heading {
-  position: relative;
-  clear: left;
-  width: 100%;
-  background-color: #333;
-  font-size: rem-calc(14);
-  color: #FFF;
-  padding: rem-calc(3) rem-calc(10);
-  text-transform: uppercase;
-}
-
-.panel .content {
-  position: relative;
-  clear: left;
-  width: 100%;
-  padding: rem-calc(3);
-  border: solid rem-calc(1) #333;
+.panel {
+    .heading {
+      position: relative;
+      clear: left;
+      width: 100%;
+      background-color: #333;
+      font-size: rem-calc(14);
+      color: #FFF;
+      padding: rem-calc(3) rem-calc(10);
+      text-transform: uppercase;
+    }
+    .content {
+        position: relative;
+        clear: left;
+        width: 100%;
+        padding: rem-calc(3);
+        border: solid rem-calc(1) #333;
+    }
 }
 
 #sidebar {
