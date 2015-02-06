@@ -56,7 +56,7 @@ module.exports = function(grunt) {
             project: {
                 files: [
                     'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
-                    'lib_js/lib/ui/models/*.js', 'sass/*.scss'
+                    'lib_js/lib/ui/models/*.js', 'sass/*.scss', 'sass/contrib/foundation/*.scss'
                 ],
                 tasks: ['default'],
                 options: {

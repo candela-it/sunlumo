@@ -62,4 +62,6 @@ docs/_build/
 
 # Node
 django_project/static
+project.css
+.sass-cache/
 
