@@ -3,17 +3,17 @@
 
 #map {
     position: fixed;
-    top: 45px;
-    bottom: 0px;
-    left: 300px;
-    right: 0px;
+    top: rem-calc(45);
+    left: rem-calc(300);
+    bottom: 0;
+    right: 0;
     margin: 0;
     padding: 0;
 }
 
 #refresh-notification {
-    padding-right: 8px;
-    padding-top: 3px;
+    padding-right: rem-calc(8);
+    padding-top: rem-calc(3);
     .spinner {
         color: $white-smoke;
     }
@@ -25,11 +25,11 @@
 }
 
 .accordion .accordion-navigation > a, .accordion dd > a {
-  padding: 3px 5px;
+  padding: rem-calc(3) rem-calc(5);
 }
 
 .accordion .accordion-navigation > .content {
-  height: 600px;
+  height: rem-calc(600);
   overflow: auto;
 }
 
@@ -38,9 +38,9 @@
   clear: left;
   width: 100%;
   background-color: #333;
-  font-size: 14px;
+  font-size: rem-calc(14);
   color: #FFF;
-  padding: 3px 10px;
+  padding: rem-calc(3) rem-calc(10);
   text-transform: uppercase;
 }
 
@@ -48,12 +48,12 @@
   position: relative;
   clear: left;
   width: 100%;
-  padding: 3px;
-  border: solid 1px #333;
+  padding: rem-calc(3);
+  border: solid rem-calc(1) #333;
 }
 
 #sidebar {
-    width:300px;
+    width: rem-calc(300);
 }
 
 #sidebar ul {
@@ -62,14 +62,14 @@
 
 div.layer-details {
   display: inline-block;
-  margin-top: 5px;
-  padding: 0 0 0 10px;
+  margin-top: rem-calc(5);
+  padding: 0 0 0 rem-calc(10);
 }
 
 div.layer-name {
-  margin-left: 10px;
+  margin-left: rem-calc(10);
   display: inline-block;
-  line-height: 18px;
+  line-height: rem-calc(18);
   text-transform: uppercase;
 }
 
@@ -82,22 +82,22 @@ div.layer-settings-control {
 
 div.layer_list {
   padding: 0 !important;
-  margin: 2px 2px;
+  margin: rem-calc(2) rem-calc(2);
   width: 100%;
   display: inline-block;
 }
 
 div.layer {
-  font-size: 12px;
-  color: #000;
-  padding: 4px 5px 2px 0px;
+  font-size: rem-calc(12);
+  color: $black;
+  padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
 }
 
 div.group {
-  font-size: 16px;
+  font-size: rem-calc(16);
   font-weight: bold;
-  color: #000;
-  padding: 4px 5px 2px 0px;
+  color: $black;
+  padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
 }
 
 div.group:hover {
@@ -105,16 +105,16 @@ div.group:hover {
 }
 
 div.group .layer {
-  font-size: 12px;
+  font-size: rem-calc(12);
   font-weight: normal;
   color: #000;
-  padding: 4px 5px 2px 20px;
+  padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(20);
 }
 
 div.group-name {
-  margin-left: 10px;
+  margin-left: rem-calc(10);
   display: inline-block;
-  line-height: 18px;
+  line-height: rem-calc(18);
   text-transform: uppercase;
 }
 
@@ -129,11 +129,11 @@ div.dragging {
 
 div.layer-control {
   display: inline-block;
-  font-size: 16px;
+  font-size: rem-calc(16);
   color: #000;
   cursor: pointer;
-  line-height: 18px;
-  margin-left: 5px;
+  line-height: rem-calc(18);
+  margin-left: rem-calc(5);
 }
 
 div.group-control {
@@ -143,10 +143,10 @@ div.group-control {
 
   cursor: pointer;
   display: inline-block;
-  font-size: 16px;
+  font-size: rem-calc(16);
   color: #000;
-  line-height: 18px;
-  margin-left: 5px;
+  line-height: rem-calc(18);
+  margin-left: rem-calc(5);
 }
 
 div.layer-control:hover {
@@ -159,7 +159,7 @@ div.layer-control:hover {
 
 
 #panelSearch {
-  margin: 10px;
+  margin: rem-calc(10);
   padding: 0;
 }
 
@@ -169,26 +169,26 @@ div.layer-control:hover {
 
 
 #panelTools .controlHolder {
-  width: 100px;
+  width: rem-calc(100);
   position: relative;
   float: left;
 }
 
 #panelTools .button {
   margin: 0;
-  padding: 5px 10px;
+  padding: rem-calc(5) rem-calc(10);
 }
 
 #panelTools .button i {
-  font-size: 24px;
+  font-size: rem-calc(24);
 }
 
 #panelTools .controlButton {
-  width: 65px;
+  width: rem-calc(65);
 }
 
 .toolbox-control-results {
-  width: 200px;
+  width: rem-calc(200);
   position: fixed;
   z-index: 2;
   padding:0 !important;
@@ -196,35 +196,35 @@ div.layer-control:hover {
 }
 
 .GFITool {
-  top: 56px;
-  left: 350px;
+  top: rem-calc(56);
+  left: rem-calc(350);
 }
 
 .DistanceTool {
-  top: 56px;
-  right: 15px;
+  top: rem-calc(56);
+  right: rem-calc(15);
 }
 
 .toolbox-control-results .item {
   display: block;
-  font-size: 12px;
+  font-size: rem-calc(12);
 }
 
 .toolbox-control-results .content {
   overflow: auto;
-  height: 400px;
+  height: rem-calc(400);
 }
 
 .toggle-icon {
   position: absolute;
   top: 0;
-  right: 5px;
+  right: rem-calc(5);
 }
 
 .locate-icon {
   position: absolute;
   bottom: 0;
-  right: 5px;
+  right: rem-calc(5);
 }
 
 .feature-result {
