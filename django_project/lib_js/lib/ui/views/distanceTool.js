@@ -1,7 +1,6 @@
 'use strict';
 
 var m = require('mithril');
-var _ = require('lodash');
 
 
 var VIEW = function (ctrl) {
@@ -15,9 +14,9 @@ var render = function(ctrl) {
             'class': (ctrl.vm.control.active()) ? 'button small controlButton' : 'button small info controlButton',
             'onclick': ctrl.vm.ev_toggleControl.bind(ctrl)
         }, [
-            m('i', { 'class': 'fi-foot'})
+            m('i', { 'class': 'fa fa-arrows'})
         ]),
-        m('div.toolbox-control-results.panel.DistanceTool', {
+        m('div.toolbox-control-results.sl-panel.DistanceTool', {
             'class': (ctrl.vm.control.active()) ? '' : 'hide'
         }, [
             m('div', { 'class': 'heading' }, 'Alati za mjerenje'),

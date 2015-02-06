@@ -18,7 +18,7 @@ apt-get update
 Then install packages from the repository:
 
 ```
-apt-get install vim qgis qgis-server python-pip libpq-dev libpython-dev git curl
+apt-get install vim qgis qgis-server python-pip libpq-dev libpython-dev git curl ruby ruby-dev
 ```
 
 
@@ -36,6 +36,7 @@ machine this should not be a problem.
 pip install -r REQUIREMENTS-dev.txt
 nodeenv -n 0.10.33 -v
 npm install -g grunt-cli
+gem install compass
 ```
 
 Then `cd django_project` and install JS/CSS development utilties:

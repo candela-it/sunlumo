@@ -17,9 +17,16 @@ module.exports = function(grunt) {
                 }
             }
         },
+        compass: {
+            dist: {
+                options: {
+                    config: 'config.rb'
+                }
+            }
+        },
         cssmin: {
             contrib: {
-                src: ['lib_css/normalize.css', 'lib_css/foundation.css', 'lib_css/ol.css', 'lib_css/foundation-icons.css'],
+                src: ['lib_css/ol.css'],
                 dest: 'core/base_static/css/contrib.module.css'
             },
             project: {
@@ -46,19 +53,21 @@ module.exports = function(grunt) {
             tests: ['lib_js/tests/*.js']
         },
         watch: {
-            project: {
+            project_js: {
                 files: [
                     'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
-                    'lib_js/lib/ui/models/*.js', 'lib_css/*.css'
+                    'lib_js/lib/ui/models/*.js'
                 ],
-                tasks: ['default'],
+                tasks: ['build_js'],
                 options: {
                     spawn: false,
                 },
             },
-            tests: {
-                files: ['lib_js/lib/*.js', 'lib_css/*.css', 'lib_js/tests/*.js'],
-                tasks: ['default', 'tests', 'mocha_phantomjs'],
+            project_css: {
+                files: [
+                     'sass/*.scss', 'sass/contrib/foundation/*.scss'
+                ],
+                tasks: ['build_css'],
                 options: {
                     spawn: false,
                 },
@@ -104,8 +113,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-compass');
 
-    grunt.registerTask('default', ['jshint:project', 'browserify:project', 'cssmin']);
-    grunt.registerTask('tests', ['jshint:tests', 'browserify:tests']);
-    grunt.registerTask('build', ['browserify:project', 'cssmin', 'uglify']);
+    grunt.registerTask('default', ['jshint:project', 'browserify:project', 'compass', 'cssmin']);
+    grunt.registerTask('build_js', ['jshint:project', 'browserify:project']);
+    grunt.registerTask('build_css', ['compass', 'cssmin']);
+    grunt.registerTask('test', ['jshint:tests', 'browserify:tests']);
+    grunt.registerTask('build', ['browserify:project', 'compass', 'cssmin', 'uglify']);
 };

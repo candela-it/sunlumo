@@ -1,18 +1,17 @@
 'use strict';
 
-var _ = require('lodash');
 var m = require('mithril');
 var ol = require('../contrib/ol');
 
 var EVENTS = require('./events');
 
-var SL_GetFeatureInfoControl = function (map, options) {
+var SL_GetFeatureInfoControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
     };
 
-    if (!map || Object.getOwnPropertyNames(map).length === 0) {
+    if (!sl_map || Object.getOwnPropertyNames(sl_map).length === 0) {
         throw new Error('SL_GetFeatureInfoControl map parameter must be defined');
     }
 
@@ -29,7 +28,7 @@ var SL_GetFeatureInfoControl = function (map, options) {
     }
 
     // internal reference to the map object
-    this.map = map;
+    this.sl_map = sl_map;
 
     // initialize the getfeatureinfo control
     this._init();
@@ -45,11 +44,20 @@ SL_GetFeatureInfoControl.prototype = {
 
         this.SL_GFI_Source =  new ol.source.GeoJSON({
             // projection: data.map.getView().getProjection(),
-            defaultProjection: this.map.getView().getProjection()
+            defaultProjection: this.sl_map.map.getView().getProjection()
         });
 
         this.SL_GFI_Layer = new ol.layer.Vector({
             source: this.SL_GFI_Source
+        });
+
+        this.sl_map.addControlOverlayLayer(this.SL_GFI_Layer);
+
+        // propagate map events
+        this.sl_map.map.on('singleclick', function(evt) {
+            EVENTS.emit('map.singleclick', {
+                'coordinate': evt.coordinate
+            });
         });
 
         EVENTS.on('qgis.gfi.url.changed', function(data) {
@@ -77,8 +85,8 @@ SL_GetFeatureInfoControl.prototype = {
 
         EVENTS.on('gfi.result.clicked', function(data) {
             var feature = self.SL_GFI_Source.getFeatureById(data.result.id());
-            self.map.getView().fitExtent(
-                feature.getGeometry().getExtent(), self.map.getSize()
+            self.sl_map.map.getView().fitExtent(
+                feature.getGeometry().getExtent(), self.sl_map.map.getSize()
             );
             EVENTS.emit('qgis.featureoverlay.add', {
                 'feature': feature

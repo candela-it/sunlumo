@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+// copy definitions from contrib/font-awesome/_icons.scss
+
+.#{$fa-css-prefix}-arrows:before { content: $fa-var-arrows; }
+.#{$fa-css-prefix}-plus:before { content: $fa-var-plus; }
+.#{$fa-css-prefix}-minus:before { content: $fa-var-minus; }
+.#{$fa-css-prefix}-map-marker:before { content: $fa-var-map-marker; }
+.#{$fa-css-prefix}-eye:before { content: $fa-var-eye; }
+.#{$fa-css-prefix}-info-circle:before { content: $fa-var-info-circle; }
+.#{$fa-css-prefix}-cog:before { content: $fa-var-cog; }
+.#{$fa-css-prefix}-refresh:before { content: $fa-var-refresh; }
