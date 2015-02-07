@@ -51,8 +51,12 @@ SL_PrintControl.prototype = {
         this.printAreaExist = false;
 
 
-        // Add Drag interaction for PrintControl Features to map.
-        this.sl_map.map.addInteraction(new Drag(this));
+        // Add PrintAreaDragInteraction interaction
+
+        this.dragInteraction = new PrintAreaDragInteraction();
+        // this.dragInteraction.setActive(false);
+
+        this.sl_map.map.addInteraction(this.dragInteraction);
 
     },
 
@@ -60,102 +64,70 @@ SL_PrintControl.prototype = {
         var self = this;
 
         EVENTS.on('print.show', function (options) {
-            self.onShowPrintArea(options);
+            self.showPrintArea(options);
+            self.dragInteraction.setActive(true);
         });
 
         EVENTS.on('print.hide', function () {
-            self.onHidePrintArea();
+            self.hidePrintArea();
+            self.dragInteraction.setActive(false);
         });
     },
 
-    onShowPrintArea: function(options) {
+    showPrintArea: function(options) {
         var view_center = this.sl_map.map.getView().getCenter();
         var area_dimensions = this.getAreaDimensionsForScale(options);
+
         this.createPrintArea(view_center, area_dimensions);
-
-        // If PrintArea doesn't exist in layer add it.
-        if (!this.printAreaExist) {
-            this.SL_PrintArea_Source.addFeature(this.SL_PrintArea_Feature);
-            this.printAreaExist = true;
-        }
-
         this.SL_PrintArea_Layer.setVisible(true);
-
-        this.createPrintAreaNodes(this.SL_PrintArea_Feature);
     },
 
-    getAreaDimensionsForScale: function(printOptions) {
+    hidePrintArea: function() {
+        this.SL_PrintArea_Layer.setVisible(false);
+    },
+
+    getAreaDimensionsForScale: function(options) {
         // Get paper dimensions in meters according to paper dims and scale.
         return {
-            width: printOptions.layout.width() * printOptions.scale.scale / 1000,
-            height: printOptions.layout.height() * printOptions.scale.scale / 1000
+            width: options.layout.width() * options.scale.scale,
+            height: options.layout.height() * options.scale.scale
         };
     },
 
     createPrintArea: function(view_center, area_dimensions) {
         // Calculate coordinates for showing print area on map.
-        var firstVertex = [view_center[0] - area_dimensions.width/2, view_center[1] + area_dimensions.height/2];
-        var secondVertex = [firstVertex[0] + area_dimensions.width, firstVertex[1]];
-        var thirdVertex = [secondVertex[0], secondVertex[1] - area_dimensions.height];
-        var fourthVertex = [thirdVertex[0] - area_dimensions.width, thirdVertex[1]];
 
-        // If print area doesn't exist then create it, else just change it's coords.
-        if (!this.SL_PrintArea_Feature) {
-            this.SL_PrintArea_Feature = new ol.Feature({
-                geometry: new ol.geom.Polygon(
-                    [[firstVertex,
-                    secondVertex,
-                    thirdVertex,
-                    fourthVertex]]
-                ),
-                isPrintArea: true
-            });
-        } else {
-            this.SL_PrintArea_Feature
-                .getGeometry()
-                .setCoordinates(
-                    [[firstVertex,
-                    secondVertex,
-                    thirdVertex,
-                    fourthVertex
-                    ]]);
-        }
-        EVENTS.emit('print.area.updated', {
-            'bbox': this.SL_PrintArea_Feature.getGeometry().getExtent()
+        var center_x = view_center[0];
+        var center_y = view_center[1];
+
+        var dx = area_dimensions.width / 2;
+        var dy = area_dimensions.height / 2;
+
+        // calculate bbox coordiantes
+        var ul = [center_x - dx, center_y + dy];
+        var ur = [center_x + dx, center_y + dy];
+        var lr = [center_x + dx, center_y - dy];
+        var ll = [center_x - dx, center_y - dy];
+
+        var feature = new ol.Feature({
+            geometry: new ol.geom.Polygon([[ul, ur, lr, ll]]),
+            isPrintArea: true
         });
-    },
 
-    createPrintAreaNodes: function(printArea) {
-        if (this.printAreaNodes) {
-            for (var i = 0; i < this.printAreaNodes.length; i++) {
-                this.SL_PrintArea_Source.removeFeature(this.printAreaNodes[i]);
-            }
-        }
+        this.SL_PrintArea_Source.clear(true);
+        this.SL_PrintArea_Source.addFeature(feature);
 
-        this.printAreaNodes = [];
-        var nodesCoords = printArea.getGeometry().getCoordinates()[0];
-        for (var j = 0; j < nodesCoords.length; j++) {
-            this.printAreaNodes.push(new ol.Feature({
-               geometry: new ol.geom.Point(nodesCoords[j]),
-               isPrintAreaNode: true
-           }));
-        }
-
-        this.SL_PrintArea_Source.addFeatures(this.printAreaNodes);
-    },
-
-    onHidePrintArea: function() {
-        this.SL_PrintArea_Layer.setVisible(false);
+        EVENTS.emit('print.area.updated', {
+            'bbox': feature.getGeometry().getExtent()
+        });
     }
 };
 
 /**
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {object} SL_PrintControl instance
  */
-var Drag = function(printControl) {
-    this.printControl = printControl;
+var PrintAreaDragInteraction = function() {
 
     ol.interaction.Pointer.call(this, {
         handleDownEvent: this.handleDownEvent,
@@ -164,116 +136,79 @@ var Drag = function(printControl) {
         handleUpEvent: this.handleUpEvent
     });
 
-    /**
-     * @type {ol.Pixel}
-     * @private
-     */
     this.coordinate_ = null;
-
-    /**
-     * @type {string|undefined}
-     * @private
-     */
-    this.cursor_ = 'pointer';
-
-    /**
-     * @type {ol.Feature}
-     * @private
-     */
     this.feature_ = null;
 
-    /**
-     * @type {string|undefined}
-     * @private
-     */
     this.previousCursor_ = undefined;
+    this.cursor_ = 'pointer';
 };
-ol.inherits(Drag, ol.interaction.Pointer);
 
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `true` to start the drag sequence.
- */
-Drag.prototype.handleDownEvent = function(evt) {
+ol.inherits(PrintAreaDragInteraction, ol.interaction.Pointer);
+
+PrintAreaDragInteraction.prototype.handleDownEvent = function(evt) {
     var map = evt.map;
 
     var feature = map.forEachFeatureAtPixel(
-        evt.pixel,
-        function (feature) {
+        evt.pixel, function (feature) {
             return feature;
-        });
+        }
+    );
 
     if (feature) {
         this.coordinate_ = evt.coordinate;
         this.feature_ = feature;
+        // start the drag sequence
+        return true;
     }
 
-    return !!feature;
+    return false;
 };
 
-
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- */
-Drag.prototype.handleDragEvent = function(evt) {
+PrintAreaDragInteraction.prototype.handleDragEvent = function(evt) {
     // Only if feature is PrintArea
     if (this.feature_.getProperties().isPrintArea) {
         var deltaX = evt.coordinate[0] - this.coordinate_[0];
         var deltaY = evt.coordinate[1] - this.coordinate_[1];
 
-        var geometry = /** @type {ol.geom.SimpleGeometry} */
-            (this.feature_.getGeometry());
+        var geometry = this.feature_.getGeometry();
 
         geometry.translate(deltaX, deltaY);
 
-        // this.printControl.SL_PrintArea_Source.forEachFeature(function(feat) {
-            // if (feat.getProperties().isPrintAreaNode) {
-            //     var node_geometry = feat.getGeometry().translate(deltaX, deltaY);
-            // }
-        // });
-
-
+        // set new coordinates
         this.coordinate_[0] = evt.coordinate[0];
         this.coordinate_[1] = evt.coordinate[1];
 
         EVENTS.emit('print.area.updated', {
-            'bbox': this.SL_PrintArea_Feature.getGeometry().getExtent()
+            'bbox': geometry.getExtent()
         });
     }
 };
 
-
-/**
- * @param {ol.MapBrowserEvent} evt Event.
- */
-Drag.prototype.handleMoveEvent = function(evt) {
+PrintAreaDragInteraction.prototype.handleMoveEvent = function(evt) {
     if (this.cursor_) {
-      var map = evt.map;
-      var feature = map.forEachFeatureAtPixel(
-        evt.pixel,
-        function(feature) {
-            return feature;
+        var map = evt.map;
+        var feature = map.forEachFeatureAtPixel(
+            evt.pixel,
+            function(feature) {
+                return feature;
+            }
+        );
+
+        var element = evt.map.getTargetElement();
+
+        if (feature) {
+            if (element.style.cursor !== this.cursor_) {
+                this.previousCursor_ = element.style.cursor;
+                element.style.cursor = this.cursor_;
+            }
+        } else if (this.previousCursor_ !== undefined) {
+            element.style.cursor = this.previousCursor_;
+            this.previousCursor_ = undefined;
         }
-    );
-      var element = evt.map.getTargetElement();
-      if (feature) {
-        if (element.style.cursor !== this.cursor_) {
-          this.previousCursor_ = element.style.cursor;
-          element.style.cursor = this.cursor_;
-        }
-      } else if (this.previousCursor_ !== undefined) {
-        element.style.cursor = this.previousCursor_;
-        this.previousCursor_ = undefined;
-      }
     }
 };
 
-
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `false` to stop the drag sequence.
- */
-Drag.prototype.handleUpEvent = function() {
+PrintAreaDragInteraction.prototype.handleUpEvent = function() {
     this.coordinate_ = null;
     this.feature_ = null;
     return false;

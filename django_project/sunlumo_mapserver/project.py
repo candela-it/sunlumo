@@ -213,8 +213,12 @@ class SunlumoProject(object):
                     .firstChildElement('ComposerMap')
                     .firstChildElement('ComposerItem')
                 )
-                width = self._getAttr(composerMapItem, 'width').value()
-                height = self._getAttr(composerMapItem, 'height').value()
+
+                tmpWidth = self._getAttr(composerMapItem, 'width').value()
+                tmpHeight = self._getAttr(composerMapItem, 'height').value()
+                # convert width and height to meters
+                width = float(tmpWidth) / 1000
+                height = float(tmpHeight) / 1000
 
                 self.LAYOUTS_DATA[layout_name] = {
                     'width': width,
