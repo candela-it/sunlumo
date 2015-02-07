@@ -88,8 +88,7 @@ class FeatureInfo(SunlumoProject):
             qfr.setFilterRect(QgsRectangle(*search_box))
 
             for q_layer in params.get('query_layers'):
-                layer_id = self.getLayerIdByName(q_layer)
-                layer = self.layerRegistry.mapLayer(layer_id)
+                layer = self.layerRegistry.mapLayer(q_layer)
 
                 # update layer fields (expressions, calculated, joined)
                 layer.updateFields()

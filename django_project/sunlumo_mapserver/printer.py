@@ -41,7 +41,7 @@ class Printer(SunlumoProject):
             le = QgsPalLabeling()
             mapRenderer.setLabelingEngine(le)
 
-            layers = self.getLayersForRendering(params.get('layers'))
+            layers = params.get('layers')
             self.setTransparencies(layers, params.get('transparencies'))
             mapRenderer.setLayerSet(layers)
 

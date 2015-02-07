@@ -113,13 +113,13 @@ VIEWMODEL.prototype = {
             var treeItem = this.layerTree[i];
             if (treeItem.type() === 'layer') {
                 if (treeItem.visible()) {
-                    visible_layers.push(treeItem.name());
+                    visible_layers.push(treeItem.l_id());
                 }
             } else {
                 for (var j = 0; j < treeItem.layers().length; j++) {
                     var groupLayer = treeItem.layers()[j];
                     if (groupLayer.visible()) {
-                        visible_layers.push(groupLayer.name());
+                        visible_layers.push(groupLayer.l_id());
                     }
                 }
             }
@@ -158,13 +158,13 @@ VIEWMODEL.prototype = {
 
             if (treeItem.type() === 'layer') {
                 if (treeItem.visible() && treeItem.query()) {
-                    query_layers.push(treeItem.name());
+                    query_layers.push(treeItem.l_id());
                 }
             } else {
                 for (var j = 0; j < treeItem.layers().length; j++) {
                     var groupLayer = treeItem.layers()[j];
                     if (groupLayer.visible() && groupLayer.query()) {
-                        query_layers.push(groupLayer.name());
+                        query_layers.push(groupLayer.l_id());
                     }
                 }
             }

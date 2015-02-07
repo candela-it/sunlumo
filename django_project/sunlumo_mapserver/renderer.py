@@ -64,7 +64,7 @@ class Renderer(SunlumoProject):
             map_settings.setOutputSize(img.size())
             map_settings.setMapUnits(crs.mapUnits())
 
-            layers = self.getLayersForRendering(params.get('layers'))
+            layers = params.get('layers')
             self.setTransparencies(layers, params.get('transparencies'))
 
             map_settings.setLayers(layers)
