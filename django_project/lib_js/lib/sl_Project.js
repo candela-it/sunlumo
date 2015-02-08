@@ -75,6 +75,7 @@ SL_Project.prototype = {
             'layers': ui_lc.controller.vm.getLayersParam(),
             'transparencies': ui_lc.controller.vm.getTransparencyParam()
         });
+        var ui_dt = new UI_DistanceTool(this.options);
 
         var ui_acc = new UI_Accordion(this.options, [{
                 'title': 'Slojevi',
@@ -86,6 +87,10 @@ SL_Project.prototype = {
                 'component': ui_ss
             },
             {
+                'title': 'Alati',
+                'component': ui_dt
+            },
+            {
                 'title': 'Print',
                 'component': ui_pc
             }
@@ -94,7 +99,6 @@ SL_Project.prototype = {
         m.module(document.getElementById('sidebar'), {
             controller: function () {return ui_acc.controller;},
             view: function (ctrl) {return [ui_acc.view(ctrl)];},
-
         });
 
         var ui_gfi = new UI_GetFeatureInfo(this.options);
@@ -103,11 +107,7 @@ SL_Project.prototype = {
             view: function (ctrl) {return [ui_gfi.view(ctrl)];},
         });
 
-        // var ui_dt = new UI_DistanceTool(this.options);
-        // m.module(document.getElementById('distanceToolControl'), {
-        //     controller: function () {return ui_dt.controller;},
-        //     view: function (ctrl) {return [ui_dt.view(ctrl)];},
-        // });
+
 
         var ui_spin = new UI_SpinnerComponent(this.options);
         m.module(document.getElementById('refresh-notification'), {
