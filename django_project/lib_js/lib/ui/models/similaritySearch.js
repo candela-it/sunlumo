@@ -14,15 +14,6 @@ var xhrConfig = function(xhr) {
 };
 
 
-var SearchResult = function (data) {
-    this.id = m.prop(data.id);
-    this.geojson = m.prop(data.geojson);
-    this.index_value = m.prop(data.index_value);
-};
-
-var SearchResultCollection = Array;
-
-
 var SimilarityIndex = function (data) {
     this.index_name = m.prop(data.index_name);
     this.visible = m.prop(data.visible);
@@ -42,7 +33,6 @@ VIEWMODEL.prototype = {
 
         this.options = options;
 
-        this.result_list = new SearchResultCollection();
         this.index_list = new SimilarityIndexCollection();
 
         this.search_string = m.prop('');
@@ -57,15 +47,6 @@ VIEWMODEL.prototype = {
             }));
         });
 
-    },
-
-    // add layer to the result_list
-    add: function(id, geojson, index_value) {
-        this.result_list.push(new SearchResult({
-            'id': id,
-            'geojson': geojson,
-            'index_value': index_value
-        }));
     },
 
     getSearchLayers: function() {
@@ -91,13 +72,8 @@ VIEWMODEL.prototype = {
                 'search_layers': this.vm.getSearchLayers()
             }
         }).then(function (response) {
-            // clear current result list
-            self.vm.result_list = new SearchResultCollection();
-
-            _.forEach(response.features, function (feature_geojson) {
-                self.vm.add(
-                    feature_geojson.id, feature_geojson, feature_geojson.properties.index_value
-                );
+            EVENTS.emit('ss.results', {
+                'features': response.features
             });
         });
     },
@@ -114,10 +90,6 @@ VIEWMODEL.prototype = {
             // execute search
             this.clickSearch();
         }
-    },
-
-    ev_clickResult: function (item) {
-        EVENTS.emit('search.clicked', {'geojson': item.geojson()});
     },
 
     ev_clickIndex: function (index) {

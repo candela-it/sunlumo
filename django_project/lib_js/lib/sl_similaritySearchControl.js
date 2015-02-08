@@ -65,6 +65,11 @@ SL_SimilaritySearchControl.prototype = {
                 self.SL_Result_Source.getExtent(), self.sl_map.map.getSize()
             );
         });
+
+        EVENTS.on('ss.results.closed', function () {
+            // remove features ftom the source
+            self.SL_Result_Source.clear(true);
+        });
     }
 };
 

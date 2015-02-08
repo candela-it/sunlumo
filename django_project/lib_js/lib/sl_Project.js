@@ -8,6 +8,7 @@ var ol = require('../contrib/ol');
 
 var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
+var UI_SimilaritySearchResults = require('./ui/similaritySearchResults');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
 var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
@@ -107,7 +108,11 @@ SL_Project.prototype = {
             view: function (ctrl) {return [ui_gfi.view(ctrl)];},
         });
 
-
+        var ui_ssr = new UI_SimilaritySearchResults(this.options);
+        m.module(document.getElementById('similaritySearchResults'), {
+            controller: function () {return ui_ssr.controller;},
+            view: function (ctrl) {return [ui_ssr.view(ctrl)];},
+        });
 
         var ui_spin = new UI_SpinnerComponent(this.options);
         m.module(document.getElementById('refresh-notification'), {
