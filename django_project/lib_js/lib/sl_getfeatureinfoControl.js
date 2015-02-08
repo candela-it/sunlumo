@@ -92,6 +92,11 @@ SL_GetFeatureInfoControl.prototype = {
                 'feature': feature
             });
         });
+
+        EVENTS.on('gfi.results.closed', function () {
+            self.SL_GFI_Source.clear(true);
+            EVENTS.emit('qgis.featureoverlay.clear');
+        });
     }
 };
 

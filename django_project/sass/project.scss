@@ -44,6 +44,12 @@
 
 .sl-panel {
     @include panel();
+
+    position: fixed;
+    z-index: 2;
+    padding:0 !important;
+    border: none !important;
+
     .heading {
         // this class is defined in _utils partial
         @extend .relative-clear-left-100;

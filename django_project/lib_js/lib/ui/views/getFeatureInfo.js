@@ -11,20 +11,6 @@ var VIEW = function (ctrl) {
 
 var render = function(ctrl) {
     return [
-        m('div.toolbox-control-results.sl-panel.GFITool', {
-        'class': (ctrl.vm.control.active()) ? '' : 'hide'
-        }, [
-            m('div', { 'class': 'heading' }, 'Izabrano'),
-            m('div', { 'class': 'content' }, [
-                displayView(ctrl)
-            ])
-        ])
-    ];
-};
-
-
-var displayView = function(ctrl) {
-    return [
         ctrl.vm.list.map(function(item){
             return m('div.feature-result', [
                 _.map(item.properties, function(val, attr){
