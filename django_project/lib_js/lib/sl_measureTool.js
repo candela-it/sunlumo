@@ -2,6 +2,7 @@
 
 var ol = require('../contrib/ol');
 var EVENTS = require('./events');
+var _ = require('lodash');
 
 
 var SL_DistanceToolControl = function (sl_map, options) {
@@ -64,27 +65,36 @@ SL_DistanceToolControl.prototype = {
             style: style
         });
 
-
         this.feature = undefined;
+
+        this.line_overlays = [];
+        this.area_overlays = [];
 
         this.draw_line = this._initControl('LineString');
         this.draw_area = this._initControl('Polygon');
+
     },
 
     _initEvents: function () {
         var self = this;
+        // handle line measurement
         EVENTS.on('control.DistanceTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_line);
-            self.sl_map.map.on('pointermove', self.pointerMoveHandler, self);
+            self.sl_map.map.on('pointermove', self.pointerMoveHandler.bind(self));
             self.sl_map.addControlOverlayLayer(self.measure_line_layer);
         });
         EVENTS.on('control.DistanceTool.deactivate', function() {
             self.sl_map.map.removeInteraction(self.draw_line);
-            self.sl_map.map.un('pointermove', self.pointerMoveHandler, self);
+            self.sl_map.map.un('pointermove', self.pointerMoveHandler.bind(self));
             self.measure_source.clear(true);
             self.sl_map.removeControlOverlayLayer(self.measure_line_layer);
+            // remove overlayes from the map
+            _.forEach(self.line_overlays, function (overlay) {
+                self.sl_map.map.removeOverlay(overlay);
+            });
         });
 
+        // handle area measurement
         EVENTS.on('control.AreaTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_area);
             self.sl_map.map.on('pointermove', self.pointerMoveHandler, self);
@@ -95,6 +105,10 @@ SL_DistanceToolControl.prototype = {
             self.sl_map.map.un('pointermove', self.pointerMoveHandler, self);
             self.measure_source.clear(true);
             self.sl_map.removeControlOverlayLayer(self.measure_area_layer);
+            // remove overlayes from the map
+            _.forEach(self.area_overlays, function (overlay) {
+                self.sl_map.map.removeOverlay(overlay);
+            });
         });
     },
 
@@ -106,16 +120,21 @@ SL_DistanceToolControl.prototype = {
         });
 
         draw.on('drawstart', function(evt) {
-            // EVENTS.emit('distance.draw.start', {
-            //     'result': self.returnResult(evt.feature)
-            // });
             self.feature = evt.feature;
+
+            self.currentTooltip = self.createOverlay();
+            if (CtrlType === 'Polygon') {
+                self.area_overlays.push(self.currentTooltip);
+            } else {
+                self.line_overlays.push(self.currentTooltip);
+            }
+            self.sl_map.map.addOverlay(self.currentTooltip);
         }, this);
         draw.on('drawend', function(evt) {
+
+            self.currentTooltip.getElement().className = 'tooltip tooltip-static';
+
             self.feature = undefined;
-            // EVENTS.emit('distance.draw.update', {
-            //     'result': self.returnResult(evt.feature)
-            // });
         }, this);
 
         return draw;
@@ -136,9 +155,9 @@ SL_DistanceToolControl.prototype = {
         var area = polygon.getArea();
         var output;
         if (area > 10000) {
-            output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km2';
+            output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>';
         } else {
-            output = (Math.round(area * 100) / 100) + ' ' + 'm2';
+            output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
         }
         return output;
     },
@@ -159,10 +178,28 @@ SL_DistanceToolControl.prototype = {
         }
 
         if (this.feature) {
-            EVENTS.emit('distance.draw.update', {
-                'result': this.returnResult(this.feature)
-            });
+            var tooltipCoord;
+            var geom = (this.feature.getGeometry());
+            if (geom instanceof ol.geom.Polygon) {
+                tooltipCoord = geom.getInteriorPoint().getCoordinates();
+            } else {
+                tooltipCoord = geom.getLastCoordinate();
+            }
+            this.currentTooltip.getElement().innerHTML = this.returnResult(this.feature);
+            this.currentTooltip.setPosition(tooltipCoord);
+
         }
+    },
+
+    createOverlay: function() {
+        var measureTooltipElement = document.createElement('div');
+        measureTooltipElement.className = 'tooltip tooltip-measure';
+        var measureTooltip = new ol.Overlay({
+            element: measureTooltipElement,
+            offset: [0, -15],
+            positioning: 'bottom-center'
+        });
+        return measureTooltip;
     }
 };
 
