@@ -115,17 +115,6 @@ VIEWMODEL.prototype = {
             'scale': this.vm.selected_scale,
             'layout': this.vm.selected_layout
         });
-    },
-
-    ev_onShowPrintAreaClick: function() {
-        EVENTS.emit('print.show', {
-            'scale': this.vm.selected_scale,
-            'layout': this.vm.selected_layout
-        });
-    },
-
-    ev_onHidePrintAreaClick: function() {
-        EVENTS.emit('print.hide');
     }
 };
 

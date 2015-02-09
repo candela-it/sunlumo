@@ -14,6 +14,7 @@ var render = function(ctrl) {
         m('select', {
             'name': 'print-scales'
         }, [
+            m('option', ['-- odaberite mjerilo --']),
             ctrl.vm.scales.map(function(item) {
                 return m('option', {
                     'value': item.scale,
@@ -32,19 +33,12 @@ var render = function(ctrl) {
                 }, item.name());
             })
         ]),
-        m('button', {
-            'onclick': ctrl.vm.ev_onShowPrintAreaClick.bind(ctrl)
-        }, 'SHOW PRINT AREA'),
         m('a', {
             // generate printUrl
             'href': ctrl.vm.printUrl()
         }, [
-            m('button', ['PRINT']),
-        ]),
-        m('br'),
-        m('button', {
-            'onclick': ctrl.vm.ev_onHidePrintAreaClick.bind(ctrl)
-        }, 'HIDE'),
+            m('button', ['Print']),
+        ])
     ]);
 };
 

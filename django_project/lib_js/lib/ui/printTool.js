@@ -5,7 +5,7 @@ var EVENTS = require('../events');
 
 var UI_Button = require('./button');
 
-var DistanceTool = function(options) {
+var PrintTool = function(options) {
     this.options = {
         // initial module options
     };
@@ -25,27 +25,30 @@ var DistanceTool = function(options) {
     };
 };
 
-DistanceTool.prototype = {
+PrintTool.prototype = {
 
     init: function() {
         var self = this;
-        // this.controller = new Controller(this.options);
-        // this.view = View;
 
         var button = new UI_Button({
-            'style': 'i.fa.fa-arrows-v'
+            'style': 'i.fa.fa-print'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.DistanceTool.activate');
+            EVENTS.emit('control.Print.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.DistanceTool.deactivate');
+            EVENTS.emit('control.Print.deactivate');
+        });
+
+        // deactivate button if printControl was deactivated
+        EVENTS.on('control.Print.deactivate', function () {
+            button.controller.vm.deactivate(true);
         });
     }
 };
 
-module.exports = DistanceTool;
+module.exports = PrintTool;

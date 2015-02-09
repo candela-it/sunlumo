@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block title%} Sunlumo Demo project {% endblock title%}
+
 {% block content %}
 <!-- TOPBAR -->
 <nav class="top-bar" data-topbar role="navigation">
@@ -28,7 +30,8 @@
 <div id='map'></div>
 <!-- END MAP -->
 <div id='resultsToolControl'></div>
-<div id='resultsDistanceToolControl'></div>
+<div id='printControlPanel'></div>
+<div id='similaritySearchResults'></div>
 {% endblock %}
 
 {% block extra_js %}

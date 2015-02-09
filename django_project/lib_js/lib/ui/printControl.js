@@ -7,6 +7,8 @@ var ViewModel = require('./models/printControl');
 
 var View = require('./views/printControl');
 
+var UI_Panel = require('./panel');
+
 var Controller = function(options, initialState) {
     // initialize VM, and that's all a controller should EVER do, everything
     // else is handled by the vm and model
@@ -27,6 +29,7 @@ var PrintControl = function(options, initialState) {
 
     this.initialState = initialState;
     this.init();
+    this.initEvents();
 
     return {
         controller: this.controller,
@@ -37,20 +40,46 @@ var PrintControl = function(options, initialState) {
 PrintControl.prototype = {
 
     init: function() {
-        var self = this;
-        this.controller = new Controller(this.options, this.initialState);
-        this.view = View;
+        this.print_controller = new Controller(this.options, this.initialState);
+        this.print_view = View;
 
+        this.panel = new UI_Panel(this.options, {
+            'title': 'Print',
+            'component': {controller: this.print_controller, view: this.print_view},
+            'width': '200px',
+            'top': '56px',
+            'right': '50px'
+        });
+
+        this.controller = this.panel.controller;
+        this.view = this.panel.view;
+
+    },
+
+    initEvents: function() {
+        var self = this;
         EVENTS.on('print.area.updated', function(options) {
-            self.controller.vm.params.bbox = options.bbox;
-            self.controller.vm.updatePrintUrl();
+            self.print_controller.vm.params.bbox = options.bbox;
+            self.print_controller.vm.updatePrintUrl();
         });
 
         EVENTS.on('layers.updated', function(options) {
-            self.controller.vm.params.layers = options.layers;
-            self.controller.vm.params.transparencies = options.transparencies;
+            self.print_controller.vm.params.layers = options.layers;
+            self.print_controller.vm.params.transparencies = options.transparencies;
 
-            self.controller.vm.updatePrintUrl();
+            self.print_controller.vm.updatePrintUrl();
+        });
+
+        EVENTS.on('control.Print.activate', function () {
+            self.panel.controller.vm.show();
+        });
+
+        EVENTS.on('control.Print.deactivate', function () {
+            self.panel.controller.vm.hide();
+        });
+
+        self.panel.controller.vm.events.on('panel.closed', function () {
+            EVENTS.emit('control.Print.deactivate');
         });
     }
 };

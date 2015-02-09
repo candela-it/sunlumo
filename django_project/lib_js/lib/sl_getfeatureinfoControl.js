@@ -33,14 +33,13 @@ var SL_GetFeatureInfoControl = function (sl_map, options) {
     // initialize the getfeatureinfo control
     this._init();
 
+    this._initEvents();
+
 };
 
 
 SL_GetFeatureInfoControl.prototype = {
     _init: function() {
-        var self = this;
-
-        var geojsonFormat = new ol.format.GeoJSON();
 
         this.SL_GFI_Source =  new ol.source.GeoJSON({
             // projection: data.map.getView().getProjection(),
@@ -51,14 +50,18 @@ SL_GetFeatureInfoControl.prototype = {
             source: this.SL_GFI_Source
         });
 
-        this.sl_map.addControlOverlayLayer(this.SL_GFI_Layer);
+    },
 
-        // propagate map events
-        this.sl_map.map.on('singleclick', function(evt) {
-            EVENTS.emit('map.singleclick', {
-                'coordinate': evt.coordinate
-            });
+    handleMouseClick: function (evt) {
+        EVENTS.emit('map.singleclick', {
+            'coordinate': evt.coordinate
         });
+    },
+
+    _initEvents: function() {
+        var self = this;
+
+        var geojsonFormat = new ol.format.GeoJSON();
 
         EVENTS.on('qgis.gfi.url.changed', function(data) {
             EVENTS.emit('qgs.spinner.activate');
@@ -91,6 +94,22 @@ SL_GetFeatureInfoControl.prototype = {
             EVENTS.emit('qgis.featureoverlay.add', {
                 'feature': feature
             });
+        });
+
+        EVENTS.on('gfi.results.closed', function () {
+            self.SL_GFI_Source.clear(true);
+            EVENTS.emit('qgis.featureoverlay.clear');
+        });
+
+        EVENTS.on('control.GFI.activate', function() {
+            self.sl_map.addControlOverlayLayer(self.SL_GFI_Layer);
+            self.sl_map.map.on('singleclick', self.handleMouseClick);
+        });
+
+        EVENTS.on('control.GFI.deactivate', function() {
+            self.SL_GFI_Source.clear(true);
+            self.sl_map.removeControlOverlayLayer(self.SL_GFI_Layer);
+            self.sl_map.map.un('singleclick', self.handleMouseClick);
         });
     }
 };

@@ -34,7 +34,7 @@
         @include accordion-navigation($padding: rem-calc(5));
         .content {
             @include accordion-content($padding: rem-calc(0));
-            height: rem-calc(600);
+            // height: rem-calc(600);
             overflow: auto;
         }
     }
@@ -44,6 +44,12 @@
 
 .sl-panel {
     @include panel();
+
+    position: fixed;
+    z-index: 2;
+    padding:0 !important;
+    border: none !important;
+
     .heading {
         // this class is defined in _utils partial
         @extend .relative-clear-left-100;
@@ -204,7 +210,7 @@
     font-size: rem-calc(24);
 }
 
-#panelTools .controlButton {
+.controlButton {
     width: rem-calc(65);
 }
 
@@ -265,4 +271,37 @@
 
 .head:hover {
     background-color: #c5c5c5;
+}
+
+
+.tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+.tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+}
+.tooltip-static {
+    background-color: #ffcc33;
+    color: black;
+    border: 1px solid white;
+}
+.tooltip-measure:before, .tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+}
+.tooltip-static:before {
+    border-top-color: #ffcc33;
 }

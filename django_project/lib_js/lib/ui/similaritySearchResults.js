@@ -1,11 +1,10 @@
 'use strict';
 
-// global events
-var EVENTS = require('../events');
+var EVENTS = require('./../events');
 
-var ViewModel = require('./models/getFeatureInfo');
+var ViewModel = require('./models/similaritySearchResults');
 
-var View = require('./views/getFeatureInfo');
+var View = require('./views/similaritySearchResults');
 
 var UI_Panel = require('./panel');
 
@@ -15,7 +14,7 @@ var Controller = function(options) {
     this.vm = new ViewModel(options);
 };
 
-var GetFeatureInfo = function(options) {
+var SimilaritySearchResults = function(options) {
     this.options = {
         // initial module options
     };
@@ -35,43 +34,39 @@ var GetFeatureInfo = function(options) {
     };
 };
 
-GetFeatureInfo.prototype = {
+SimilaritySearchResults.prototype = {
 
-    init: function() {
+    init: function(){
         var self = this;
-        var gfi_controller = new Controller(this.options);
-        var gfi_view = View;
+        var ssr_controller = new Controller(this.options);
+        var ssr_view = View;
 
         var panel = new UI_Panel(this.options, {
             'title': 'Rezultati',
-            'component': {controller: gfi_controller, view: gfi_view},
+            'component': {controller: ssr_controller, view: ssr_view},
             'width': '200px',
             'top': '56px',
-            'left': '350px'
+            'left': '550px'
         });
 
         this.controller = panel.controller;
         this.view = panel.view;
 
-        EVENTS.on('gfi.results', function(options) {
-            gfi_controller.vm.set(options.features);
+        EVENTS.on('ss.results', function (options) {
+            ssr_controller.vm.addResults(options.features);
         });
 
-        EVENTS.on('gfi.results.show', function(options) {
+        EVENTS.on('ss.results.show', function(options) {
             panel.controller.vm.show();
         });
-        EVENTS.on('gfi.results.hide', function(options) {
+        EVENTS.on('ss.results.hide', function(options) {
             panel.controller.vm.hide();
         });
 
         panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('gfi.results.closed');
-        });
-
-        EVENTS.on('control.GFI.deactivate', function () {
-            panel.controller.vm.hide();
+            EVENTS.emit('ss.results.closed');
         });
     }
 };
 
-module.exports = GetFeatureInfo;
+module.exports = SimilaritySearchResults;

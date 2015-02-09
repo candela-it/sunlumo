@@ -6,10 +6,6 @@ var m = require('mithril');
 // global events
 var EVENTS = require('../../events');
 
-var ResultsDisplay = function() {
-    this.active = m.prop(false);
-};
-
 var Feature = function(data) {
     this.id = m.prop(data.id);
     this.toggled = m.prop(false);
@@ -46,7 +42,6 @@ VIEWMODEL.prototype = {
     init: function(options) {
         this.options = options;
         this.list = new FeatureList();
-        this.control = new ResultsDisplay();
     },
     set: function(data) {
         var self = this;
@@ -64,22 +59,12 @@ VIEWMODEL.prototype = {
             self.list.push(newFeature);
         });
 
-        this.control.active(true);
-    },
-    toggleControl: function() {
-        if (this.vm.control.active()) {
-            this.vm._deactivateControl();
+        // if there are some results
+        if (this.list.length > 0) {
+            EVENTS.emit('gfi.results.show');
         } else {
-            this.vm._activateControl();
+            EVENTS.emit('gfi.results.hide');
         }
-    },
-
-    activateControl: function() {
-        this.vm.control.active(true);
-    },
-
-    deactivateControl: function() {
-        this.vm.control.active(false);
     },
 
     ev_resultClicked: function(item) {
