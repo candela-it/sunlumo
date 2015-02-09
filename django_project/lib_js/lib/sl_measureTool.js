@@ -28,62 +28,81 @@ var SL_DistanceToolControl = function (sl_map, options) {
 
     // internal reference to the map object
     this.sl_map = sl_map;
-
     // initialize the distance tool control
     this._init();
 
     this._initEvents();
-
 };
 
 SL_DistanceToolControl.prototype = {
     _init: function() {
-        this.source = new ol.source.Vector();
+        this.measure_source = new ol.source.Vector();
+
+        this.measure_layer = new ol.layer.Vector({
+            source: this.measure_source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 3
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+
+        this.feature = undefined;
     },
 
     _initEvents: function () {
         var self = this;
-        EVENTS.on('control.DistanceTool.activate', function(payload) {
-            self._activateControl(payload.CtrlType);
+        EVENTS.on('control.DistanceTool.activate', function() {
+            self._activateControl('LineString');
         });
         EVENTS.on('control.DistanceTool.deactivate', function() {
             self._deactivateControl();
-        });
-        EVENTS.on('control.DistanceTool.changedType', function(payload) {
-            self._changeControlType(payload.CtrlType);
         });
     },
 
     _initControl: function(CtrlType) {
         var self = this;
         this.draw = new ol.interaction.Draw({
-            source: this.source,
+            source: this.measure_source,
             type: /** @type {ol.geom.GeometryType} */ (CtrlType)
         });
+
         this.draw.on('drawstart', function(evt) {
-            EVENTS.emit('distance.draw.start', {
-                'result': self.returnResult(evt.feature)
-            });
-        });
+            // EVENTS.emit('distance.draw.start', {
+            //     'result': self.returnResult(evt.feature)
+            // });
+            self.feature = evt.feature;
+        }, this);
         this.draw.on('drawend', function(evt) {
-            EVENTS.emit('distance.draw.update', {
-                'result': self.returnResult(evt.feature)
-            });
-        });
+            self.feature = undefined;
+            // EVENTS.emit('distance.draw.update', {
+            //     'result': self.returnResult(evt.feature)
+            // });
+        }, this);
     },
 
     _activateControl: function(CtrlType) {
         this._initControl(CtrlType);
         this.sl_map.map.addInteraction(this.draw);
+        this.sl_map.map.on('pointermove', this.pointerMoveHandler, this);
+        this.sl_map.addControlOverlayLayer(this.measure_layer);
     },
 
     _deactivateControl: function() {
         this.sl_map.map.removeInteraction(this.draw);
-    },
-
-    _changeControlType: function(CtrlType) {
-        this._deactivateControl();
-        this._activateControl(CtrlType);
+        this.sl_map.map.un('pointermove', this.pointerMoveHandler, this);
+        this.measure_source.clear(true);
+        this.sl_map.removeControlOverlayLayer(this.measure_layer);
     },
 
     formatLength: function(line) {
@@ -103,7 +122,7 @@ SL_DistanceToolControl.prototype = {
         if (area > 10000) {
             output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km2';
         } else {
-            output = (Math.round(area * 100) / 100) + ' ' + 'm2>';
+            output = (Math.round(area * 100) / 100) + ' ' + 'm2';
         }
         return output;
     },
@@ -114,6 +133,19 @@ SL_DistanceToolControl.prototype = {
           return this.formatArea((geom));
         } else if (geom instanceof ol.geom.LineString) {
           return this.formatLength((geom));
+        }
+    },
+
+    pointerMoveHandler: function(evt) {
+        // don't process if user is dragging (panning the map)
+        if (evt.dragging) {
+            return;
+        }
+
+        if (this.feature) {
+            EVENTS.emit('distance.draw.update', {
+                'result': this.returnResult(this.feature)
+            });
         }
     }
 };
