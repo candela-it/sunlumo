@@ -54,7 +54,8 @@ SL_QGISLayerControl.prototype = {
                 'TRANSPARENT': false
             },
             serverType: 'qgis',
-            ratio: 1
+            ratio: 1,
+            imageLoadFunction: this.customImageLoadFunction.bind(this)
         });
 
         this.SL_QGIS_Layer = new ol.layer.Image({
@@ -62,15 +63,27 @@ SL_QGISLayerControl.prototype = {
             source: this.SL_Source
         });
 
-        this.SL_QGIS_Layer.on('change', function() {
-            EVENTS.emit('qgs.spinner.activate');
-        });
-        this.SL_QGIS_Layer.on('postcompose', function() {
-            EVENTS.emit('qgs.spinner.deactivate');
-        });
-
         // add QGIS Layer to the map
         this.sl_map.addQGISLayer(this.SL_QGIS_Layer);
+    },
+
+    customImageLoadFunction: function(image, src) {
+        var self = this;
+
+        var start_time = new Date().getTime();
+        //set loading-status
+        EVENTS.emit('qgs.spinner.activate');
+
+        //set image source
+        image.getImage().src = src;
+
+        //onload triggers when the image is fully loaded
+        image.getImage().onload = function(evt) {
+            EVENTS.emit('qgs.spinner.deactivate');
+            var end_time = new Date().getTime();
+
+            console.log('Image loaded:', end_time - start_time);
+        };
     },
 
     _init: function () {
