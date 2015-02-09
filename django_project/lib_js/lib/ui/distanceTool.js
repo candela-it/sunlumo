@@ -45,14 +45,6 @@ DistanceTool.prototype = {
         button.controller.vm.events.on('button.deactivated', function () {
             EVENTS.emit('control.DistanceTool.deactivate');
         });
-        // EVENTS.on('distance.draw.start', function (options) {
-        //     // self.controller.vm.add(options.result);
-        //     console.log(options.result);
-        // });
-        // EVENTS.on('distance.draw.update', function (options) {
-        //     // self.controller.vm.update(options.result);
-        //     console.log(options.result);
-        // });
     }
 };
 

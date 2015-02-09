@@ -13,6 +13,7 @@ var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
 var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
 var UI_AreaTool = require('./ui/areaTool');
+var UI_GFITool = require('./ui/getFeatureInfoTool');
 var UI_SpinnerComponent = require('./ui/spinnerComponent');
 var UI_Accordion = require('./ui/accordion');
 var UI_Toolbox = require('./ui/toolBox');
@@ -59,7 +60,7 @@ SL_Project.prototype = {
         var qgis_layer = new SL_QGISLayerControl(sl_map, this.options);
 
         // add qgis_GFIControl Layer to the map
-        // var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
+        var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
 
         new SL_MeasureTool(sl_map, this.options);
 
@@ -80,6 +81,7 @@ SL_Project.prototype = {
         });
         var ui_dt = new UI_DistanceTool(this.options);
         var ui_at = new UI_AreaTool(this.options);
+        var ui_gfit = new UI_GFITool(this.options);
 
         var ui_toolbox = new UI_Toolbox(this.options, [
             {
@@ -87,6 +89,9 @@ SL_Project.prototype = {
             },
             {
                 'component': ui_at
+            },
+            {
+                'component': ui_gfit
             }
         ]);
 

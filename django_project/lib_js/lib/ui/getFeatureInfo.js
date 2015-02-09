@@ -67,6 +67,10 @@ GetFeatureInfo.prototype = {
         panel.controller.vm.events.on('panel.closed', function () {
             EVENTS.emit('gfi.results.closed');
         });
+
+        EVENTS.on('control.GFI.deactivate', function () {
+            panel.controller.vm.hide();
+        });
     }
 };
 

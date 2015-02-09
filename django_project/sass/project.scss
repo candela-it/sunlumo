@@ -34,7 +34,7 @@
         @include accordion-navigation($padding: rem-calc(5));
         .content {
             @include accordion-content($padding: rem-calc(0));
-            height: rem-calc(600);
+            // height: rem-calc(600);
             overflow: auto;
         }
     }

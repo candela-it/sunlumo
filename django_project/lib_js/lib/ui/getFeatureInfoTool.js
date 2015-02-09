@@ -5,7 +5,7 @@ var EVENTS = require('../events');
 
 var UI_Button = require('./button');
 
-var DistanceTool = function(options) {
+var GFITool = function(options) {
     this.options = {
         // initial module options
     };
@@ -25,7 +25,7 @@ var DistanceTool = function(options) {
     };
 };
 
-DistanceTool.prototype = {
+GFITool.prototype = {
 
     init: function() {
         var self = this;
@@ -33,20 +33,19 @@ DistanceTool.prototype = {
         // this.view = View;
 
         var button = new UI_Button({
-            'name': 'AreaTool',
-            'style': 'i.fa.fa-arrows'
+            'style': 'i.fa.fa-info-circle'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.AreaTool.activate');
+            EVENTS.emit('control.GFI.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.AreaTool.deactivate');
+            EVENTS.emit('control.GFI.deactivate');
         });
     }
 };
 
-module.exports = DistanceTool;
+module.exports = GFITool;
