@@ -14,6 +14,7 @@ var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
 var UI_AreaTool = require('./ui/areaTool');
 var UI_GFITool = require('./ui/getFeatureInfoTool');
+var UI_PrintTool = require('./ui/printTool');
 var UI_SpinnerComponent = require('./ui/spinnerComponent');
 var UI_Accordion = require('./ui/accordion');
 var UI_Toolbox = require('./ui/toolBox');
@@ -67,7 +68,7 @@ SL_Project.prototype = {
         // add similarity search control
         var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map, this.options);
 
-        // new SL_PrintControl(sl_map, this.options);
+        new SL_PrintControl(sl_map, this.options);
         new SL_FeatureOverlay(sl_map, this.options);
     },
 
@@ -79,9 +80,14 @@ SL_Project.prototype = {
             'layers': ui_lc.controller.vm.getLayersParam(),
             'transparencies': ui_lc.controller.vm.getTransparencyParam()
         });
+        m.module(document.getElementById('printControlPanel'), {
+            controller: function () {return ui_pc.controller;},
+            view: function (ctrl) {return [ui_pc.view(ctrl)];},
+        });
         var ui_dt = new UI_DistanceTool(this.options);
         var ui_at = new UI_AreaTool(this.options);
         var ui_gfit = new UI_GFITool(this.options);
+        var ui_pt = new UI_PrintTool(this.options);
 
         var ui_toolbox = new UI_Toolbox(this.options, [
             {
@@ -92,17 +98,16 @@ SL_Project.prototype = {
             },
             {
                 'component': ui_gfit
+            },
+            {
+                'component': ui_pt
             }
         ]);
 
         var ui_acc = new UI_Accordion(this.options, [
             {
                 'title': 'Alati',
-                'component': ui_toolbox
-            },
-            {
-                'title': 'Slojevi',
-                'component': ui_lc,
+                'component': ui_toolbox,
                 'open': true
             },
             {
@@ -110,8 +115,9 @@ SL_Project.prototype = {
                 'component': ui_ss
             },
             {
-                'title': 'Print',
-                'component': ui_pc
+                'title': 'Slojevi',
+                'component': ui_lc,
+                'open': true
             }
         ]);
 

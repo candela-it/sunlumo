@@ -31,11 +31,13 @@ VIEWMODEL.prototype = {
         });
     },
 
-    deactivate: function () {
+    deactivate: function (stopPropagation) {
         this.active(false);
-        this.events.emit('button.deactivated', {
-            'uuid': this.uuid()
-        });
+        if (!stopPropagation) {
+            this.events.emit('button.deactivated', {
+                'uuid': this.uuid()
+            });
+        }
     },
 
     ev_toggleButton: function() {

@@ -45,24 +45,16 @@ SL_PrintControl.prototype = {
             source: this.SL_PrintArea_Source
         });
 
-        this.sl_map.addControlOverlayLayer(this.SL_PrintArea_Layer);
-
         this.SL_PrintArea_Feature = undefined;
-        this.printAreaExist = false;
-
 
         // Add PrintAreaDragInteraction interaction
-
         this.dragInteraction = new PrintAreaDragInteraction();
-        // this.dragInteraction.setActive(false);
 
-        this.sl_map.map.addInteraction(this.dragInteraction);
 
     },
 
     _handleEvents: function() {
         var self = this;
-
         EVENTS.on('print.show', function (options) {
             self.showPrintArea(options);
             self.dragInteraction.setActive(true);
@@ -72,6 +64,19 @@ SL_PrintControl.prototype = {
             self.hidePrintArea();
             self.dragInteraction.setActive(false);
         });
+
+        EVENTS.on('control.Print.activate', function () {
+            self.sl_map.addControlOverlayLayer(self.SL_PrintArea_Layer);
+            self.sl_map.map.addInteraction(self.dragInteraction);
+        });
+
+        EVENTS.on('control.Print.deactivate', function () {
+            self.SL_PrintArea_Source.clear(true);
+
+            self.sl_map.removeControlOverlayLayer(self.SL_PrintArea_Layer);
+            self.sl_map.map.removeInteraction(self.dragInteraction);
+        });
+
     },
 
     showPrintArea: function(options) {
