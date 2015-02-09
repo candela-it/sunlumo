@@ -46,36 +46,30 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
     }
 
     return m('div.layer', properties, [
-        m('div', {
-            'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
+        m('div.layer-control', {
+            'class': (item.visible()) ? '' : 'deactivated',
             'onclick': ctrl.vm.ev_layerToggle.bind(ctrl, item)
         }, [
-            m('i', {
-                'class': 'fa fa-eye'
-            })
+            m('i.fa.fa-eye')
         ]),
-        m('div', {
-            'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
+        m('div.layer-control', {
+            'class': (item.query()) ? '' : 'deactivated',
             'onclick': ctrl.vm.ev_queryLayerToggle.bind(ctrl, item)
         }, [
-            m('i', {
-                'class': 'fa fa-info-circle'
-            })
+            m('i.fa.fa-info-circle')
         ]),
-        m('div', {
-            'class': 'layer-name'
-        }, [item.name()]),
+        m('div.layer-name', [item.name()]),
 
-        m('div', {
-            'class':  (item.showLayerControl()) ? 'layer-control layer-settings-control' : 'layer-control layer-settings-control hide',
+        m('div.layer-control.layer-settings-control', {
+            'class':  (item.showLayerControl()) ? '' : 'hide',
             'onclick': ctrl.vm.ev_toggleShowControl.bind(ctrl, item)
         }, [
             m('i', {
                 'class': 'fa fa-cog'
             })
         ]),
-        m('div', {
-            'class': (item.showLayerDetails()) ? 'layer-details' : 'layer-details hide'
+        m('div.layer-details', {
+            'class': (item.showLayerDetails()) ? '' : 'hide'
         }, [
             m('span', {}, 'TRANSPARENTNOST: '),
             m('input[type=range]', {
@@ -106,30 +100,25 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         'ondragover': ctrl.vm.ev_dragOver.bind(ctrl),
         'ondragend': ctrl.vm.ev_dragEnd.bind(ctrl),
     }, [
-        m('div', {
-            'class': (item.visible()) ? 'layer-control' : 'layer-control deactivated',
+        m('div.layer-control', {
+            'class': (item.visible()) ? '' : 'deactivated',
             'onclick': ctrl.vm.ev_groupToggle.bind(ctrl, item)
         }, [
-            m('i', {
-                'class': 'fa fa-eye'
-            })
+            m('i.fa.fa-eye')
         ]),
-        m('div', {
-            'class': (item.query()) ? 'layer-control' : 'layer-control deactivated',
+        m('div.layer-control', {
+            'class': (item.query()) ? '' : 'deactivated',
             'onclick': ctrl.vm.ev_queryGroupToggle.bind(ctrl, item)
         }, [
-            m('i', {
-                'class': 'fa fa-info-circle'
-            })
+            m('i.fa.fa-info-circle')
         ]),
-        m('div', {'class': 'group-name'}, [item.name()]),
+        m('div.group-name', [item.name()]),
 
-        m('div', {
-            'onclick': ctrl.vm.ev_toggleGroupCollapse.bind(ctrl, item),
-            'class': 'group-control'
+        m('div.group-control', {
+            'onclick': ctrl.vm.ev_toggleGroupCollapse.bind(ctrl, item)
         }, [
-            m('i', {
-                'class': item.collapsed() ? 'fa fa-plus' : 'fa fa-minus'
+            m('i.fa', {
+                'class': item.collapsed() ? 'fa-plus' : 'fa-minus'
             })
         ]),
 
