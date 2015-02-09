@@ -22,22 +22,22 @@ QGIS_SIMILARITY_SEARCH = {
         'pk': 'fid'
     },
     'ko lovrec': {
-        'layer_id': 'KO_LOVREC_BR_CESTICA20150122212721703',
+        'layer_id': 'KO_LOVREC_CESTICE20150122212721706',
         'fields': ['BROJ_KC'],
         'pk': 'fid'
     },
     'ko medovdolac': {
-        'layer_id': 'KO_MEDOVDOLAC_BR_CESTICA20150122212721721',
+        'layer_id': 'KO_MEDOVDOLAC_CESTICE20150122212721718',
         'fields': ['BROJ_KC'],
         'pk': 'fid'
     },
     'ko opanci': {
-        'layer_id': 'KO_OPANCI_BR_CESTICA20150122212721712',
+        'layer_id': 'KO_OPANCI_CESTICE20150122212721709',
         'fields': ['BROJ_KC'],
         'pk': 'fid'
     },
     'ko studenci': {
-        'layer_id': 'KO_STUDENCI_BR_CESTICA20150122212721737',
+        'layer_id': 'KO_STUDENCI_CESTICE20150122212721733',
         'fields': ['BROJ_KC'],
         'pk': 'fid'
     }
