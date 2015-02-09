@@ -237,17 +237,21 @@ VIEWMODEL.prototype = {
     ev_layerToggle: function (item) {
         if (item.visible()) {
             item.visible(false);
+            item.query(false);
         } else {
             item.visible(true);
         }
         this.vm.emitLayersUpdated();
+        this.vm.emitQueryLayersUpdated();
     },
 
     ev_queryLayerToggle: function (item) {
         if (item.query()) {
             item.query(false);
         } else {
-            item.query(true);
+            if (item.visible()) {
+                item.query(true);
+            }
         }
         this.vm.emitQueryLayersUpdated();
     },
@@ -260,10 +264,14 @@ VIEWMODEL.prototype = {
                 layer.query(false);
             });
         } else {
-            item.query(true);
+            if (item.visible()) {
+                item.query(true);
+            }
 
             _.forEach(item.layers(), function (layer) {
-                layer.query(true);
+                if (layer.visible()) {
+                    layer.query(true);
+                }
             });
         }
         this.vm.emitQueryLayersUpdated();
@@ -275,6 +283,7 @@ VIEWMODEL.prototype = {
 
             _.forEach(item.layers(), function (layer) {
                 layer.visible(false);
+                layer.query(false);
             });
         } else {
             item.visible(true);
@@ -285,6 +294,7 @@ VIEWMODEL.prototype = {
         }
 
         this.vm.emitLayersUpdated();
+        this.vm.emitQueryLayersUpdated();
     },
 
     ev_layerTransparency: function (item, e) {
