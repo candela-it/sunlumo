@@ -33,17 +33,17 @@ DistanceTool.prototype = {
         // this.view = View;
 
         var button = new UI_Button({
-            'style': 'i.fa.fa-arrows-v'
+            'style': 'i.fa.fa-arrows'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.DistanceTool.activate');
+            EVENTS.emit('control.AreaTool.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.DistanceTool.deactivate');
+            EVENTS.emit('control.AreaTool.deactivate');
         });
         // EVENTS.on('distance.draw.start', function (options) {
         //     // self.controller.vm.add(options.result);

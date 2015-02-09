@@ -12,13 +12,15 @@ var UI_SimilaritySearchResults = require('./ui/similaritySearchResults');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
 var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
+var UI_AreaTool = require('./ui/areaTool');
 var UI_SpinnerComponent = require('./ui/spinnerComponent');
 var UI_Accordion = require('./ui/accordion');
+var UI_Toolbox = require('./ui/toolBox');
 
 var SL_Map = require('./sl_map');
 var SL_QGISLayerControl = require('./sl_QGISLayerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
-var SL_DistanceToolControl = require('./sl_distanceToolControl');
+var SL_MeasureTool = require('./sl_measureTool');
 var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
 var SL_PrintControl = require('./sl_printControl');
 var SL_FeatureOverlay = require('./sl_FeatureOverlay');
@@ -56,15 +58,15 @@ SL_Project.prototype = {
         // add qgis_layer to the map
         var qgis_layer = new SL_QGISLayerControl(sl_map, this.options);
 
-        // // add qgis_GFIControl Layer to the map
-        var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
+        // add qgis_GFIControl Layer to the map
+        // var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
 
-        new SL_DistanceToolControl(sl_map, this.options);
+        new SL_MeasureTool(sl_map, this.options);
 
         // add similarity search control
         var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map, this.options);
 
-        new SL_PrintControl(sl_map, this.options);
+        // new SL_PrintControl(sl_map, this.options);
         new SL_FeatureOverlay(sl_map, this.options);
     },
 
@@ -77,8 +79,23 @@ SL_Project.prototype = {
             'transparencies': ui_lc.controller.vm.getTransparencyParam()
         });
         var ui_dt = new UI_DistanceTool(this.options);
+        var ui_at = new UI_AreaTool(this.options);
 
-        var ui_acc = new UI_Accordion(this.options, [{
+        var ui_toolbox = new UI_Toolbox(this.options, [
+            {
+                'component': ui_dt
+            },
+            {
+                'component': ui_at
+            }
+        ]);
+
+        var ui_acc = new UI_Accordion(this.options, [
+            {
+                'title': 'Alati',
+                'component': ui_toolbox
+            },
+            {
                 'title': 'Slojevi',
                 'component': ui_lc,
                 'open': true
@@ -86,10 +103,6 @@ SL_Project.prototype = {
             {
                 'title': 'Pretraživanje',
                 'component': ui_ss
-            },
-            {
-                'title': 'Alati',
-                'component': ui_dt
             },
             {
                 'title': 'Print',

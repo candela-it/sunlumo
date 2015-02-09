@@ -68,6 +68,13 @@ SL_DistanceToolControl.prototype = {
         EVENTS.on('control.DistanceTool.deactivate', function() {
             self._deactivateControl();
         });
+
+        EVENTS.on('control.AreaTool.activate', function() {
+            self._activateControl('Polygon');
+        });
+        EVENTS.on('control.AreaTool.deactivate', function() {
+            self._deactivateControl();
+        });
     },
 
     _initControl: function(CtrlType) {
