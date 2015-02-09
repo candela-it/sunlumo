@@ -1,5 +1,7 @@
 'use strict';
 
+var uuid = require('node-uuid');
+
 var m = require('mithril');
 
 // global events
@@ -14,19 +16,33 @@ VIEWMODEL.prototype = {
     init: function (options) {
         this.active = m.prop();
 
+        this.uuid = m.prop(uuid.v1());
+
         this.style = m.prop(options.style);
 
         // initialize component events
         this.events = new Jvent();
     },
 
+    activate: function () {
+        this.active(true);
+        this.events.emit('button.activated', {
+            'uuid': this.uuid()
+        });
+    },
+
+    deactivate: function () {
+        this.active(false);
+        this.events.emit('button.deactivated', {
+            'uuid': this.uuid()
+        });
+    },
+
     ev_toggleButton: function() {
         if (this.vm.active()) {
-            this.vm.active(false);
-            this.vm.events.emit('button.deactivated');
+            this.vm.deactivate();
         } else {
-            this.vm.active(true);
-            this.vm.events.emit('button.activated');
+            this.vm.activate();
         }
     }
 };

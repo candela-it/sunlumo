@@ -33,6 +33,7 @@ DistanceTool.prototype = {
         // this.view = View;
 
         var button = new UI_Button({
+            'name': 'AreaTool',
             'style': 'i.fa.fa-arrows'
         });
 

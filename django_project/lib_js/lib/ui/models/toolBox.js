@@ -28,6 +28,18 @@ VIEWMODEL.prototype = {
                     'controller': cmpt.component.controller
                 })
             );
+            // handle activated events so we can deactivate all other toolbox buttons
+            cmpt.component.controller.vm.events.on(
+                'button.activated', self.toggleComponents.bind(self)
+            );
+        });
+    },
+
+    toggleComponents: function (options) {
+        _.forEach(this.components, function (cmpt) {
+            if (cmpt.controller.vm.uuid() !== options.uuid) {
+                cmpt.controller.vm.deactivate();
+            }
         });
     }
 };

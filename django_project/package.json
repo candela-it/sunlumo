@@ -6,6 +6,7 @@
     "jvent": "^0.2.0",
     "lodash": "^3.0.1",
     "mithril": "^0.1.29",
+    "node-uuid": "^1.4.2",
     "proj4": "^2.3.3"
   },
   "devDependencies": {
