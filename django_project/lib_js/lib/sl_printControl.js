@@ -60,11 +60,6 @@ SL_PrintControl.prototype = {
             self.dragInteraction.setActive(true);
         });
 
-        EVENTS.on('print.hide', function () {
-            self.hidePrintArea();
-            self.dragInteraction.setActive(false);
-        });
-
         EVENTS.on('control.Print.activate', function () {
             self.sl_map.addControlOverlayLayer(self.SL_PrintArea_Layer);
             self.sl_map.map.addInteraction(self.dragInteraction);

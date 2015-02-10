@@ -65,8 +65,6 @@ VIEWMODEL.prototype = {
         this.printUrl = m.prop(undefined);
 
         this.layouts_list = new PrintLayoutCollection();
-        // Set initial scale option.
-        // this.selected_scale = this.scales[0];
         this.selected_layout = undefined;
 
         _.forEach(this.options.layouts, function(layout) {
@@ -110,7 +108,7 @@ VIEWMODEL.prototype = {
     },
 
     ev_onPrintLayoutChange: function(evt) {
-        this.vm.selected_scale = this.vm.layouts_list[evt.currentTarget.selectedIndex];
+        this.vm.selected_layout = this.vm.layouts_list[evt.currentTarget.selectedIndex];
         // Automatically show print area.
         EVENTS.emit('print.show', {
             'scale': this.vm.selected_scale,

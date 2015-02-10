@@ -25,7 +25,7 @@ var render = function(ctrl) {
         m('label', 'Layout'),
         m('select', {
             'name': 'print-layouts',
-            'onclick': ctrl.vm.ev_onPrintLayoutChange.bind(ctrl)
+            'onchange': ctrl.vm.ev_onPrintLayoutChange.bind(ctrl)
         }, [
             ctrl.vm.layouts_list.map(function(item) {
                 return m('option', {
