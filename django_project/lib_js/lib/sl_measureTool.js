@@ -84,6 +84,7 @@ SL_DistanceToolControl.prototype = {
             self.sl_map.addControlOverlayLayer(self.measure_line_layer);
         });
         EVENTS.on('control.DistanceTool.deactivate', function() {
+            self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_line);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler.bind(self));
             self.measure_source.clear(true);
@@ -101,6 +102,7 @@ SL_DistanceToolControl.prototype = {
             self.sl_map.addControlOverlayLayer(self.measure_area_layer);
         });
         EVENTS.on('control.AreaTool.deactivate', function() {
+            self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_area);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler, self);
             self.measure_source.clear(true);

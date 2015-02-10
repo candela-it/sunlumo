@@ -37,8 +37,7 @@ module.exports = function(grunt) {
         uglify: {
             project: {
                 files: {
-                    'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js'],
-                    'core/base_static/js/vendor.module.js': ['core/base_static/js/vendor.module.js']
+                    'core/base_static/js/app.module.js': ['core/base_static/js/app.module.js']
                 }
             }
         },
