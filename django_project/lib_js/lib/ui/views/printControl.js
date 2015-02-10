@@ -12,24 +12,24 @@ var render = function(ctrl) {
     return m('div', {}, [
         m('label', 'Scale'),
         m('select', {
-            'name': 'print-scales'
+            'name': 'print-scales',
+            'onchange': ctrl.vm.ev_onScaleChange.bind(ctrl)
         }, [
             m('option', ['-- odaberite mjerilo --']),
             ctrl.vm.scales.map(function(item) {
                 return m('option', {
-                    'value': item.scale,
-                    'onclick': ctrl.vm.ev_onScaleClick.bind(ctrl, item)
+                    'value': item.scale
                 }, item.display);
             })
         ]),
         m('label', 'Layout'),
         m('select', {
-            'name': 'print-layouts'
+            'name': 'print-layouts',
+            'onclick': ctrl.vm.ev_onPrintLayoutChange.bind(ctrl)
         }, [
             ctrl.vm.layouts_list.map(function(item) {
                 return m('option', {
-                    'value': item.name(),
-                    'onclick': ctrl.vm.ev_onPrintLayoutClick.bind(ctrl, item)
+                    'value': item.name()
                 }, item.name());
             })
         ]),

@@ -66,7 +66,7 @@ VIEWMODEL.prototype = {
 
         this.layouts_list = new PrintLayoutCollection();
         // Set initial scale option.
-        this.selected_scale = this.scales[0];
+        // this.selected_scale = this.scales[0];
         this.selected_layout = undefined;
 
         _.forEach(this.options.layouts, function(layout) {
@@ -99,8 +99,9 @@ VIEWMODEL.prototype = {
         this.printUrl(printUrl);
     },
 
-    ev_onScaleClick: function(item) {
-        this.vm.selected_scale = item;
+    ev_onScaleChange: function(evt) {
+        // deduct 1 to account for first artificial option
+        this.vm.selected_scale = Scales[evt.currentTarget.selectedIndex - 1];
         // Automatically show print area.
         EVENTS.emit('print.show', {
             'scale': this.vm.selected_scale,
@@ -108,8 +109,8 @@ VIEWMODEL.prototype = {
         });
     },
 
-    ev_onPrintLayoutClick: function(item) {
-        this.vm.selected_layout = item;
+    ev_onPrintLayoutChange: function(evt) {
+        this.vm.selected_scale = this.vm.layouts_list[evt.currentTarget.selectedIndex];
         // Automatically show print area.
         EVENTS.emit('print.show', {
             'scale': this.vm.selected_scale,
