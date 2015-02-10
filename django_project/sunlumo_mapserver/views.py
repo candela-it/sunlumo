@@ -3,6 +3,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 import subprocess
+import os.path
 
 from django.http import HttpResponse, Http404
 from django.views.generic import View
@@ -193,4 +194,8 @@ class PrintPDFView(UpperParamsMixin, View):
         with open(tmpFile + '.pdf', 'r') as pdfFile:
             data = pdfFile.read()
 
-        return HttpResponse(data, content_type='pdf')
+        resp = HttpResponse(data, content_type='application/pdf')
+        resp['Content-Disposition'] = 'attachment; filename={}.pdf'.format(
+            os.path.basename(tmpFile)
+        )
+        return resp
