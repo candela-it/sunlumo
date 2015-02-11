@@ -4,8 +4,8 @@
   "description": "Sunlumo QGIS Server",
   "dependencies": {
     "jvent": "^0.2.0",
-    "lodash": "^3.0.1",
-    "mithril": "^0.1.29",
+    "lodash": "^3.1.0",
+    "mithril": "^0.1.30",
     "node-uuid": "^1.4.2",
     "proj4": "^2.3.3"
   },
@@ -16,8 +16,8 @@
     "grunt-browserify": "^3.2.1",
     "grunt-contrib-compass": "^1.0.1",
     "grunt-contrib-concat": "^0.5.0",
-    "grunt-contrib-cssmin": "^0.10.0",
-    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-cssmin": "^0.12.1",
+    "grunt-contrib-uglify": "^0.7.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-mocha-istanbul": "^2.2.0",
     "grunt-mocha-phantomjs": "^0.6.0",
