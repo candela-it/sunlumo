@@ -1,6 +1,6 @@
 'use strict';
 
-var layerControlViewModel = require('./models/layerControl');
+var LayerControlViewModel = require('./models/layerControl');
 
 var View = require('./views/layerControl');
 
@@ -8,7 +8,7 @@ var View = require('./views/layerControl');
 var Controller = function(options) {
     // initialize VM, and that's all a controller should EVER do, everything
     // else is handled by the vm and model
-    this.vm = new layerControlViewModel(options);
+    this.vm = new LayerControlViewModel(options);
 };
 
 

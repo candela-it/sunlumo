@@ -36,8 +36,7 @@ var SimilaritySearchResults = function(options) {
 
 SimilaritySearchResults.prototype = {
 
-    init: function(){
-        var self = this;
+    init: function() {
         var ssr_controller = new Controller(this.options);
         var ssr_view = View;
 

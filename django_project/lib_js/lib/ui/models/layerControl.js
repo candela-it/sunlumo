@@ -50,8 +50,8 @@ VIEWMODEL.prototype = {
                 var layer = self.options.layers[treeItem.layer];
                 self.layerTree.push(new Layer({
                     'type': 'layer',
-                    'l_id':treeItem.layer,
-                    'name':layer.layer_name,
+                    'l_id': treeItem.layer,
+                    'name': layer.layer_name,
                     'visible': layer.visible,
                     'transparency': layer.transparency
                     })
@@ -63,13 +63,13 @@ VIEWMODEL.prototype = {
 
                 // read group layers
                 var groupLayers = _.map(group.layers, function(groupLayer) {
-                    var layer = self.options.layers[groupLayer.layer];
+                    var gr_layer = self.options.layers[groupLayer.layer];
                     return new Layer({
                         'type': 'layer',
-                        'l_id':groupLayer.layer,
-                        'name':layer.layer_name,
-                        'visible': layer.visible,
-                        'transparency': layer.transparency
+                        'l_id': groupLayer.layer,
+                        'name': gr_layer.layer_name,
+                        'visible': gr_layer.visible,
+                        'transparency': gr_layer.transparency
                     });
                 });
 
@@ -78,7 +78,7 @@ VIEWMODEL.prototype = {
                     'name': group.name,
                     'visible': group.visible,
                     'layers': groupLayers,
-                    'collapsed' : group.collapsed
+                    'collapsed': group.collapsed
                     })
                 );
             }

@@ -41,7 +41,7 @@ var SL_GetFeatureInfoControl = function (sl_map, options) {
 SL_GetFeatureInfoControl.prototype = {
     _init: function() {
 
-        this.SL_GFI_Source =  new ol.source.GeoJSON({
+        this.SL_GFI_Source = new ol.source.GeoJSON({
             // projection: data.map.getView().getProjection(),
             defaultProjection: this.sl_map.map.getView().getProjection()
         });

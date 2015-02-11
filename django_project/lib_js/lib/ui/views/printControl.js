@@ -37,7 +37,7 @@ var render = function(ctrl) {
             // generate printUrl
             'href': ctrl.vm.printUrl()
         }, [
-            m('button', ['Print']),
+            m('button', ['Print'])
         ])
     ]);
 };

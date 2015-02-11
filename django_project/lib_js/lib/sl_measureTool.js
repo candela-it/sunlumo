@@ -167,9 +167,9 @@ SL_DistanceToolControl.prototype = {
     returnResult: function(feat) {
         var geom = (feat.getGeometry());
         if (geom instanceof ol.geom.Polygon) {
-          return this.formatArea((geom));
+            return this.formatArea((geom));
         } else if (geom instanceof ol.geom.LineString) {
-          return this.formatLength((geom));
+            return this.formatLength((geom));
         }
     },
 

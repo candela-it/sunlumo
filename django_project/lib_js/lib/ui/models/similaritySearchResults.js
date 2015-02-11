@@ -2,17 +2,9 @@
 
 var _ = require('lodash');
 var m = require('mithril');
-var cookie = require('../../../contrib/cookie');
 
 // global events
 var EVENTS = require('../../events');
-
-var xhrConfig = function(xhr) {
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    // read csrftoken form the cookie and set header
-    xhr.setRequestHeader('X-CSRFToken', cookie.get('csrftoken'));
-};
-
 
 var SearchResult = function (data) {
     this.id = m.prop(data.id);
@@ -30,8 +22,6 @@ var VIEWMODEL = function (options) {
 
 VIEWMODEL.prototype = {
     init: function (options) {
-        var self = this;
-
         this.options = options;
 
         this.result_list = new SearchResultCollection();

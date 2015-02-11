@@ -2,11 +2,6 @@
 
 var m = require('mithril');
 
-// global events
-var EVENTS = require('../../events');
-
-var SL_SpinnerComponent = {};
-
 var VIEWMODEL = function (options) {
     this.init(options);
 };

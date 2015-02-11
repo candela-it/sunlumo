@@ -23,7 +23,7 @@ var render = function(ctrl) {
                     },
                     Object.keys(item.properties)[0] + ': ' + item.properties[Object.keys(item.properties)[0]]()
                 ),
-                m('div.item.toggle-icon', { 'onclick': ctrl.vm.ev_toggleItem.bind(ctrl, item) },  [
+                m('div.item.toggle-icon', { 'onclick': ctrl.vm.ev_toggleItem.bind(ctrl, item) }, [
                     m('i.mouse-pointer', {
                         'class': item.toggled() ? 'fa fa-minus' : 'fa fa-plus'
                     })

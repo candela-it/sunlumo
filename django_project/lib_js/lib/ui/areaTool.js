@@ -28,10 +28,6 @@ var DistanceTool = function(options) {
 DistanceTool.prototype = {
 
     init: function() {
-        var self = this;
-        // this.controller = new Controller(this.options);
-        // this.view = View;
-
         var button = new UI_Button({
             'name': 'AreaTool',
             'style': 'i.fa.fa-arrows'

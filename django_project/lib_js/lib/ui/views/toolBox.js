@@ -1,7 +1,6 @@
 'use strict';
 
 var m = require('mithril');
-var _ = require('lodash');
 
 
 var VIEW = function (ctrl) {
@@ -11,7 +10,7 @@ var VIEW = function (ctrl) {
 
 var render = function(ctrl) {
     return m('div.sl-toolbox', [
-        ctrl.vm.components.map(function(component, index) {
+        ctrl.vm.components.map(function(component) {
             return component.view(component.controller);
         })
     ]);

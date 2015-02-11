@@ -149,8 +149,8 @@ PrintAreaDragInteraction.prototype.handleDownEvent = function(evt) {
     var map = evt.map;
 
     var feature = map.forEachFeatureAtPixel(
-        evt.pixel, function (feature) {
-            return feature;
+        evt.pixel, function (rt_feature) {
+            return rt_feature;
         }
     );
 
@@ -189,8 +189,8 @@ PrintAreaDragInteraction.prototype.handleMoveEvent = function(evt) {
         var map = evt.map;
         var feature = map.forEachFeatureAtPixel(
             evt.pixel,
-            function(feature) {
-                return feature;
+            function(rt_feature) {
+                return rt_feature;
             }
         );
 

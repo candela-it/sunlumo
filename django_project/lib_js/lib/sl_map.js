@@ -5,7 +5,6 @@ require('./proj');
 
 var ol = require('../contrib/ol');
 
-var EVENTS = require('./events');
 
 var SL_Map = function (options) {
 
@@ -91,7 +90,7 @@ SL_Map.prototype = {
     },
     removeControlOverlayLayer: function (layer) {
         this.controlOverlaysCollection.remove(layer);
-    },
+    }
 };
 
 module.exports = SL_Map;

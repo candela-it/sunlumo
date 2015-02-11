@@ -61,7 +61,7 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
         m('div.layer-name', [item.name()]),
 
         m('div.layer-control.layer-settings-control', {
-            'class':  (item.showLayerControl()) ? '' : 'hide',
+            'class': (item.showLayerControl()) ? '' : 'hide',
             'onclick': ctrl.vm.ev_toggleShowControl.bind(ctrl, item)
         }, [
             m('i', {
@@ -98,7 +98,7 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         'draggable': 'true',
         'ondragstart': ctrl.vm.ev_dragStart.bind(ctrl),
         'ondragover': ctrl.vm.ev_dragOver.bind(ctrl),
-        'ondragend': ctrl.vm.ev_dragEnd.bind(ctrl),
+        'ondragend': ctrl.vm.ev_dragEnd.bind(ctrl)
     }, [
         m('div.layer-control', {
             'class': (item.visible()) ? '' : 'deactivated',

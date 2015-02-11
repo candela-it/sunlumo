@@ -1,7 +1,5 @@
 'use strict';
 
-// global events
-var EVENTS = require('../events');
 
 var ViewModel = require('./models/button');
 

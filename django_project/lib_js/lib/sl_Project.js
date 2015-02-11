@@ -1,10 +1,6 @@
 'use strict';
 
-var EVENTS = require('./events');
-
 var m = require('mithril');
-
-var ol = require('../contrib/ol');
 
 var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
@@ -58,15 +54,15 @@ SL_Project.prototype = {
 
         // these two layers should be added as last overlays
         // add qgis_layer to the map
-        var qgis_layer = new SL_QGISLayerControl(sl_map, this.options);
+        new SL_QGISLayerControl(sl_map, this.options);
 
         // add qgis_GFIControl Layer to the map
-        var qgis_GFI_layer = new SL_GFIControl(sl_map, this.options);
+        new SL_GFIControl(sl_map, this.options);
 
         new SL_MeasureTool(sl_map, this.options);
 
         // add similarity search control
-        var qgis_Similarity_layer = new SL_SimilaritySearchControl(sl_map, this.options);
+        new SL_SimilaritySearchControl(sl_map, this.options);
 
         new SL_PrintControl(sl_map, this.options);
         new SL_FeatureOverlay(sl_map, this.options);
@@ -82,7 +78,7 @@ SL_Project.prototype = {
         });
         m.module(document.getElementById('printControlPanel'), {
             controller: function () {return ui_pc.controller;},
-            view: function (ctrl) {return [ui_pc.view(ctrl)];},
+            view: function (ctrl) {return [ui_pc.view(ctrl)];}
         });
         var ui_dt = new UI_DistanceTool(this.options);
         var ui_at = new UI_AreaTool(this.options);
@@ -123,25 +119,25 @@ SL_Project.prototype = {
 
         m.module(document.getElementById('sidebar'), {
             controller: function () {return ui_acc.controller;},
-            view: function (ctrl) {return [ui_acc.view(ctrl)];},
+            view: function (ctrl) {return [ui_acc.view(ctrl)];}
         });
 
         var ui_gfi = new UI_GetFeatureInfo(this.options);
         m.module(document.getElementById('resultsToolControl'), {
             controller: function () {return ui_gfi.controller;},
-            view: function (ctrl) {return [ui_gfi.view(ctrl)];},
+            view: function (ctrl) {return [ui_gfi.view(ctrl)];}
         });
 
         var ui_ssr = new UI_SimilaritySearchResults(this.options);
         m.module(document.getElementById('similaritySearchResults'), {
             controller: function () {return ui_ssr.controller;},
-            view: function (ctrl) {return [ui_ssr.view(ctrl)];},
+            view: function (ctrl) {return [ui_ssr.view(ctrl)];}
         });
 
         var ui_spin = new UI_SpinnerComponent(this.options);
         m.module(document.getElementById('refresh-notification'), {
             controller: function () {return ui_spin.controller;},
-            view: function (ctrl) {return [ui_spin.view(ctrl)];},
+            view: function (ctrl) {return [ui_spin.view(ctrl)];}
         });
     }
 };

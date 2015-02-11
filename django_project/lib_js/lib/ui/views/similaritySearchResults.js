@@ -13,7 +13,8 @@ var render = function(ctrl) {
         ctrl.vm.result_list.map(function(item) {
             return m('li', {
                 'onclick': ctrl.vm.ev_clickResult.bind(ctrl, item)
-            }, item.index_value());
+                }, item.index_value()
+            );
         })]
     );
 };

@@ -60,7 +60,6 @@ VIEWMODEL.prototype = {
         return search_layers;
     },
     ev_clickSearch: function() {
-        var self = this;
         m.request({
             config: xhrConfig,
             method: 'POST',

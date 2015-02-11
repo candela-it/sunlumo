@@ -67,7 +67,7 @@ SL_FeatureOverlay.prototype = {
                     self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
                 }
                 if (data.feature) {
-                  self.SL_FeatureOverlay_Layer.addFeature(data.feature);
+                    self.SL_FeatureOverlay_Layer.addFeature(data.feature);
                 }
                 this.HighlightedFeature = data.feature;
             }

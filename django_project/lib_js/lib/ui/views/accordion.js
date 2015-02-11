@@ -1,7 +1,6 @@
 'use strict';
 
 var m = require('mithril');
-var _ = require('lodash');
 
 
 var VIEW = function (ctrl) {

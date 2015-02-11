@@ -48,8 +48,8 @@ SL_QGISLayerControl.prototype = {
         this.SL_Source = new ol.source.ImageWMS({
             url: '/getmap',
             params: {
-                'VERSION':'1.1.1',
-                'FORMAT':'image/jpeg',
+                'VERSION': '1.1.1',
+                'FORMAT': 'image/jpeg',
                 'BGCOLOR': 'FFFFFF',
                 'TRANSPARENT': false
             },
@@ -68,7 +68,6 @@ SL_QGISLayerControl.prototype = {
     },
 
     customImageLoadFunction: function(image, src) {
-        var self = this;
 
         var start_time = new Date().getTime();
         //set loading-status
@@ -92,7 +91,7 @@ SL_QGISLayerControl.prototype = {
 
     _updateSourceParams: function(options) {
         this.SL_Source.updateParams({
-            'LAYERS':options.layers,
+            'LAYERS': options.layers,
             'TRANSPARENCIES': options.transparencies,
             'MAP': this.options.map
         });

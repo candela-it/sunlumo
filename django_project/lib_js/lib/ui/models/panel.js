@@ -1,7 +1,6 @@
 'use strict';
 
 var m = require('mithril');
-var _ = require('lodash');
 
 var Jvent = require('jvent');
 
@@ -32,7 +31,6 @@ VIEWMODEL.prototype = {
     },
 
     addComponent: function (cmpt) {
-        var self = this;
         this.component = new ContentComponent({
             'title': cmpt.title,
             'view': cmpt.component.view,
@@ -40,7 +38,7 @@ VIEWMODEL.prototype = {
             'width': cmpt.width,
             'top': cmpt.top,
             'left': cmpt.left,
-            'right':cmpt.right
+            'right': cmpt.right
         });
         // calculate component style
         this.style(this.calculateStyle());

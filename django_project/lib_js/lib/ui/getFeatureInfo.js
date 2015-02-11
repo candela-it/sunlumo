@@ -38,7 +38,6 @@ var GetFeatureInfo = function(options) {
 GetFeatureInfo.prototype = {
 
     init: function() {
-        var self = this;
         var gfi_controller = new Controller(this.options);
         var gfi_view = View;
 
