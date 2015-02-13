@@ -42,11 +42,11 @@ GetFeatureInfo.prototype = {
         var gfi_view = View;
 
         var panel = new UI_Panel(this.options, {
-            'title': 'Rezultati',
-            'component': {controller: gfi_controller, view: gfi_view},
-            'width': '200px',
-            'top': '56px',
-            'left': '350px'
+            title: 'Rezultati',
+            component: {controller: gfi_controller, view: gfi_view},
+            width: '200px',
+            top: '56px',
+            left: '350px'
         });
 
         this.controller = panel.controller;

@@ -11,7 +11,6 @@ var Controller = function(options) {
 };
 
 var Accordion = function(options, components) {
-
     this.components = components;
     this.options = {
         // initial module options
@@ -33,7 +32,6 @@ var Accordion = function(options, components) {
 };
 
 Accordion.prototype = {
-
     init: function() {
         this.controller = new Controller(this.options);
         this.view = View;

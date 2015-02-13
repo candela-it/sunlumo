@@ -28,9 +28,8 @@ var DistanceTool = function(options) {
 DistanceTool.prototype = {
 
     init: function() {
-
         var button = new UI_Button({
-            'style': 'i.fa.fa-arrows-v'
+            style: 'i.fa.fa-arrows-v'
         });
 
         this.controller = button.controller;

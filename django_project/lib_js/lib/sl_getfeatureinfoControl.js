@@ -31,16 +31,14 @@ var SL_GetFeatureInfoControl = function (sl_map, options) {
     this.sl_map = sl_map;
 
     // initialize the getfeatureinfo control
-    this._init();
+    this.init();
 
-    this._initEvents();
-
+    this.initEvents();
 };
 
 
 SL_GetFeatureInfoControl.prototype = {
-    _init: function() {
-
+    init: function() {
         this.SL_GFI_Source = new ol.source.GeoJSON({
             // projection: data.map.getView().getProjection(),
             defaultProjection: this.sl_map.map.getView().getProjection()
@@ -49,16 +47,15 @@ SL_GetFeatureInfoControl.prototype = {
         this.SL_GFI_Layer = new ol.layer.Vector({
             source: this.SL_GFI_Source
         });
-
     },
 
     handleMouseClick: function (evt) {
         EVENTS.emit('map.singleclick', {
-            'coordinate': evt.coordinate
+            coordinate: evt.coordinate
         });
     },
 
-    _initEvents: function() {
+    initEvents: function() {
         var self = this;
 
         var geojsonFormat = new ol.format.GeoJSON();
@@ -79,7 +76,7 @@ SL_GetFeatureInfoControl.prototype = {
 
                 // add new features
                 EVENTS.emit('gfi.results', {
-                    'features': features
+                    features: features
                 });
 
                 EVENTS.emit('qgs.spinner.deactivate');
@@ -92,7 +89,7 @@ SL_GetFeatureInfoControl.prototype = {
                 feature.getGeometry().getExtent(), self.sl_map.map.getSize()
             );
             EVENTS.emit('qgis.featureoverlay.add', {
-                'feature': feature
+                feature: feature
             });
         });
 

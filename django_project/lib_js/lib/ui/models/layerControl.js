@@ -49,11 +49,11 @@ VIEWMODEL.prototype = {
             if (treeItem.layer) {
                 var layer = self.options.layers[treeItem.layer];
                 self.layerTree.push(new Layer({
-                    'type': 'layer',
-                    'l_id': treeItem.layer,
-                    'name': layer.layer_name,
-                    'visible': layer.visible,
-                    'transparency': layer.transparency
+                    type: 'layer',
+                    l_id: treeItem.layer,
+                    name: layer.layer_name,
+                    visible: layer.visible,
+                    transparency: layer.transparency
                     })
                 );
             }
@@ -65,20 +65,20 @@ VIEWMODEL.prototype = {
                 var groupLayers = _.map(group.layers, function(groupLayer) {
                     var gr_layer = self.options.layers[groupLayer.layer];
                     return new Layer({
-                        'type': 'layer',
-                        'l_id': groupLayer.layer,
-                        'name': gr_layer.layer_name,
-                        'visible': gr_layer.visible,
-                        'transparency': gr_layer.transparency
+                        type: 'layer',
+                        l_id: groupLayer.layer,
+                        name: gr_layer.layer_name,
+                        visible: gr_layer.visible,
+                        transparency: gr_layer.transparency
                     });
                 });
 
                 self.layerTree.push(new Group({
-                    'type': 'group',
-                    'name': group.name,
-                    'visible': group.visible,
-                    'layers': groupLayers,
-                    'collapsed': group.collapsed
+                    type: 'group',
+                    name: group.name,
+                    visible: group.visible,
+                    layers: groupLayers,
+                    collapsed: group.collapsed
                     })
                 );
             }
@@ -86,22 +86,21 @@ VIEWMODEL.prototype = {
 
         // control has been initialized
         EVENTS.emit('layers.initialized', {
-            'layers': this.getLayersParam(),
-            'transparencies': this.getTransparencyParam()
+            layers: this.getLayersParam(),
+            transparencies: this.getTransparencyParam()
         });
-
     },
 
     emitLayersUpdated: function() {
         EVENTS.emit('layers.updated', {
-            'layers': this.getLayersParam(),
-            'transparencies': this.getTransparencyParam()
+            layers: this.getLayersParam(),
+            transparencies: this.getTransparencyParam()
         });
     },
 
     emitQueryLayersUpdated: function () {
         EVENTS.emit('query.layers.updated', {
-            'query_layers': this.getQueryLayersParam()
+            query_layers: this.getQueryLayersParam()
         });
     },
 
@@ -109,14 +108,14 @@ VIEWMODEL.prototype = {
         // return comma concatenated string of visible layers
         var visible_layers = [];
 
-        for (var i = 0; i < this.layerTree.length; i++) {
+        for (var i = 0; i < this.layerTree.length; i += 1) {
             var treeItem = this.layerTree[i];
             if (treeItem.type() === 'layer') {
                 if (treeItem.visible()) {
                     visible_layers.push(treeItem.l_id());
                 }
             } else {
-                for (var j = 0; j < treeItem.layers().length; j++) {
+                for (var j = 0; j < treeItem.layers().length; j += 1) {
                     var groupLayer = treeItem.layers()[j];
                     if (groupLayer.visible()) {
                         visible_layers.push(groupLayer.l_id());
@@ -131,14 +130,14 @@ VIEWMODEL.prototype = {
         // return comma concatenated string of visible layers transparencies
         var layers_transparencies = [];
 
-        for (var i = 0; i < this.layerTree.length; i++) {
+        for (var i = 0; i < this.layerTree.length; i += 1) {
             var treeItem = this.layerTree[i];
             if (treeItem.type() === 'layer') {
                 if (treeItem.visible()) {
                     layers_transparencies.push(treeItem.transparency());
                 }
             } else {
-                for (var j = 0; j < treeItem.layers().length; j++) {
+                for (var j = 0; j < treeItem.layers().length; j += 1) {
                     var groupLayer = treeItem.layers()[j];
                     if (groupLayer.visible()) {
                         layers_transparencies.push(groupLayer.transparency());
@@ -153,7 +152,7 @@ VIEWMODEL.prototype = {
         // return comma concatenated string of queryable layers
         var query_layers = [];
 
-        for (var i = 0; i < this.layerTree.length; i++) {
+        for (var i = 0; i < this.layerTree.length; i += 1) {
             var treeItem = this.layerTree[i];
 
             if (treeItem.type() === 'layer') {
@@ -161,7 +160,7 @@ VIEWMODEL.prototype = {
                     query_layers.push(treeItem.l_id());
                 }
             } else {
-                for (var j = 0; j < treeItem.layers().length; j++) {
+                for (var j = 0; j < treeItem.layers().length; j += 1) {
                     var groupLayer = treeItem.layers()[j];
                     if (groupLayer.visible() && groupLayer.query()) {
                         query_layers.push(groupLayer.l_id());
@@ -184,7 +183,8 @@ VIEWMODEL.prototype = {
         // Fix for Firefox (maybe others), prevents dragstart event bubbling
         // on range input elements
         if (document.activeElement.type === 'range') {
-            return false; // block dragging
+            // block dragging
+            return false;
         }
 
         // get the index (position in a list) of the dragged element
@@ -200,7 +200,6 @@ VIEWMODEL.prototype = {
 
         // we need to set some data to trigger ondragover element
         e.dataTransfer.setData('text/html', undefined);
-
     },
 
     ev_dragOver: function(e) {
@@ -212,11 +211,11 @@ VIEWMODEL.prototype = {
         var previous_pos = isFinite(dragged_item) ? dragged_item : this.vm.cur_dragged;
         var next_pos = Number(over.dataset.id);
 
-        if((e.clientY - over.offsetTop) > (over.offsetHeight / 2)) {
-            next_pos++;
+        if (e.clientY - over.offsetTop > over.offsetHeight / 2) {
+            next_pos += 1;
         }
-        if(previous_pos < next_pos) {
-            next_pos--;
+        if (previous_pos < next_pos) {
+            next_pos -= 1;
         }
 
         var layers = this.vm.layerTree;
@@ -248,10 +247,8 @@ VIEWMODEL.prototype = {
     ev_queryLayerToggle: function (item) {
         if (item.query()) {
             item.query(false);
-        } else {
-            if (item.visible()) {
-                item.query(true);
-            }
+        } else if (item.visible()) {
+            item.query(true);
         }
         this.vm.emitQueryLayersUpdated();
     },

@@ -22,7 +22,7 @@ Feature.prototype = {
         }
     },
 
-    setProperties: function(properties){
+    setProperties: function(properties) {
         var self = this;
         _.forEach(properties, function(value, attribute) {
             if (properties.hasOwnProperty(attribute)) {
@@ -52,7 +52,7 @@ VIEWMODEL.prototype = {
             var properties = feature.getProperties();
 
             var newFeature = new Feature({
-                'id': feature.getId()
+                id: feature.getId()
             });
             // omit geometry from properties (OL3 api) as it's included
             newFeature.setProperties(_.omit(properties, geometryName));
@@ -69,7 +69,7 @@ VIEWMODEL.prototype = {
 
     ev_resultClicked: function(item) {
         EVENTS.emit('gfi.result.clicked', {
-            'result': item
+            result: item
         });
     },
 

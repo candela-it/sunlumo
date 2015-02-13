@@ -28,9 +28,8 @@ var PrintTool = function(options) {
 PrintTool.prototype = {
 
     init: function() {
-
         var button = new UI_Button({
-            'style': 'i.fa.fa-print'
+            style: 'i.fa.fa-print'
         });
 
         this.controller = button.controller;

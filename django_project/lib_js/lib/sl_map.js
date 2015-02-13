@@ -7,7 +7,6 @@ var ol = require('../contrib/ol');
 
 
 var SL_Map = function (options) {
-
     this.baseLayers = new ol.layer.Group();
     this.baseLayerCollection = new ol.Collection();
     this.baseLayers.setLayers(this.baseLayerCollection);
@@ -19,7 +18,6 @@ var SL_Map = function (options) {
     this.controlOverlays = new ol.layer.Group();
     this.controlOverlaysCollection = new ol.Collection();
     this.controlOverlays.setLayers(this.controlOverlaysCollection);
-
 
 
     // default options
@@ -39,11 +37,11 @@ var SL_Map = function (options) {
     }
 
     // initialize the client
-    this._init();
+    this.init();
 };
 
 SL_Map.prototype = {
-    _init: function() {
+    init: function() {
         // initialize
 
         var projection = ol.proj.get('EPSG:3765');
@@ -61,7 +59,8 @@ SL_Map.prototype = {
                 projection: projection,
                 center: ol.proj.transform([17.02, 43.5], 'EPSG:4326', 'EPSG:3765'),
                 zoom: 6,
-                maxZoom: 14,  // optimal for EPSG:3765
+                // optimal for EPSG:3765
+                maxZoom: 14,
                 extent: extent
             })
         });

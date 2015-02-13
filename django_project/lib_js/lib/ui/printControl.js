@@ -38,22 +38,20 @@ var PrintControl = function(options, initialState) {
 };
 
 PrintControl.prototype = {
-
     init: function() {
         this.print_controller = new Controller(this.options, this.initialState);
         this.print_view = View;
 
         this.panel = new UI_Panel(this.options, {
-            'title': 'Print',
-            'component': {controller: this.print_controller, view: this.print_view},
-            'width': '200px',
-            'top': '56px',
-            'right': '50px'
+            title: 'Print',
+            component: {controller: this.print_controller, view: this.print_view},
+            width: '200px',
+            top: '56px',
+            right: '50px'
         });
 
         this.controller = this.panel.controller;
         this.view = this.panel.view;
-
     },
 
     initEvents: function() {

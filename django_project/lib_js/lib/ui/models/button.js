@@ -27,7 +27,7 @@ VIEWMODEL.prototype = {
     activate: function () {
         this.active(true);
         this.events.emit('button.activated', {
-            'uuid': this.uuid()
+            uuid: this.uuid()
         });
     },
 
@@ -35,7 +35,7 @@ VIEWMODEL.prototype = {
         this.active(false);
         if (!stopPropagation) {
             this.events.emit('button.deactivated', {
-                'uuid': this.uuid()
+                uuid: this.uuid()
             });
         }
     },

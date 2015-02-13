@@ -41,15 +41,14 @@ var SL_Project = function (options) {
     }
 
     // initialize the client
-    this._init();
-    this._initUI();
+    this.init();
+    this.initUI();
 };
 
 
 SL_Project.prototype = {
 
-    _init: function (){
-
+    init: function () {
         var sl_map = new SL_Map(this.options);
 
         // these two layers should be added as last overlays
@@ -68,17 +67,21 @@ SL_Project.prototype = {
         new SL_FeatureOverlay(sl_map, this.options);
     },
 
-    _initUI: function() {
+    initUI: function() {
         // layer control
         var ui_lc = new UI_LayerControl(this.options);
         var ui_ss = new UI_SimilaritySearch(this.options);
         var ui_pc = new UI_PrintControl(this.options, {
-            'layers': ui_lc.controller.vm.getLayersParam(),
-            'transparencies': ui_lc.controller.vm.getTransparencyParam()
+            layers: ui_lc.controller.vm.getLayersParam(),
+            transparencies: ui_lc.controller.vm.getTransparencyParam()
         });
         m.module(document.getElementById('printControlPanel'), {
-            controller: function () {return ui_pc.controller;},
-            view: function (ctrl) {return [ui_pc.view(ctrl)];}
+            controller: function () {
+                return ui_pc.controller;
+            },
+            view: function (ctrl) {
+                return [ui_pc.view(ctrl)];
+            }
         });
         var ui_dt = new UI_DistanceTool(this.options);
         var ui_at = new UI_AreaTool(this.options);
@@ -87,57 +90,73 @@ SL_Project.prototype = {
 
         var ui_toolbox = new UI_Toolbox(this.options, [
             {
-                'component': ui_dt
+                component: ui_dt
             },
             {
-                'component': ui_at
+                component: ui_at
             },
             {
-                'component': ui_gfit
+                component: ui_gfit
             },
             {
-                'component': ui_pt
+                component: ui_pt
             }
         ]);
 
         var ui_acc = new UI_Accordion(this.options, [
             {
-                'title': 'Alati',
-                'component': ui_toolbox,
-                'open': true
+                title: 'Alati',
+                component: ui_toolbox,
+                open: true
             },
             {
-                'title': 'Pretraživanje',
-                'component': ui_ss
+                title: 'Pretraživanje',
+                component: ui_ss
             },
             {
-                'title': 'Slojevi',
-                'component': ui_lc,
-                'open': true
+                title: 'Slojevi',
+                component: ui_lc,
+                open: true
             }
         ]);
 
         m.module(document.getElementById('sidebar'), {
-            controller: function () {return ui_acc.controller;},
-            view: function (ctrl) {return [ui_acc.view(ctrl)];}
+            controller: function () {
+                return ui_acc.controller;
+            },
+            view: function (ctrl) {
+                return [ui_acc.view(ctrl)];
+            }
         });
 
         var ui_gfi = new UI_GetFeatureInfo(this.options);
         m.module(document.getElementById('resultsToolControl'), {
-            controller: function () {return ui_gfi.controller;},
-            view: function (ctrl) {return [ui_gfi.view(ctrl)];}
+            controller: function () {
+                return ui_gfi.controller;
+            },
+            view: function (ctrl) {
+                return [ui_gfi.view(ctrl)];
+            }
         });
 
         var ui_ssr = new UI_SimilaritySearchResults(this.options);
         m.module(document.getElementById('similaritySearchResults'), {
-            controller: function () {return ui_ssr.controller;},
-            view: function (ctrl) {return [ui_ssr.view(ctrl)];}
+            controller: function () {
+                return ui_ssr.controller;
+            },
+            view: function (ctrl) {
+                return [ui_ssr.view(ctrl)];
+            }
         });
 
         var ui_spin = new UI_SpinnerComponent(this.options);
         m.module(document.getElementById('refresh-notification'), {
-            controller: function () {return ui_spin.controller;},
-            view: function (ctrl) {return [ui_spin.view(ctrl)];}
+            controller: function () {
+                return ui_spin.controller;
+            },
+            view: function (ctrl) {
+                return [ui_spin.view(ctrl)];
+            }
         });
     }
 };

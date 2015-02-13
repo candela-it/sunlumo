@@ -28,9 +28,8 @@ var GFITool = function(options) {
 GFITool.prototype = {
 
     init: function() {
-
         var button = new UI_Button({
-            'style': 'i.fa.fa-info-circle'
+            style: 'i.fa.fa-info-circle'
         });
 
         this.controller = button.controller;

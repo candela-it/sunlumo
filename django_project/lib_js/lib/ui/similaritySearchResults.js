@@ -41,11 +41,11 @@ SimilaritySearchResults.prototype = {
         var ssr_view = View;
 
         var panel = new UI_Panel(this.options, {
-            'title': 'Rezultati',
-            'component': {controller: ssr_controller, view: ssr_view},
-            'width': '200px',
-            'top': '56px',
-            'left': '550px'
+            title: 'Rezultati',
+            component: {controller: ssr_controller, view: ssr_view},
+            width: '200px',
+            top: '56px',
+            left: '550px'
         });
 
         this.controller = panel.controller;

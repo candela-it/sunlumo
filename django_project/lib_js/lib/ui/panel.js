@@ -11,7 +11,6 @@ var Controller = function(options) {
 };
 
 var Panel = function(options, component) {
-
     this.component = component;
     this.options = {
         // initial module options
@@ -33,7 +32,6 @@ var Panel = function(options, component) {
 };
 
 Panel.prototype = {
-
     init: function() {
         this.controller = new Controller(this.options);
         this.view = View;

@@ -13,7 +13,7 @@ var EVENTS = require('../../events');
 var seralizeObjectToParams = function (obj) {
     var str = '';
     for (var key in obj) {
-        if(obj.hasOwnProperty(key)) {
+        if (obj.hasOwnProperty(key)) {
             if (str !== '') {
                 str += '&';
             }
@@ -54,12 +54,12 @@ VIEWMODEL.prototype = {
 
         this.scales = Scales;
         this.params = {
-            'bbox': undefined,
-            'layers': this.initialState.layers,
-            'transparencies': this.initialState.transparencies,
-            'map': this.options.map,
-            'layout': undefined,
-            'srs': 'EPSG:3765'
+            bbox: undefined,
+            layers: this.initialState.layers,
+            transparencies: this.initialState.transparencies,
+            map: this.options.map,
+            layout: undefined,
+            srs: 'EPSG:3765'
         };
 
         this.printUrl = m.prop(undefined);
@@ -83,9 +83,9 @@ VIEWMODEL.prototype = {
     // add layout to layouts list.
     add: function(name, width, height) {
         this.layouts_list.push(new PrintLayout({
-            'name': name,
-            'width': width,
-            'height': height
+            name: name,
+            width: width,
+            height: height
         }));
     },
 
@@ -102,8 +102,8 @@ VIEWMODEL.prototype = {
         this.vm.selected_scale = Scales[evt.currentTarget.selectedIndex - 1];
         // Automatically show print area.
         EVENTS.emit('print.show', {
-            'scale': this.vm.selected_scale,
-            'layout': this.vm.selected_layout
+            scale: this.vm.selected_scale,
+            layout: this.vm.selected_layout
         });
     },
 
@@ -111,8 +111,8 @@ VIEWMODEL.prototype = {
         this.vm.selected_layout = this.vm.layouts_list[evt.currentTarget.selectedIndex];
         // Automatically show print area.
         EVENTS.emit('print.show', {
-            'scale': this.vm.selected_scale,
-            'layout': this.vm.selected_layout
+            scale: this.vm.selected_scale,
+            layout: this.vm.selected_layout
         });
     }
 };

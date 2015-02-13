@@ -25,7 +25,6 @@ VIEWMODEL.prototype = {
         this.options = options;
 
         this.result_list = new SearchResultCollection();
-
     },
 
     // add layer to the result_list
@@ -38,9 +37,9 @@ VIEWMODEL.prototype = {
         _.forEach(features, function (feature) {
             self.result_list.push(
                 new SearchResult({
-                    'id': feature.id,
-                    'geojson': feature,
-                    'index_value': feature.properties.index_value
+                    id: feature.id,
+                    geojson: feature,
+                    index_value: feature.properties.index_value
                 })
             );
         });
@@ -54,7 +53,7 @@ VIEWMODEL.prototype = {
     },
 
     ev_clickResult: function (item) {
-        EVENTS.emit('search.clicked', {'geojson': item.geojson()});
+        EVENTS.emit('search.clicked', {geojson: item.geojson()});
     }
 };
 

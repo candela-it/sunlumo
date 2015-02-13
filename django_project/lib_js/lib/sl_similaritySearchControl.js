@@ -31,16 +31,15 @@ var SL_SimilaritySearchControl = function (sl_map, options) {
     this.sl_map = sl_map;
 
     // initialize the getfeatureinfo control
-    this._init();
+    this.init();
 
     // bind event handlers
-    this._handleEvents();
+    this.handleEvents();
 };
 
 
 SL_SimilaritySearchControl.prototype = {
-    _init: function() {
-
+    init: function() {
         this.SL_Result_Source = new ol.source.Vector();
 
         this.SL_Result_Layer = new ol.layer.Vector({
@@ -52,7 +51,7 @@ SL_SimilaritySearchControl.prototype = {
         this.sl_map.addControlOverlayLayer(this.SL_Result_Layer);
     },
 
-    _handleEvents: function() {
+    handleEvents: function() {
         var self = this;
 
         EVENTS.on('search.clicked', function (options) {

@@ -34,7 +34,7 @@ var SpinnerComponent = function(options) {
 
 SpinnerComponent.prototype = {
 
-    init: function(){
+    init: function() {
         var self = this;
         this.controller = new Controller(this.options);
         this.view = View;

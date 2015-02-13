@@ -34,7 +34,7 @@ var LayerController = function(options) {
 
 LayerController.prototype = {
 
-    init: function(){
+    init: function() {
         this.controller = new Controller(this.options);
         this.view = View;
     }

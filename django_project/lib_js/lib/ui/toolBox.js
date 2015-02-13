@@ -11,7 +11,6 @@ var Controller = function(options) {
 };
 
 var ToolBox = function(options, components) {
-
     this.components = components;
     this.options = {
         // initial module options

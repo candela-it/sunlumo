@@ -32,7 +32,7 @@ var SimilaritySearch = function(options) {
 
 SimilaritySearch.prototype = {
 
-    init: function(){
+    init: function() {
         this.controller = new Controller(this.options);
         this.view = View;
     }

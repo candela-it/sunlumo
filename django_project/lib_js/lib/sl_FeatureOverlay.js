@@ -29,18 +29,17 @@ var SL_FeatureOverlay = function (sl_map, options) {
     this.sl_map = sl_map;
     this.HighlightedFeature = undefined;
     // initialize the getfeatureinfo control
-    this._init();
-
+    this.init();
 };
 
 
 SL_FeatureOverlay.prototype = {
-    _init: function() {
+    init: function() {
         var self = this;
 
         this.SL_FeatureOverlay_Layer = new ol.FeatureOverlay({
             map: this.sl_map.map,
-            style: [ new ol.style.Style({
+            style: [new ol.style.Style({
                 stroke: new ol.style.Stroke({
                     color: '#f00',
                     width: 1
