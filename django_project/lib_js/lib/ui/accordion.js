@@ -1,8 +1,5 @@
 'use strict';
 
-// global events
-var EVENTS = require('../events');
-
 var ViewModel = require('./models/accordion');
 
 var View = require('./views/accordion');
@@ -14,7 +11,6 @@ var Controller = function(options) {
 };
 
 var Accordion = function(options, components) {
-
     this.components = components;
     this.options = {
         // initial module options
@@ -36,9 +32,7 @@ var Accordion = function(options, components) {
 };
 
 Accordion.prototype = {
-
     init: function() {
-        var self = this;
         this.controller = new Controller(this.options);
         this.view = View;
 

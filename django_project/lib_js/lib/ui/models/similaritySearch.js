@@ -4,8 +4,7 @@ var _ = require('lodash');
 var m = require('mithril');
 var cookie = require('../../../contrib/cookie');
 
-// global events
-var EVENTS = require('../../events');
+var Jvent = require('jvent');
 
 var xhrConfig = function(xhr) {
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -33,6 +32,9 @@ VIEWMODEL.prototype = {
 
         this.options = options;
 
+        // initialize component events
+        this.events = new Jvent();
+
         this.index_list = new SimilarityIndexCollection();
 
         this.search_string = m.prop('');
@@ -42,11 +44,10 @@ VIEWMODEL.prototype = {
         // Add available indices to the viewmodel
         _.forEach(this.options.similarity_indices, function (index) {
             self.index_list.push(new SimilarityIndex({
-                'index_name': index,
-                'visible': true
+                index_name: index,
+                visible: true
             }));
         });
-
     },
 
     getSearchLayers: function() {
@@ -67,13 +68,13 @@ VIEWMODEL.prototype = {
             url: '/api/search',
             // json encoded data
             data: {
-                'map_file': this.vm.map_file(),
-                'search_string': this.vm.search_string(),
-                'search_layers': this.vm.getSearchLayers()
+                map_file: this.vm.map_file(),
+                search_string: this.vm.search_string(),
+                search_layers: this.vm.getSearchLayers()
             }
         }).then(function (response) {
-            EVENTS.emit('ss.results', {
-                'features': response.features
+            self.vm.events.emit('results', {
+                features: response.features
             });
         });
     },

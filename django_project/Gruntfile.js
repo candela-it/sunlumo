@@ -41,15 +41,19 @@ module.exports = function(grunt) {
                 }
             }
         },
-        jshint: {
-            options: {
-                jshintrc: true
+        eslint: {
+            project: {
+                src: ["lib_js/lib/**/*.js"],
+                options: {
+                    config: "eslint-rules.json"
+                }
             },
-            project: [
-                'lib_js/lib/*.js', 'lib_js/lib/ui/*.js', 'lib_js/lib/ui/views/*.js',
-                'lib_js/lib/ui/models/*.js'
-            ],
-            tests: ['lib_js/tests/*.js']
+            tests: {
+                src: ["lib_js/tests/**/*.js"],
+                options: {
+                    config: "eslint-rules.json"
+                }
+            }
         },
         watch: {
             project_js: {
@@ -107,16 +111,16 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-phantomjs');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks("gruntify-eslint");
 
-    grunt.registerTask('default', ['jshint:project', 'browserify:project', 'compass', 'cssmin']);
-    grunt.registerTask('build_js', ['jshint:project', 'browserify:project']);
+    grunt.registerTask('default', ['eslint:project', 'browserify:project', 'compass', 'cssmin']);
+    grunt.registerTask('build_js', ['eslint:project', 'browserify:project']);
     grunt.registerTask('build_css', ['compass', 'cssmin']);
-    grunt.registerTask('test', ['jshint:tests', 'browserify:tests']);
+    grunt.registerTask('test', ['eslint:tests', 'browserify:tests']);
     grunt.registerTask('build', ['browserify:project', 'compass', 'cssmin', 'uglify']);
 };

@@ -38,22 +38,20 @@ var PrintControl = function(options, initialState) {
 };
 
 PrintControl.prototype = {
-
     init: function() {
         this.print_controller = new Controller(this.options, this.initialState);
         this.print_view = View;
 
         this.panel = new UI_Panel(this.options, {
-            'title': 'Print',
-            'component': {controller: this.print_controller, view: this.print_view},
-            'width': '200px',
-            'top': '56px',
-            'right': '50px'
+            title: 'Print',
+            component: {controller: this.print_controller, view: this.print_view},
+            width: '200px',
+            top: '56px',
+            right: '50px'
         });
 
         this.controller = this.panel.controller;
         this.view = this.panel.view;
-
     },
 
     initEvents: function() {
@@ -63,23 +61,27 @@ PrintControl.prototype = {
             self.print_controller.vm.updatePrintUrl();
         });
 
-        EVENTS.on('layers.updated', function(options) {
+        EVENTS.on('layerControl.layers.updated', function(options) {
             self.print_controller.vm.params.layers = options.layers;
             self.print_controller.vm.params.transparencies = options.transparencies;
 
             self.print_controller.vm.updatePrintUrl();
         });
 
-        EVENTS.on('control.Print.activate', function () {
+        EVENTS.on('print.activate', function () {
             self.panel.controller.vm.show();
         });
 
-        EVENTS.on('control.Print.deactivate', function () {
+        EVENTS.on('print.deactivate', function () {
             self.panel.controller.vm.hide();
         });
 
         self.panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('control.Print.deactivate');
+            EVENTS.emit('print.deactivate');
+        });
+
+        self.print_controller.vm.events.on('params.updated', function (options) {
+            EVENTS.emit('print.params.updated', options);
         });
     }
 };

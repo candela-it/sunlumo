@@ -3,8 +3,7 @@
 var _ = require('lodash');
 var m = require('mithril');
 
-// global events
-var EVENTS = require('../../events');
+var Jvent = require('jvent');
 
 var Feature = function(data) {
     this.id = m.prop(data.id);
@@ -22,7 +21,7 @@ Feature.prototype = {
         }
     },
 
-    setProperties: function(properties){
+    setProperties: function(properties) {
         var self = this;
         _.forEach(properties, function(value, attribute) {
             if (properties.hasOwnProperty(attribute)) {
@@ -40,6 +39,9 @@ var VIEWMODEL = function(options) {
 
 VIEWMODEL.prototype = {
     init: function(options) {
+        // initialize component events
+        this.events = new Jvent();
+
         this.options = options;
         this.list = new FeatureList();
     },
@@ -52,7 +54,7 @@ VIEWMODEL.prototype = {
             var properties = feature.getProperties();
 
             var newFeature = new Feature({
-                'id': feature.getId()
+                id: feature.getId()
             });
             // omit geometry from properties (OL3 api) as it's included
             newFeature.setProperties(_.omit(properties, geometryName));
@@ -61,15 +63,15 @@ VIEWMODEL.prototype = {
 
         // if there are some results
         if (this.list.length > 0) {
-            EVENTS.emit('gfi.results.show');
+            this.events.emit('results.show');
         } else {
-            EVENTS.emit('gfi.results.hide');
+            this.events.emit('results.hide');
         }
     },
 
     ev_resultClicked: function(item) {
-        EVENTS.emit('gfi.result.clicked', {
-            'result': item
+        this.vm.events.emit('result.click', {
+            result: item
         });
     },
 

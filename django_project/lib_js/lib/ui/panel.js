@@ -1,8 +1,5 @@
 'use strict';
 
-// global events
-var EVENTS = require('../events');
-
 var ViewModel = require('./models/panel');
 
 var View = require('./views/panel');
@@ -14,7 +11,6 @@ var Controller = function(options) {
 };
 
 var Panel = function(options, component) {
-
     this.component = component;
     this.options = {
         // initial module options
@@ -36,9 +32,7 @@ var Panel = function(options, component) {
 };
 
 Panel.prototype = {
-
     init: function() {
-        var self = this;
         this.controller = new Controller(this.options);
         this.view = View;
 

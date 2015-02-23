@@ -29,18 +29,17 @@ var SL_FeatureOverlay = function (sl_map, options) {
     this.sl_map = sl_map;
     this.HighlightedFeature = undefined;
     // initialize the getfeatureinfo control
-    this._init();
-
+    this.init();
 };
 
 
 SL_FeatureOverlay.prototype = {
-    _init: function() {
+    init: function() {
         var self = this;
 
         this.SL_FeatureOverlay_Layer = new ol.FeatureOverlay({
             map: this.sl_map.map,
-            style: [ new ol.style.Style({
+            style: [new ol.style.Style({
                 stroke: new ol.style.Stroke({
                     color: '#f00',
                     width: 1
@@ -61,19 +60,19 @@ SL_FeatureOverlay.prototype = {
             })]
         });
 
-        EVENTS.on('qgis.featureoverlay.add', function(data) {
+        EVENTS.on('featureOverlay.add', function(data) {
             if (data.feature !== this.HighlightedFeature) {
                 if (this.HighlightedFeature) {
                     self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
                 }
                 if (data.feature) {
-                  self.SL_FeatureOverlay_Layer.addFeature(data.feature);
+                    self.SL_FeatureOverlay_Layer.addFeature(data.feature);
                 }
                 this.HighlightedFeature = data.feature;
             }
         });
 
-        EVENTS.on('qgis.featureoverlay.clear', function() {
+        EVENTS.on('featureOverlay.clear', function() {
             if (this.HighlightedFeature !== undefined) {
                 self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
             }

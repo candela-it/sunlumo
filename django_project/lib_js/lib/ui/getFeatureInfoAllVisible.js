@@ -15,7 +15,7 @@ var Controller = function(options) {
     this.vm = new ViewModel(options);
 };
 
-var GetFeatureInfo = function(options) {
+var GetFeatureInfoAllVisible = function(options) {
     this.options = {
         // initial module options
     };
@@ -35,7 +35,7 @@ var GetFeatureInfo = function(options) {
     };
 };
 
-GetFeatureInfo.prototype = {
+GetFeatureInfoAllVisible.prototype = {
 
     init: function() {
         var gfi_controller = new Controller(this.options);
@@ -52,7 +52,7 @@ GetFeatureInfo.prototype = {
         this.controller = panel.controller;
         this.view = panel.view;
 
-        EVENTS.on('getFeatureInfo.results', function(options) {
+        EVENTS.on('getFeatureInfoAllVisible.results', function(options) {
             gfi_controller.vm.set(options.features);
         });
 
@@ -64,17 +64,17 @@ GetFeatureInfo.prototype = {
         });
 
         gfi_controller.vm.events.on('result.click', function(options) {
-            EVENTS.emit('getFeatureInfo.result.clicked', options);
+            EVENTS.emit('getFeatureInfoAllVisible.result.clicked', options);
         });
 
         panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('getFeatureInfo.results.closed');
+            EVENTS.emit('getFeatureInfoAllVisible.results.closed');
         });
 
-        EVENTS.on('getFeatureInfo.tool.deactivate', function () {
+        EVENTS.on('getFeatureInfoAllVisible.tool.deactivate', function () {
             panel.controller.vm.hide();
         });
     }
 };
 
-module.exports = GetFeatureInfo;
+module.exports = GetFeatureInfoAllVisible;

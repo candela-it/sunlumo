@@ -28,23 +28,18 @@ var DistanceTool = function(options) {
 DistanceTool.prototype = {
 
     init: function() {
-        var self = this;
-        // this.controller = new Controller(this.options);
-        // this.view = View;
-
         var button = new UI_Button({
-            'name': 'AreaTool',
-            'style': 'i.fa.fa-arrows'
+            style: 'i.fa.fa-arrows'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.AreaTool.activate');
+            EVENTS.emit('areaTool.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.AreaTool.deactivate');
+            EVENTS.emit('areaTool.deactivate');
         });
     }
 };

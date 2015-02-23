@@ -29,17 +29,17 @@ GFITool.prototype = {
 
     init: function() {
         var button = new UI_Button({
-            style: 'i.fa.fa-info-circle'
+            style: 'i.fa.fa-magic'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('getFeatureInfo.tool.activate');
+            EVENTS.emit('getFeatureInfoAllVisible.tool.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('getFeatureInfo.tool.deactivate');
+            EVENTS.emit('getFeatureInfoAllVisible.tool.deactivate');
         });
     }
 };

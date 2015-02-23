@@ -23,9 +23,9 @@ VIEWMODEL.prototype = {
         _.forEach(components, function(cmpt, idx) {
             self.components.push(
                 new ContentComponents({
-                    'id': idx,
-                    'view': cmpt.component.view,
-                    'controller': cmpt.component.controller
+                    id: idx,
+                    view: cmpt.component.view,
+                    controller: cmpt.component.controller
                 })
             );
             // handle activated events so we can deactivate all other toolbox buttons

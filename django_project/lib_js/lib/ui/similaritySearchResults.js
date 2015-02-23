@@ -36,35 +36,34 @@ var SimilaritySearchResults = function(options) {
 
 SimilaritySearchResults.prototype = {
 
-    init: function(){
-        var self = this;
+    init: function() {
         var ssr_controller = new Controller(this.options);
         var ssr_view = View;
 
         var panel = new UI_Panel(this.options, {
-            'title': 'Rezultati',
-            'component': {controller: ssr_controller, view: ssr_view},
-            'width': '200px',
-            'top': '56px',
-            'left': '550px'
+            title: 'Rezultati',
+            component: {controller: ssr_controller, view: ssr_view},
+            width: '200px',
+            top: '56px',
+            left: '550px'
         });
 
         this.controller = panel.controller;
         this.view = panel.view;
 
-        EVENTS.on('ss.results', function (options) {
+        EVENTS.on('similaritySearch.results', function (options) {
             ssr_controller.vm.addResults(options.features);
         });
 
-        EVENTS.on('ss.results.show', function(options) {
+        ssr_controller.vm.events.on('results.found', function(options) {
             panel.controller.vm.show();
         });
-        EVENTS.on('ss.results.hide', function(options) {
+        ssr_controller.vm.events.on('results.empty', function(options) {
             panel.controller.vm.hide();
         });
 
         panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('ss.results.closed');
+            EVENTS.emit('similaritySearch.results.closed');
         });
     }
 };

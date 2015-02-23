@@ -4,6 +4,9 @@ var ViewModel = require('./models/similaritySearch');
 
 var View = require('./views/similaritySearch');
 
+// global events
+var EVENTS = require('./../events');
+
 var Controller = function(options) {
     // initialize VM, and that's all a controller should EVER do, everything
     // else is handled by the vm and model
@@ -32,9 +35,13 @@ var SimilaritySearch = function(options) {
 
 SimilaritySearch.prototype = {
 
-    init: function(){
+    init: function() {
         this.controller = new Controller(this.options);
         this.view = View;
+
+        this.controller.vm.events.on('results', function (options) {
+            EVENTS.emit('similaritySearch.results', options);
+        });
     }
 };
 

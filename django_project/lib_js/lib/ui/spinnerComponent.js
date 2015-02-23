@@ -34,16 +34,16 @@ var SpinnerComponent = function(options) {
 
 SpinnerComponent.prototype = {
 
-    init: function(){
+    init: function() {
         var self = this;
         this.controller = new Controller(this.options);
         this.view = View;
 
-        EVENTS.on('qgs.spinner.activate', function() {
+        EVENTS.on('spinner.activate', function() {
             self.controller.vm.activate();
         });
 
-        EVENTS.on('qgs.spinner.deactivate', function() {
+        EVENTS.on('spinner.deactivate', function() {
             self.controller.vm.deactivate();
         });
     }

@@ -5,7 +5,7 @@ var ol = require('../contrib/ol');
 
 var EVENTS = require('./events');
 
-var SL_GetFeatureInfoControl = function (sl_map, options) {
+var SL_GetFeatureInfoAllVisibleControl = function (sl_map, options) {
     // default options
     this.options = {
         // initial module options
@@ -37,7 +37,7 @@ var SL_GetFeatureInfoControl = function (sl_map, options) {
 };
 
 
-SL_GetFeatureInfoControl.prototype = {
+SL_GetFeatureInfoAllVisibleControl.prototype = {
     init: function() {
         this.SL_GFI_Source = new ol.source.GeoJSON({
             // projection: data.map.getView().getProjection(),
@@ -52,7 +52,7 @@ SL_GetFeatureInfoControl.prototype = {
     handleMouseClick: function (evt) {
         var self = this;
         EVENTS.emit('layerControl.get.queryLayers', {
-            type: 'query',
+            type: 'visible',
             callback: function (queryLayers) {
                 EVENTS.emit('getFeatureInfo.url', {
                     coordinate: evt.coordinate,
@@ -82,7 +82,7 @@ SL_GetFeatureInfoControl.prototype = {
             self.SL_GFI_Source.addFeatures(features);
 
             // add new features
-            EVENTS.emit('getFeatureInfo.results', {
+            EVENTS.emit('getFeatureInfoAllVisible.results', {
                 features: features
             });
 
@@ -93,7 +93,7 @@ SL_GetFeatureInfoControl.prototype = {
     initEvents: function() {
         var self = this;
 
-        EVENTS.on('getFeatureInfo.result.clicked', function(data) {
+        EVENTS.on('getFeatureInfoAllVisible.result.clicked', function(data) {
             var feature = self.SL_GFI_Source.getFeatureById(data.result.id());
             self.sl_map.map.getView().fitExtent(
                 feature.getGeometry().getExtent(), self.sl_map.map.getSize()
@@ -103,19 +103,19 @@ SL_GetFeatureInfoControl.prototype = {
             });
         });
 
-        EVENTS.on('getFeatureInfo.results.closed', function () {
+        EVENTS.on('getFeatureInfoAllVisible.results.closed', function () {
             self.SL_GFI_Source.clear(true);
             EVENTS.emit('featureOverlay.clear');
         });
 
-        // handle GFI for queryLayers
-        EVENTS.on('getFeatureInfo.tool.activate', function() {
+        // handle GFI for all visible layers
+        EVENTS.on('getFeatureInfoAllVisible.tool.activate', function() {
             self.sl_map.addControlOverlayLayer(self.SL_GFI_Layer);
             // bind handleMouseClick context to self
             self.sl_map.map.on('singleclick', self.handleMouseClick, self);
         });
 
-        EVENTS.on('getFeatureInfo.tool.deactivate', function() {
+        EVENTS.on('getFeatureInfoAllVisible.tool.deactivate', function() {
             self.SL_GFI_Source.clear(true);
             self.sl_map.removeControlOverlayLayer(self.SL_GFI_Layer);
             self.sl_map.map.un('singleclick', self.handleMouseClick, self);
@@ -123,4 +123,4 @@ SL_GetFeatureInfoControl.prototype = {
     }
 };
 
-module.exports = SL_GetFeatureInfoControl;
+module.exports = SL_GetFeatureInfoAllVisibleControl;

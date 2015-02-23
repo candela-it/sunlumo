@@ -1,8 +1,5 @@
 'use strict';
 
-// global events
-var EVENTS = require('../events');
-
 var ViewModel = require('./models/toolBox');
 
 var View = require('./views/toolBox');
@@ -14,7 +11,6 @@ var Controller = function(options) {
 };
 
 var ToolBox = function(options, components) {
-
     this.components = components;
     this.options = {
         // initial module options
@@ -38,7 +34,6 @@ var ToolBox = function(options, components) {
 ToolBox.prototype = {
 
     init: function() {
-        var self = this;
         this.controller = new Controller(this.options);
         this.view = View;
 

@@ -32,26 +32,26 @@ var SL_QGISLayerControl = function (sl_map, options) {
     this.sl_map = sl_map;
 
     // check if we got right flavour of options
-    this._checkOptions();
+    this.checkOptions();
 
     // initialize the layer control
-    this._init();
+    this.init();
 
     // initialize the layer control event handling
-    this._initEvents();
+    this.initEvents();
 };
 
 
 SL_QGISLayerControl.prototype = {
 
-    _initQGISLayer: function () {
+    initQGISLayer: function () {
         this.SL_Source = new ol.source.ImageWMS({
             url: '/getmap',
             params: {
-                'VERSION':'1.1.1',
-                'FORMAT':'image/jpeg',
-                'BGCOLOR': 'FFFFFF',
-                'TRANSPARENT': false
+                VERSION: '1.1.1',
+                FORMAT: 'image/jpeg',
+                BGCOLOR: 'FFFFFF',
+                TRANSPARENT: false
             },
             serverType: 'qgis',
             ratio: 1,
@@ -68,70 +68,63 @@ SL_QGISLayerControl.prototype = {
     },
 
     customImageLoadFunction: function(image, src) {
-        var self = this;
-
         var start_time = new Date().getTime();
-        //set loading-status
-        EVENTS.emit('qgs.spinner.activate');
+        // set loading-status
+        EVENTS.emit('spinner.activate');
 
-        //set image source
+        // set image source
         image.getImage().src = src;
 
-        //onload triggers when the image is fully loaded
+        // onload triggers when the image is fully loaded
         image.getImage().onload = function(evt) {
-            EVENTS.emit('qgs.spinner.deactivate');
+            EVENTS.emit('spinner.deactivate');
             var end_time = new Date().getTime();
 
             console.log('Image loaded:', end_time - start_time);
         };
     },
 
-    _init: function () {
-        this._initQGISLayer();
+    init: function () {
+        this.initQGISLayer();
     },
 
-    _updateSourceParams: function(options) {
+    updateSourceParams: function(options) {
         this.SL_Source.updateParams({
-            'LAYERS':options.layers,
-            'TRANSPARENCIES': options.transparencies,
-            'MAP': this.options.map
+            LAYERS: options.layers,
+            TRANSPARENCIES: options.transparencies,
+            MAP: this.options.map
         });
     },
 
-    _initEvents: function () {
+    initEvents: function () {
         var self = this;
-        EVENTS.on('layers.updated', function(options) {
-            self._updateSourceParams(options);
-            // EVENTS.emit('read.layers.and.transparencies', {
-            //     'layers': self.getLayersParam(),
-            //     'transparencies': self.getTransparencyParam()
-            // });
-        });
-        EVENTS.on('layers.initialized', function(options) {
-            self._updateSourceParams(options);
+
+        EVENTS.on('layerControl.layers.initialized', function(options) {
+            self.updateSourceParams(options);
         });
 
-        EVENTS.on('query.layers.updated', function(options) {
+        EVENTS.on('layerControl.layers.updated', function(options) {
+            self.updateSourceParams(options);
+        });
+
+        EVENTS.on('layerControl.query.layers.updated', function(options) {
             self.queryLayersParam = options.query_layers;
         });
 
-        EVENTS.on('map.singleclick', function(data) {
+        EVENTS.on('getFeatureInfo.url', function(data) {
             var viewResolution = self.sl_map.map.getView().getResolution();
             var url = self.SL_Source.getGetFeatureInfoUrl(
                 data.coordinate, viewResolution, self.sl_map.map.getView().getProjection(), {
-                   'INFO_FORMAT': 'application/json',
-                   'QUERY_LAYERS': self.queryLayersParam
+                   INFO_FORMAT: 'application/json',
+                   QUERY_LAYERS: data.queryLayers
                });
 
-            // emit updated url to the GFI control
-            EVENTS.emit('qgis.gfi.url.changed', {
-                'url': url
-            });
+            // return URL via callback function
+            data.callback(url);
         });
-
     },
 
-    _checkOptions: function () {
+    checkOptions: function () {
         var properties = Object.getOwnPropertyNames(this.options);
 
         if (!_.contains(properties, 'layers')) {
@@ -141,7 +134,6 @@ SL_QGISLayerControl.prototype = {
         if (Object.getOwnPropertyNames(this.options.layers).length === 0) {
             throw new Error('SL_LayerControl "layers" must not be empty');
         }
-
     }
 };
 

@@ -35,11 +35,11 @@ VIEWMODEL.prototype = {
         _.forEach(components, function(cmpt, idx) {
             self.components.push(
                 new ContentComponents({
-                    'id': idx,
-                    'title': cmpt.title,
-                    'view': cmpt.component.view,
-                    'controller': cmpt.component.controller,
-                    'open': cmpt.open
+                    id: idx,
+                    title: cmpt.title,
+                    view: cmpt.component.view,
+                    controller: cmpt.component.controller,
+                    open: cmpt.open
                 })
             );
         });

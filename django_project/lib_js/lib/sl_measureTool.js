@@ -30,13 +30,13 @@ var SL_DistanceToolControl = function (sl_map, options) {
     // internal reference to the map object
     this.sl_map = sl_map;
     // initialize the distance tool control
-    this._init();
+    this.init();
 
-    this._initEvents();
+    this.initEvents();
 };
 
 SL_DistanceToolControl.prototype = {
-    _init: function() {
+    init: function() {
         this.measure_source = new ol.source.Vector();
 
         var style = new ol.style.Style({
@@ -70,20 +70,19 @@ SL_DistanceToolControl.prototype = {
         this.line_overlays = [];
         this.area_overlays = [];
 
-        this.draw_line = this._initControl('LineString');
-        this.draw_area = this._initControl('Polygon');
-
+        this.draw_line = this.initControl('LineString');
+        this.draw_area = this.initControl('Polygon');
     },
 
-    _initEvents: function () {
+    initEvents: function () {
         var self = this;
         // handle line measurement
-        EVENTS.on('control.DistanceTool.activate', function() {
+        EVENTS.on('distanceTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_line);
             self.sl_map.map.on('pointermove', self.pointerMoveHandler.bind(self));
             self.sl_map.addControlOverlayLayer(self.measure_line_layer);
         });
-        EVENTS.on('control.DistanceTool.deactivate', function() {
+        EVENTS.on('distanceTool.deactivate', function() {
             self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_line);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler.bind(self));
@@ -96,12 +95,12 @@ SL_DistanceToolControl.prototype = {
         });
 
         // handle area measurement
-        EVENTS.on('control.AreaTool.activate', function() {
+        EVENTS.on('areaTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_area);
             self.sl_map.map.on('pointermove', self.pointerMoveHandler, self);
             self.sl_map.addControlOverlayLayer(self.measure_area_layer);
         });
-        EVENTS.on('control.AreaTool.deactivate', function() {
+        EVENTS.on('areaTool.deactivate', function() {
             self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_area);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler, self);
@@ -114,11 +113,11 @@ SL_DistanceToolControl.prototype = {
         });
     },
 
-    _initControl: function(CtrlType) {
+    initControl: function(CtrlType) {
         var self = this;
         var draw = new ol.interaction.Draw({
             source: this.measure_source,
-            type: /** @type {ol.geom.GeometryType} */ (CtrlType)
+            type: CtrlType
         });
 
         draw.on('drawstart', function(evt) {
@@ -133,7 +132,6 @@ SL_DistanceToolControl.prototype = {
             self.sl_map.map.addOverlay(self.currentTooltip);
         }, this);
         draw.on('drawend', function(evt) {
-
             self.currentTooltip.getElement().className = 'tooltip tooltip-static';
 
             self.feature = undefined;
@@ -146,9 +144,9 @@ SL_DistanceToolControl.prototype = {
         var length = Math.round(line.getLength() * 100) / 100;
         var output;
         if (length > 100) {
-            output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
+            output = Math.round(length / 1000 * 100) / 100 + ' ' + 'km';
         } else {
-            output = (Math.round(length * 100) / 100) + ' ' + 'm';
+            output = Math.round(length * 100) / 100 + ' ' + 'm';
         }
         return output;
     },
@@ -157,19 +155,19 @@ SL_DistanceToolControl.prototype = {
         var area = polygon.getArea();
         var output;
         if (area > 10000) {
-            output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>';
+            output = Math.round(area / 1000000 * 100) / 100 + ' ' + 'km<sup>2</sup>';
         } else {
-            output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
+            output = Math.round(area * 100) / 100 + ' ' + 'm<sup>2</sup>';
         }
         return output;
     },
 
     returnResult: function(feat) {
-        var geom = (feat.getGeometry());
+        var geom = feat.getGeometry();
         if (geom instanceof ol.geom.Polygon) {
-          return this.formatArea((geom));
+            return this.formatArea(geom);
         } else if (geom instanceof ol.geom.LineString) {
-          return this.formatLength((geom));
+            return this.formatLength(geom);
         }
     },
 
@@ -181,7 +179,7 @@ SL_DistanceToolControl.prototype = {
 
         if (this.feature) {
             var tooltipCoord;
-            var geom = (this.feature.getGeometry());
+            var geom = this.feature.getGeometry();
             if (geom instanceof ol.geom.Polygon) {
                 tooltipCoord = geom.getInteriorPoint().getCoordinates();
             } else {
@@ -189,7 +187,6 @@ SL_DistanceToolControl.prototype = {
             }
             this.currentTooltip.getElement().innerHTML = this.returnResult(this.feature);
             this.currentTooltip.setPosition(tooltipCoord);
-
         }
     },
 

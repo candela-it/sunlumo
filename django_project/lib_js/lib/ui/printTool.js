@@ -28,24 +28,22 @@ var PrintTool = function(options) {
 PrintTool.prototype = {
 
     init: function() {
-        var self = this;
-
         var button = new UI_Button({
-            'style': 'i.fa.fa-print'
+            style: 'i.fa.fa-print'
         });
 
         this.controller = button.controller;
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.Print.activate');
+            EVENTS.emit('print.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.Print.deactivate');
+            EVENTS.emit('print.deactivate');
         });
 
         // deactivate button if printControl was deactivated
-        EVENTS.on('control.Print.deactivate', function () {
+        EVENTS.on('print.deactivate', function () {
             button.controller.vm.deactivate(true);
         });
     }
