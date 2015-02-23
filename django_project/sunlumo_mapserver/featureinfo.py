@@ -15,7 +15,8 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsRenderContext,
     QgsMapRenderer,
-    QgsScaleCalculator
+    QgsScaleCalculator,
+    QgsMapLayer
 )
 
 from django.conf import settings
@@ -89,6 +90,10 @@ class FeatureInfo(SunlumoProject):
 
             for q_layer in params.get('query_layers'):
                 layer = self.layerRegistry.mapLayer(q_layer)
+
+                if layer.type() == QgsMapLayer.RasterLayer:
+                    # skip raster layer processing
+                    continue
 
                 # update layer fields (expressions, calculated, joined)
                 layer.updateFields()
