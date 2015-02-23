@@ -116,7 +116,7 @@ SL_QGISLayerControl.prototype = {
             var url = self.SL_Source.getGetFeatureInfoUrl(
                 data.coordinate, viewResolution, self.sl_map.map.getView().getProjection(), {
                    INFO_FORMAT: 'application/json',
-                   QUERY_LAYERS: self.queryLayersParam
+                   QUERY_LAYERS: data.queryLayers
                });
 
             // return URL via callback function

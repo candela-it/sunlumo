@@ -37,6 +37,8 @@ var LayerController = function(options) {
 LayerController.prototype = {
 
     init: function() {
+        var self = this;
+
         this.controller = new Controller(this.options);
         this.view = View;
 
@@ -52,6 +54,17 @@ LayerController.prototype = {
 
         this.controller.vm.events.on('query.layers.updated', function (options) {
             EVENTS.emit('layerControl.query.layers.updated', options);
+        });
+
+
+        EVENTS.on('layerControl.get.queryLayers', function (data) {
+            if (data.type === 'query') {
+                data.callback(self.controller.vm.getQueryLayersParam());
+            } else if (data.type === 'visible') {
+                data.callback(self.controller.vm.getLayersParam());
+            } else {
+                throw new Error('Unsupported layer type for getFeatureInfo');
+            }
         });
     }
 };

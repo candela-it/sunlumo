@@ -50,9 +50,16 @@ SL_GetFeatureInfoControl.prototype = {
     },
 
     handleMouseClick: function (evt) {
-        EVENTS.emit('getFeatureInfo.url', {
-            coordinate: evt.coordinate,
-            callback: this.getFeatureInfo.bind(this)
+        var self = this;
+        EVENTS.emit('layerControl.get.queryLayers', {
+            type: 'query',
+            callback: function (queryLayers) {
+                EVENTS.emit('getFeatureInfo.url', {
+                    coordinate: evt.coordinate,
+                    queryLayers: queryLayers,
+                    callback: self.getFeatureInfo.bind(self)
+                });
+            }
         });
     },
 
