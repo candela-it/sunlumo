@@ -4,8 +4,7 @@ var _ = require('lodash');
 var m = require('mithril');
 var cookie = require('../../../contrib/cookie');
 
-// global events
-var EVENTS = require('../../events');
+var Jvent = require('jvent');
 
 var xhrConfig = function(xhr) {
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -33,6 +32,9 @@ VIEWMODEL.prototype = {
 
         this.options = options;
 
+        // initialize component events
+        this.events = new Jvent();
+
         this.index_list = new SimilarityIndexCollection();
 
         this.search_string = m.prop('');
@@ -59,6 +61,7 @@ VIEWMODEL.prototype = {
         return search_layers;
     },
     ev_clickSearch: function() {
+        var self = this;
         m.request({
             config: xhrConfig,
             method: 'POST',
@@ -70,7 +73,7 @@ VIEWMODEL.prototype = {
                 search_layers: this.vm.getSearchLayers()
             }
         }).then(function (response) {
-            EVENTS.emit('ss.results', {
+            self.vm.events.emit('results', {
                 features: response.features
             });
         });

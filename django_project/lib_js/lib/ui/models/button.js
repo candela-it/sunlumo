@@ -4,7 +4,6 @@ var uuid = require('node-uuid');
 
 var m = require('mithril');
 
-// global events
 var Jvent = require('jvent');
 
 

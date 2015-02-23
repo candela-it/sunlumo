@@ -3,8 +3,7 @@
 var _ = require('lodash');
 var m = require('mithril');
 
-// global events
-var EVENTS = require('../../events');
+var Jvent = require('jvent');
 
 var SearchResult = function (data) {
     this.id = m.prop(data.id);
@@ -23,6 +22,9 @@ var VIEWMODEL = function (options) {
 VIEWMODEL.prototype = {
     init: function (options) {
         this.options = options;
+
+        // initialize component events
+        this.events = new Jvent();
 
         this.result_list = new SearchResultCollection();
     },
@@ -46,14 +48,14 @@ VIEWMODEL.prototype = {
 
         // if there are some results
         if (this.result_list.length > 0) {
-            EVENTS.emit('ss.results.show');
+            this.events.emit('results.found');
         } else {
-            EVENTS.emit('ss.results.hide');
+            this.events.emit('results.empty');
         }
     },
 
     ev_clickResult: function (item) {
-        EVENTS.emit('search.clicked', {geojson: item.geojson()});
+        this.vm.events.emit('search.clicked', {geojson: item.geojson()});
     }
 };
 

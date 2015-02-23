@@ -36,10 +36,10 @@ GFITool.prototype = {
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.GFI.activate');
+            EVENTS.emit('getFeatureInfo.tool.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.GFI.deactivate');
+            EVENTS.emit('getFeatureInfo.tool.deactivate');
         });
     }
 };

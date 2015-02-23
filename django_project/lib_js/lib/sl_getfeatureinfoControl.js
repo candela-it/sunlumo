@@ -60,8 +60,8 @@ SL_GetFeatureInfoControl.prototype = {
 
         var geojsonFormat = new ol.format.GeoJSON();
 
-        EVENTS.on('qgis.gfi.url.changed', function(data) {
-            EVENTS.emit('qgs.spinner.activate');
+        EVENTS.on('getFeatureInfo.url.changed', function(data) {
+            EVENTS.emit('spinner.activate');
             m.request({
                 method: 'GET',
                 url: data.url
@@ -69,41 +69,41 @@ SL_GetFeatureInfoControl.prototype = {
                 // reset data of the previous source
                 self.SL_GFI_Source.clear(true);
 
-                EVENTS.emit('qgis.featureoverlay.clear');
+                EVENTS.emit('featureOverlay.clear');
 
                 var features = geojsonFormat.readFeatures(response);
                 self.SL_GFI_Source.addFeatures(features);
 
                 // add new features
-                EVENTS.emit('gfi.results', {
+                EVENTS.emit('getFeatureInfo.results', {
                     features: features
                 });
 
-                EVENTS.emit('qgs.spinner.deactivate');
+                EVENTS.emit('spinner.deactivate');
             });
         });
 
-        EVENTS.on('gfi.result.clicked', function(data) {
+        EVENTS.on('getFeatureInfo.result.clicked', function(data) {
             var feature = self.SL_GFI_Source.getFeatureById(data.result.id());
             self.sl_map.map.getView().fitExtent(
                 feature.getGeometry().getExtent(), self.sl_map.map.getSize()
             );
-            EVENTS.emit('qgis.featureoverlay.add', {
+            EVENTS.emit('featureOverlay.add', {
                 feature: feature
             });
         });
 
-        EVENTS.on('gfi.results.closed', function () {
+        EVENTS.on('getFeatureInfo.results.closed', function () {
             self.SL_GFI_Source.clear(true);
-            EVENTS.emit('qgis.featureoverlay.clear');
+            EVENTS.emit('featureOverlay.clear');
         });
 
-        EVENTS.on('control.GFI.activate', function() {
+        EVENTS.on('getFeatureInfo.tool.activate', function() {
             self.sl_map.addControlOverlayLayer(self.SL_GFI_Layer);
             self.sl_map.map.on('singleclick', self.handleMouseClick);
         });
 
-        EVENTS.on('control.GFI.deactivate', function() {
+        EVENTS.on('getFeatureInfo.tool.deactivate', function() {
             self.SL_GFI_Source.clear(true);
             self.sl_map.removeControlOverlayLayer(self.SL_GFI_Layer);
             self.sl_map.map.un('singleclick', self.handleMouseClick);

@@ -3,8 +3,7 @@
 var _ = require('lodash');
 var m = require('mithril');
 
-// global events
-var EVENTS = require('../../events');
+var Jvent = require('jvent');
 
 
 // serialize object to parameters list
@@ -49,6 +48,10 @@ var VIEWMODEL = function(options, initialState) {
 VIEWMODEL.prototype = {
     init: function(options, initialState) {
         var self = this;
+
+        // initialize component events
+        this.events = new Jvent();
+
         this.options = options;
         this.initialState = initialState;
 
@@ -90,18 +93,20 @@ VIEWMODEL.prototype = {
     },
 
     updatePrintUrl: function () {
+        m.startComputation();
         var printParam = seralizeObjectToParams(this.params);
         var url = '/printpdf?';
 
         var printUrl = url + printParam;
         this.printUrl(printUrl);
+        m.endComputation();
     },
 
     ev_onScaleChange: function(evt) {
         // deduct 1 to account for first artificial option
         this.vm.selected_scale = Scales[evt.currentTarget.selectedIndex - 1];
         // Automatically show print area.
-        EVENTS.emit('print.show', {
+        this.vm.events.emit('params.updated', {
             scale: this.vm.selected_scale,
             layout: this.vm.selected_layout
         });
@@ -110,7 +115,7 @@ VIEWMODEL.prototype = {
     ev_onPrintLayoutChange: function(evt) {
         this.vm.selected_layout = this.vm.layouts_list[evt.currentTarget.selectedIndex];
         // Automatically show print area.
-        EVENTS.emit('print.show', {
+        this.vm.events.emit('params.updated', {
             scale: this.vm.selected_scale,
             layout: this.vm.selected_layout
         });

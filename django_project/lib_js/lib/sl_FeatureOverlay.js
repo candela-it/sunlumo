@@ -60,7 +60,7 @@ SL_FeatureOverlay.prototype = {
             })]
         });
 
-        EVENTS.on('qgis.featureoverlay.add', function(data) {
+        EVENTS.on('featureOverlay.add', function(data) {
             if (data.feature !== this.HighlightedFeature) {
                 if (this.HighlightedFeature) {
                     self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
@@ -72,7 +72,7 @@ SL_FeatureOverlay.prototype = {
             }
         });
 
-        EVENTS.on('qgis.featureoverlay.clear', function() {
+        EVENTS.on('featureOverlay.clear', function() {
             if (this.HighlightedFeature !== undefined) {
                 self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
             }

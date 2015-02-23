@@ -52,22 +52,26 @@ GetFeatureInfo.prototype = {
         this.controller = panel.controller;
         this.view = panel.view;
 
-        EVENTS.on('gfi.results', function(options) {
+        EVENTS.on('getFeatureInfo.results', function(options) {
             gfi_controller.vm.set(options.features);
         });
 
-        EVENTS.on('gfi.results.show', function(options) {
+        gfi_controller.vm.events.on('results.show', function(options) {
             panel.controller.vm.show();
         });
-        EVENTS.on('gfi.results.hide', function(options) {
+        gfi_controller.vm.events.on('results.hide', function(options) {
             panel.controller.vm.hide();
         });
 
-        panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('gfi.results.closed');
+        gfi_controller.vm.events.on('result.click', function(options) {
+            EVENTS.emit('getFeatureInfo.result.clicked', options);
         });
 
-        EVENTS.on('control.GFI.deactivate', function () {
+        panel.controller.vm.events.on('panel.closed', function () {
+            EVENTS.emit('getFeatureInfo.results.closed');
+        });
+
+        EVENTS.on('getFeatureInfo.tool.deactivate', function () {
             panel.controller.vm.hide();
         });
     }

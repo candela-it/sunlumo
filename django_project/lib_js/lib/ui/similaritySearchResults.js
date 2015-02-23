@@ -51,19 +51,19 @@ SimilaritySearchResults.prototype = {
         this.controller = panel.controller;
         this.view = panel.view;
 
-        EVENTS.on('ss.results', function (options) {
+        EVENTS.on('similaritySearch.results', function (options) {
             ssr_controller.vm.addResults(options.features);
         });
 
-        EVENTS.on('ss.results.show', function(options) {
+        ssr_controller.vm.events.on('results.found', function(options) {
             panel.controller.vm.show();
         });
-        EVENTS.on('ss.results.hide', function(options) {
+        ssr_controller.vm.events.on('results.empty', function(options) {
             panel.controller.vm.hide();
         });
 
         panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('ss.results.closed');
+            EVENTS.emit('similaritySearch.results.closed');
         });
     }
 };

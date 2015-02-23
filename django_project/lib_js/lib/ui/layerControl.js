@@ -4,6 +4,8 @@ var LayerControlViewModel = require('./models/layerControl');
 
 var View = require('./views/layerControl');
 
+// global events
+var EVENTS = require('../events');
 
 var Controller = function(options) {
     // initialize VM, and that's all a controller should EVER do, everything
@@ -37,6 +39,20 @@ LayerController.prototype = {
     init: function() {
         this.controller = new Controller(this.options);
         this.view = View;
+
+        // notify other components that layers have been initialized
+        EVENTS.emit('layerControl.layers.initialized', {
+            layers: this.controller.vm.getLayersParam(),
+            transparencies: this.controller.vm.getTransparencyParam()
+        });
+
+        this.controller.vm.events.on('layers.updated', function (options) {
+            EVENTS.emit('layerControl.layers.updated', options);
+        });
+
+        this.controller.vm.events.on('query.layers.updated', function (options) {
+            EVENTS.emit('layerControl.query.layers.updated', options);
+        });
     }
 };
 

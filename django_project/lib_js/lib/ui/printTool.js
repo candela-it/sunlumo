@@ -36,14 +36,14 @@ PrintTool.prototype = {
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.Print.activate');
+            EVENTS.emit('print.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.Print.deactivate');
+            EVENTS.emit('print.deactivate');
         });
 
         // deactivate button if printControl was deactivated
-        EVENTS.on('control.Print.deactivate', function () {
+        EVENTS.on('print.deactivate', function () {
             button.controller.vm.deactivate(true);
         });
     }

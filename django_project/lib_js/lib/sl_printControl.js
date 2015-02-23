@@ -144,17 +144,17 @@ SL_PrintControl.prototype = {
 
     handleEvents: function() {
         var self = this;
-        EVENTS.on('print.show', function (options) {
+        EVENTS.on('print.params.updated', function (options) {
             self.showPrintArea(options);
             self.dragInteraction.setActive(true);
         });
 
-        EVENTS.on('control.Print.activate', function () {
+        EVENTS.on('print.activate', function () {
             self.sl_map.addControlOverlayLayer(self.SL_PrintArea_Layer);
             self.sl_map.map.addInteraction(self.dragInteraction);
         });
 
-        EVENTS.on('control.Print.deactivate', function () {
+        EVENTS.on('print.deactivate', function () {
             self.SL_PrintArea_Source.clear(true);
 
             self.sl_map.removeControlOverlayLayer(self.SL_PrintArea_Layer);

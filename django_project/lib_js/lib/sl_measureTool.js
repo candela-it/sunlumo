@@ -77,12 +77,12 @@ SL_DistanceToolControl.prototype = {
     initEvents: function () {
         var self = this;
         // handle line measurement
-        EVENTS.on('control.DistanceTool.activate', function() {
+        EVENTS.on('distanceTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_line);
             self.sl_map.map.on('pointermove', self.pointerMoveHandler.bind(self));
             self.sl_map.addControlOverlayLayer(self.measure_line_layer);
         });
-        EVENTS.on('control.DistanceTool.deactivate', function() {
+        EVENTS.on('distanceTool.deactivate', function() {
             self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_line);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler.bind(self));
@@ -95,12 +95,12 @@ SL_DistanceToolControl.prototype = {
         });
 
         // handle area measurement
-        EVENTS.on('control.AreaTool.activate', function() {
+        EVENTS.on('areaTool.activate', function() {
             self.sl_map.map.addInteraction(self.draw_area);
             self.sl_map.map.on('pointermove', self.pointerMoveHandler, self);
             self.sl_map.addControlOverlayLayer(self.measure_area_layer);
         });
-        EVENTS.on('control.AreaTool.deactivate', function() {
+        EVENTS.on('areaTool.deactivate', function() {
             self.feature = undefined;
             self.sl_map.map.removeInteraction(self.draw_area);
             self.sl_map.map.un('pointermove', self.pointerMoveHandler, self);

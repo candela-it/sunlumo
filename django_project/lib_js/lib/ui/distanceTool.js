@@ -36,10 +36,10 @@ DistanceTool.prototype = {
         this.view = button.view;
 
         button.controller.vm.events.on('button.activated', function () {
-            EVENTS.emit('control.DistanceTool.activate');
+            EVENTS.emit('distanceTool.activate');
         });
         button.controller.vm.events.on('button.deactivated', function () {
-            EVENTS.emit('control.DistanceTool.deactivate');
+            EVENTS.emit('distanceTool.deactivate');
         });
     }
 };

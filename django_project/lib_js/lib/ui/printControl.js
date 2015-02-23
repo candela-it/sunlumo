@@ -68,16 +68,20 @@ PrintControl.prototype = {
             self.print_controller.vm.updatePrintUrl();
         });
 
-        EVENTS.on('control.Print.activate', function () {
+        EVENTS.on('print.activate', function () {
             self.panel.controller.vm.show();
         });
 
-        EVENTS.on('control.Print.deactivate', function () {
+        EVENTS.on('print.deactivate', function () {
             self.panel.controller.vm.hide();
         });
 
         self.panel.controller.vm.events.on('panel.closed', function () {
-            EVENTS.emit('control.Print.deactivate');
+            EVENTS.emit('print.deactivate');
+        });
+
+        self.print_controller.vm.events.on('params.updated', function (options) {
+            EVENTS.emit('print.params.updated', options);
         });
     }
 };

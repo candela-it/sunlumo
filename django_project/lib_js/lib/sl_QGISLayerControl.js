@@ -70,14 +70,14 @@ SL_QGISLayerControl.prototype = {
     customImageLoadFunction: function(image, src) {
         var start_time = new Date().getTime();
         // set loading-status
-        EVENTS.emit('qgs.spinner.activate');
+        EVENTS.emit('spinner.activate');
 
         // set image source
         image.getImage().src = src;
 
         // onload triggers when the image is fully loaded
         image.getImage().onload = function(evt) {
-            EVENTS.emit('qgs.spinner.deactivate');
+            EVENTS.emit('spinner.deactivate');
             var end_time = new Date().getTime();
 
             console.log('Image loaded:', end_time - start_time);
@@ -98,14 +98,16 @@ SL_QGISLayerControl.prototype = {
 
     initEvents: function () {
         var self = this;
-        EVENTS.on('layers.updated', function(options) {
-            self.updateSourceParams(options);
-        });
-        EVENTS.on('layers.initialized', function(options) {
+
+        EVENTS.on('layerControl.layers.initialized', function(options) {
             self.updateSourceParams(options);
         });
 
-        EVENTS.on('query.layers.updated', function(options) {
+        EVENTS.on('layerControl.layers.updated', function(options) {
+            self.updateSourceParams(options);
+        });
+
+        EVENTS.on('layerControl.query.layers.updated', function(options) {
             self.queryLayersParam = options.query_layers;
         });
 
@@ -118,7 +120,7 @@ SL_QGISLayerControl.prototype = {
                });
 
             // emit updated url to the GFI control
-            EVENTS.emit('qgis.gfi.url.changed', {
+            EVENTS.emit('getFeatureInfo.url.changed', {
                 url: url
             });
         });

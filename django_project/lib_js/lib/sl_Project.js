@@ -51,7 +51,6 @@ SL_Project.prototype = {
     init: function () {
         var sl_map = new SL_Map(this.options);
 
-        // these two layers should be added as last overlays
         // add qgis_layer to the map
         new SL_QGISLayerControl(sl_map, this.options);
 

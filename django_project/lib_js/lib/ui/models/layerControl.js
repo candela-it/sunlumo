@@ -3,9 +3,7 @@
 var m = require('mithril');
 var _ = require('lodash');
 
-// global events
-var EVENTS = require('../../events');
-
+var Jvent = require('jvent');
 
 var Layer = function (data) {
     this.type = m.prop(data.type);
@@ -37,6 +35,9 @@ var VIEWMODEL = function (options) {
 VIEWMODEL.prototype = {
     init: function (options) {
         var self = this;
+
+        // initialize component events
+        this.events = new Jvent();
 
         this.options = options;
         this.layers = this.options.layers;
@@ -83,24 +84,19 @@ VIEWMODEL.prototype = {
                 );
             }
         });
-
-        // control has been initialized
-        EVENTS.emit('layers.initialized', {
-            layers: this.getLayersParam(),
-            transparencies: this.getTransparencyParam()
-        });
     },
 
     emitLayersUpdated: function() {
-        EVENTS.emit('layers.updated', {
+        this.events.emit('layers.updated', {
             layers: this.getLayersParam(),
             transparencies: this.getTransparencyParam()
         });
     },
 
     emitQueryLayersUpdated: function () {
-        EVENTS.emit('query.layers.updated', {
-            query_layers: this.getQueryLayersParam()
+        this.events.emit('query.layers.updated', {
+            query_layers: this.getQueryLayersParam(),
+            transparencies: this.getTransparencyParam()
         });
     },
 
