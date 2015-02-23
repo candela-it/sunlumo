@@ -111,7 +111,7 @@ SL_QGISLayerControl.prototype = {
             self.queryLayersParam = options.query_layers;
         });
 
-        EVENTS.on('map.singleclick', function(data) {
+        EVENTS.on('getFeatureInfo.url', function(data) {
             var viewResolution = self.sl_map.map.getView().getResolution();
             var url = self.SL_Source.getGetFeatureInfoUrl(
                 data.coordinate, viewResolution, self.sl_map.map.getView().getProjection(), {
@@ -119,10 +119,8 @@ SL_QGISLayerControl.prototype = {
                    QUERY_LAYERS: self.queryLayersParam
                });
 
-            // emit updated url to the GFI control
-            EVENTS.emit('getFeatureInfo.url.changed', {
-                url: url
-            });
+            // return URL via callback function
+            data.callback(url);
         });
     },
 

@@ -6,10 +6,12 @@ var UI_LayerControl = require('./ui/layerControl');
 var UI_SimilaritySearch = require('./ui/similaritySearch');
 var UI_SimilaritySearchResults = require('./ui/similaritySearchResults');
 var UI_GetFeatureInfo = require('./ui/getFeatureInfo');
+var UI_GetFeatureInfoAllVisible = require('./ui/getFeatureInfoAllVisible');
 var UI_PrintControl = require('./ui/printControl');
 var UI_DistanceTool = require('./ui/distanceTool');
 var UI_AreaTool = require('./ui/areaTool');
 var UI_GFITool = require('./ui/getFeatureInfoTool');
+var UI_GFIAllVisibleTool = require('./ui/getFeatureInfoAllVisibleTool');
 var UI_PrintTool = require('./ui/printTool');
 var UI_SpinnerComponent = require('./ui/spinnerComponent');
 var UI_Accordion = require('./ui/accordion');
@@ -18,6 +20,7 @@ var UI_Toolbox = require('./ui/toolBox');
 var SL_Map = require('./sl_map');
 var SL_QGISLayerControl = require('./sl_QGISLayerControl');
 var SL_GFIControl = require('./sl_getfeatureinfoControl');
+var SL_GFIControlAllVisible = require('./sl_getfeatureinfoAllVisibleControl');
 var SL_MeasureTool = require('./sl_measureTool');
 var SL_SimilaritySearchControl = require('./sl_similaritySearchControl');
 var SL_PrintControl = require('./sl_printControl');
@@ -56,6 +59,7 @@ SL_Project.prototype = {
 
         // add qgis_GFIControl Layer to the map
         new SL_GFIControl(sl_map, this.options);
+        new SL_GFIControlAllVisible(sl_map, this.options);
 
         new SL_MeasureTool(sl_map, this.options);
 
@@ -85,19 +89,18 @@ SL_Project.prototype = {
         var ui_dt = new UI_DistanceTool(this.options);
         var ui_at = new UI_AreaTool(this.options);
         var ui_gfit = new UI_GFITool(this.options);
+        var ui_gfi_all_visible = new UI_GFIAllVisibleTool(this.options);
         var ui_pt = new UI_PrintTool(this.options);
 
-        var ui_toolbox = new UI_Toolbox(this.options, [
-            {
+        var ui_toolbox = new UI_Toolbox(this.options, [{
                 component: ui_dt
-            },
-            {
+            }, {
                 component: ui_at
-            },
-            {
+            }, {
                 component: ui_gfit
-            },
-            {
+            }, {
+                component: ui_gfi_all_visible
+            }, {
                 component: ui_pt
             }
         ]);
@@ -135,6 +138,16 @@ SL_Project.prototype = {
             },
             view: function (ctrl) {
                 return [ui_gfi.view(ctrl)];
+            }
+        });
+
+        var ui_gfi_allvisible = new UI_GetFeatureInfoAllVisible(this.options);
+        m.module(document.getElementById('resultsToolControlAllVisible'), {
+            controller: function () {
+                return ui_gfi_allvisible.controller;
+            },
+            view: function (ctrl) {
+                return [ui_gfi_allvisible.view(ctrl)];
             }
         });
 
