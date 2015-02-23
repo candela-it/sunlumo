@@ -56,7 +56,6 @@ LayerController.prototype = {
             EVENTS.emit('layerControl.query.layers.updated', options);
         });
 
-
         EVENTS.on('layerControl.get.queryLayers', function (data) {
             if (data.type === 'query') {
                 data.callback(self.controller.vm.getQueryLayersParam());

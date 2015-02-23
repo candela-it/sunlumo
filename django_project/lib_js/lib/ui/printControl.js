@@ -61,7 +61,7 @@ PrintControl.prototype = {
             self.print_controller.vm.updatePrintUrl();
         });
 
-        EVENTS.on('layers.updated', function(options) {
+        EVENTS.on('layerControl.layers.updated', function(options) {
             self.print_controller.vm.params.layers = options.layers;
             self.print_controller.vm.params.transparencies = options.transparencies;
 
