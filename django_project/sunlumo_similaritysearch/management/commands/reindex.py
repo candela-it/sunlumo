@@ -4,6 +4,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.db import transaction
 
+from sunlumo_project.models import Project
+
 from sunlumo_mapserver.project import SunlumoProject
 from sunlumo_mapserver.utils import change_directory
 
@@ -14,7 +16,9 @@ class Command(BaseCommand):
     help = 'Reindex QGIS project layers'
 
     def handle(self, *args, **options):
-        sunlumo_project = SunlumoProject(settings.QGIS_PROJECT)
+        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+
+        sunlumo_project = SunlumoProject(project.project_path)
         with transaction.atomic():
             with change_directory(sunlumo_project.project_root):
                 for s_ind, mapping in settings.QGIS_SIMILARITY_SEARCH.items():

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 from itertools import chain
 from collections import OrderedDict
@@ -23,6 +22,9 @@ from django.conf import settings
 
 from .utils import change_directory, featureToGeoJSON, writeGeoJSON
 from .project import SunlumoProject
+
+
+LOG = logging.getLogger(__name__)
 
 
 class FeatureInfo(SunlumoProject):

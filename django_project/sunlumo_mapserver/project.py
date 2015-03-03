@@ -255,7 +255,6 @@ class SunlumoProject(object):
 
     def getDetails(self):
         return {
-            'map': self.project_file,
             'layers': self.LAYERS_DATA,
             'layer_tree': self.LAYER_TREE,
             'layouts': self.LAYOUTS,

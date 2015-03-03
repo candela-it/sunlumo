@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
-
 import json
 
 from django.views.generic import TemplateView
@@ -10,6 +8,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from sunlumo_mapserver.project import SunlumoProject
+from sunlumo_project.models import Project
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(TemplateView):
@@ -18,9 +19,11 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        project = SunlumoProject(settings.QGIS_PROJECT)
+        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
 
-        context['SL_Details'] = json.dumps(project.getDetails())
+        sl_project = SunlumoProject(project.project_path)
+
+        context['SL_Details'] = json.dumps(sl_project.getDetails())
 
         return context
 

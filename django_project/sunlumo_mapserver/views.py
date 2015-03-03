@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
-
 import subprocess
 import os.path
 
 from django.http import HttpResponse, Http404
 from django.views.generic import View
+from django.conf import settings
 
 from braces.views import JSONResponseMixin
+
+from sunlumo_project.models import Project
 
 from .renderer import Renderer
 from .featureinfo import FeatureInfo
 from .project import SunlumoProject
 from .utils import writeParamsToJson, str2bool, hex2rgb
+
+LOG = logging.getLogger(__name__)
 
 
 class UpperParamsMixin(object):
@@ -27,38 +30,18 @@ class UpperParamsMixin(object):
 
 
 class ProjectDetails(UpperParamsMixin, JSONResponseMixin, View):
-    def _parse_request_params(self, request):
-        if not(all(param in self.req_params for param in ['MAP'])):
-            raise Http404
-
-        try:
-            map_file = self.req_params.get('MAP')
-        except:
-            # return 404 if any of parameters are missing or not parsable
-            raise Http404
-
-        # map must have a value
-        if not(map_file):
-            raise Http404
-
-        params = {
-            'map_file': map_file
-        }
-
-        return params
-
     def get(self, request, *args, **kwargs):
-        params = self._parse_request_params(request)
 
-        project = SunlumoProject(params['map_file'])
+        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        sl_project = SunlumoProject(project.project_path)
 
-        return self.render_json_response(project.getDetails())
+        return self.render_json_response(sl_project.getDetails())
 
 
 class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'WIDTH', 'HEIGHT', 'MAP', 'SRS', 'FORMAT', 'LAYERS',
+                'BBOX', 'WIDTH', 'HEIGHT', 'SRS', 'FORMAT', 'LAYERS',
                 'TRANSPARENCIES', 'REQUEST'])):
             raise Http404
 
@@ -73,7 +56,6 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
             srs = int(self.req_params.get('SRS').split(':')[-1])
             image_format = self.req_params.get('FORMAT').split('/')[-1]
             transparent = str2bool(self.req_params.get('TRANSPARENT', False))
-            map_file = self.req_params.get('MAP')
             bgcolor = hex2rgb(self.req_params.get('BGCOLOR', '0xFFFFFF'))
             layers = [
                 layer.strip()
@@ -103,7 +85,7 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
             raise Http404
 
         # map must have a value
-        if not(map_file) or not(request):
+        if not(request):
             raise Http404
 
         # check if image format is supported
@@ -113,7 +95,6 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
         params = {
             'bbox': bbox,
             'image_size': image_size,
-            'map_file': map_file,
             'srs': srs,
             'image_format': image_format,
             'transparent': transparent,
@@ -130,13 +111,15 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
     def get(self, request, *args, **kwargs):
         params = self._parse_request_params(request)
 
+        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+
         if params.get('request') == 'GetMap':
-            sl_project = Renderer(params.get('map_file'))
+            sl_project = Renderer(project.project_path)
             img = sl_project.render(params)
 
             return HttpResponse(img, content_type=params.get('image_format'))
         else:
-            sl_project = FeatureInfo(params.get('map_file'))
+            sl_project = FeatureInfo(project.project_path)
             features = sl_project.identify(params)
 
             return self.render_json_response(features)
@@ -145,7 +128,7 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
-                'BBOX', 'LAYOUT', 'MAP', 'LAYERS', 'TRANSPARENCIES'])):
+                'BBOX', 'LAYOUT', 'LAYERS', 'TRANSPARENCIES'])):
             raise Http404
 
         try:
@@ -156,7 +139,6 @@ class PrintPDFView(UpperParamsMixin, View):
                 for layer in self.req_params.get('LAYERS').split(',')
             ]
             layout = self.req_params.get('LAYOUT')
-            map_file = self.req_params.get('MAP')
             transparencies = [
                 int(a)
                 for a in self.req_params.get('TRANSPARENCIES').split(',')
@@ -166,14 +148,13 @@ class PrintPDFView(UpperParamsMixin, View):
             # return 404 if any of parameters are missing or not parsable
             raise Http404
 
-        if not(layout) or not(map_file):
+        if not(layout):
             # composer template should not be empty
             raise Http404
 
         return {
             'bbox': bbox,
             'layout': layout,
-            'map_file': map_file,
             'layers': layers,
             'transparencies': transparencies,
             'srs': srs
@@ -182,6 +163,8 @@ class PrintPDFView(UpperParamsMixin, View):
     def get(self, request, *args, **kwargs):
 
         params = self._parse_request_params(request)
+
+        params.update({'sl_project_id': settings.QGIS_PROJECT_ID})
 
         tmpFile = writeParamsToJson(params)
 

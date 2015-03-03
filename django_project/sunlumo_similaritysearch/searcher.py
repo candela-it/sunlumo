@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 from itertools import groupby, chain
 
@@ -15,6 +14,8 @@ from sunlumo_mapserver.utils import (
 )
 
 from .models import SimilarityIndex
+
+LOG = logging.getLogger(__name__)
 
 
 class Searcher(SunlumoProject):
@@ -38,7 +39,7 @@ class Searcher(SunlumoProject):
 
             similar_results = (
                 SimilarityIndex.objects
-                .filter(qgis_project__exact=settings.QGIS_PROJECT)
+                .filter(project=settings.QGIS_PROJECT_ID)
                 .filter(index_name__in=search_layers)
                 .extra(
                     where=['text LIKE %s'],

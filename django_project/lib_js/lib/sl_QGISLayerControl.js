@@ -91,8 +91,7 @@ SL_QGISLayerControl.prototype = {
     updateSourceParams: function(options) {
         this.SL_Source.updateParams({
             LAYERS: options.layers,
-            TRANSPARENCIES: options.transparencies,
-            MAP: this.options.map
+            TRANSPARENCIES: options.transparencies
         });
     },
 
