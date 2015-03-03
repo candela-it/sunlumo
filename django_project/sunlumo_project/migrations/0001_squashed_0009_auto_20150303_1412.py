@@ -40,8 +40,9 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('title', models.CharField(max_length=60)),
-                ('logo', models.ImageField(upload_to='project_logos')),
+                ('logo', models.ImageField(null=True, upload_to='project_logos', blank=True)),
                 ('project_file', models.FileField(upload_to='projects')),
+                ('project_path', models.CharField(help_text='Full path on the server to the project file', max_length=255)),
             ],
             options={
                 'abstract': False,
@@ -58,6 +59,34 @@ class Migration(migrations.Migration):
             model_name='attribute',
             name='layer',
             field=models.ForeignKey(to='sunlumo_project.Layer'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='layer',
+            name='layer_id',
+            field=models.CharField(max_length=60, serialize=False, editable=False, primary_key=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='layer',
+            name='visible',
+            field=models.BooleanField(default=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='layer',
+            name='layer_type',
+            field=models.CharField(default='', max_length=20),
+            preserve_default=False,
+        ),
+        migrations.RemoveField(
+            model_name='layer',
+            name='id',
+        ),
+        migrations.AddField(
+            model_name='attribute',
+            name='identifier',
+            field=models.BooleanField(default=False),
             preserve_default=True,
         ),
     ]

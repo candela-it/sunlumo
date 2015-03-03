@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 import os
 
@@ -12,10 +11,14 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
     QgsMapLayerRegistry,
-    QgsCredentials
+    QgsCredentials,
+    QgsMapLayer
 )
 
 from .utils import change_directory
+
+
+LOG = logging.getLogger(__name__)
 
 
 class QgsCredentialsNull(QgsCredentials):
@@ -274,3 +277,15 @@ class SunlumoProject(object):
     def setTransparencies(self, layers, transparencies):
         for idx, layer_id in enumerate(layers):
             self.setTransparency(layer_id, transparencies[idx])
+
+    def getAttributesForALayer(self, layer_id):
+        qgs_layer = self.layerRegistry.mapLayer(layer_id)
+        if qgs_layer.type() == QgsMapLayer.RasterLayer:
+            return []
+
+        layer_field_names = [
+            qgs_layer.attributeDisplayName(idx)
+            for idx in qgs_layer.pendingAllAttributesList()
+        ]
+
+        return layer_field_names
