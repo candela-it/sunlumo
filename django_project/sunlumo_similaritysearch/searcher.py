@@ -31,24 +31,34 @@ class Searcher(SunlumoProject):
         # self.check_required_params(params)
 
         limit = 20
-        search_string = params.get('search_string')
+        search_string = params.get('search_string').strip()
 
         search_layers = params.get('search_layers')
 
-        with change_directory(self.project_root):
+        similar_results = (
+            SimilarityIndex.objects
+            .filter(project=settings.QGIS_PROJECT_ID)
+            .filter(index_name__in=search_layers)
+        )
 
-            similar_results = (
-                SimilarityIndex.objects
-                .filter(project=settings.QGIS_PROJECT_ID)
-                .filter(index_name__in=search_layers)
-                .extra(
-                    where=['text LIKE %s'],
-                    params=[self._prepare_search_string(search_string)]
-                )
-                # groupby (itertools) requires and ordered set
-                .order_by('index_name')[:limit]
+        if search_string.startswith('='):
+            similar_results = similar_results.filter(
+                text=search_string[1:].upper()
+            )
+        elif search_string.startswith('^'):
+            similar_results = similar_results.filter(
+                text__startswith=search_string[1:].upper()
+            )
+        else:
+            similar_results = similar_results.extra(
+                where=['text LIKE %s'],
+                params=[self._prepare_search_string(search_string)]
             )
 
+        # groupby (itertools) requires and ordered set
+        similar_results = similar_results.order_by('index_name')[:limit]
+
+        with change_directory(self.project_root):
             return self._get_features_for_layers(similar_results)
 
     def _prepare_search_string(self, search_string):
