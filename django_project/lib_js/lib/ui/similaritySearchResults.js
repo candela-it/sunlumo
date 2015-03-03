@@ -61,6 +61,9 @@ SimilaritySearchResults.prototype = {
         ssr_controller.vm.events.on('results.empty', function(options) {
             panel.controller.vm.hide();
         });
+        ssr_controller.vm.events.on('result.clicked', function(options) {
+            EVENTS.emit('similaritySearch.result.clicked', options);
+        });
 
         panel.controller.vm.events.on('panel.closed', function () {
             EVENTS.emit('similaritySearch.results.closed');
