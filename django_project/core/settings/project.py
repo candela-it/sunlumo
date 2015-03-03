@@ -3,6 +3,7 @@ from .contrib import *  # NOQA
 
 # Project apps
 INSTALLED_APPS += (
+    'sunlumo_project',
     'sunlumo_mapserver',
     'sunlumo_webclient',
     'sunlumo_similaritysearch'
