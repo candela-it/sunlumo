@@ -32,7 +32,7 @@ class UpperParamsMixin(object):
 class ProjectDetails(UpperParamsMixin, JSONResponseMixin, View):
     def get(self, request, *args, **kwargs):
 
-        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
         sl_project = SunlumoProject(project.project_path)
 
         return self.render_json_response(sl_project.getDetails())
@@ -111,7 +111,7 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
     def get(self, request, *args, **kwargs):
         params = self._parse_request_params(request)
 
-        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
 
         if params.get('request') == 'GetMap':
             sl_project = Renderer(project.project_path)
@@ -164,7 +164,7 @@ class PrintPDFView(UpperParamsMixin, View):
 
         params = self._parse_request_params(request)
 
-        params.update({'sl_project_id': settings.QGIS_PROJECT_ID})
+        params.update({'sl_project_id': settings.SUNLUMO_PROJECT_ID})
 
         tmpFile = writeParamsToJson(params)
 

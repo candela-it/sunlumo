@@ -13,10 +13,10 @@ from ...models import SimilarityIndex
 
 
 class Command(BaseCommand):
-    help = 'Reindex QGIS project layers'
+    help = 'Reindex SUNLUMO project layers'
 
     def handle(self, *args, **options):
-        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
 
         sunlumo_project = SunlumoProject(project.project_path)
         with transaction.atomic():
@@ -38,7 +38,7 @@ class Command(BaseCommand):
             return ''
 
     def _indexFeatures(self, features, index_name, mapping):
-        qgis_project = settings.QGIS_PROJECT
+        qgis_project = settings.SUNLUMO_PROJECT_ID
         for feature in features:
             # indexable field is simply joined by spaces
             text = u' '.join([

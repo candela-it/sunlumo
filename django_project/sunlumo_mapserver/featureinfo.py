@@ -58,8 +58,8 @@ class FeatureInfo(SunlumoProject):
             # initialize mapRenderer and a rendering context in order to be
             # to check if a feature will actually be rendered
             # we don't want to return features that are not visible
-            img = QImage(
-                QSize(settings.QGIS_GFI_BUFFER*2, settings.QGIS_GFI_BUFFER*2),
+            img = QImage(QSize(
+                settings.SUNLUMO_GFI_BUFFER*2, settings.SUNLUMO_GFI_BUFFER*2),
                 QImage.Format_ARGB32_Premultiplied
             )
             dpm = 1 / 0.00028
@@ -68,8 +68,8 @@ class FeatureInfo(SunlumoProject):
 
             mapRenderer = QgsMapRenderer()
             mapRenderer.clearLayerCoordinateTransforms()
-            mapRenderer.setOutputSize(
-                QSize(settings.QGIS_GFI_BUFFER*2, settings.QGIS_GFI_BUFFER*2),
+            mapRenderer.setOutputSize(QSize(
+                settings.SUNLUMO_GFI_BUFFER*2, settings.SUNLUMO_GFI_BUFFER*2),
                 img.logicalDpiX()
             )
 
@@ -162,8 +162,8 @@ class FeatureInfo(SunlumoProject):
         center_y = bbox[1] + j * y_res
 
         return (
-            center_x - settings.QGIS_GFI_BUFFER * x_res,
-            center_y - settings.QGIS_GFI_BUFFER * y_res,
-            center_x + settings.QGIS_GFI_BUFFER * x_res,
-            center_y + settings.QGIS_GFI_BUFFER * y_res
+            center_x - settings.SUNLUMO_GFI_BUFFER * x_res,
+            center_y - settings.SUNLUMO_GFI_BUFFER * y_res,
+            center_x + settings.SUNLUMO_GFI_BUFFER * x_res,
+            center_y + settings.SUNLUMO_GFI_BUFFER * y_res
         )

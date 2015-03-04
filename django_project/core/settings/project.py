@@ -10,8 +10,8 @@ INSTALLED_APPS += (
 )
 
 
-# QGIS project definition
-QGIS_PROJECT_ID = 1
+# SUNLUMO project definition
+SUNLUMO_PROJECT_ID = 1
 
 # GetFeatureInfo pixel buffer, how many pixels are used for a search
-QGIS_GFI_BUFFER = 3
+SUNLUMO_GFI_BUFFER = 3

@@ -15,6 +15,8 @@ from qgis.core import (
     QgsMapLayer
 )
 
+from sunlumo_project import IndexSpecification
+
 from .utils import change_directory
 
 
@@ -249,9 +251,11 @@ class SunlumoProject(object):
             return None
 
     def _readSimilarityIndexes(self):
-        similarity_index = settings.QGIS_SIMILARITY_SEARCH
+        similarity_indices = IndexSpecification.objects.filter(
+            project_id=settings.SUNLUMO_PROJECT_ID
+        )
 
-        return [key for key in similarity_index.keys()]
+        return [key for key in similarity_indices]
 
     def getDetails(self):
         return {

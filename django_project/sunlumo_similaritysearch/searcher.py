@@ -13,7 +13,7 @@ from sunlumo_mapserver.utils import (
     writeGeoJSON
 )
 
-from .models import SimilarityIndex
+from .models import IndexData
 
 LOG = logging.getLogger(__name__)
 
@@ -36,9 +36,9 @@ class Searcher(SunlumoProject):
         search_layers = params.get('search_layers')
 
         similar_results = (
-            SimilarityIndex.objects
-            .filter(project=settings.QGIS_PROJECT_ID)
-            .filter(index_name__in=search_layers)
+            IndexData.objects
+            # .filter(project=settings.QGIS_PROJECT_ID)
+            .filter(index__name__in=search_layers)
         )
 
         if search_string.startswith('='):
@@ -56,7 +56,7 @@ class Searcher(SunlumoProject):
             )
 
         # groupby (itertools) requires and ordered set
-        similar_results = similar_results.order_by('index_name')[:limit]
+        similar_results = similar_results.order_by('index_id')[:limit]
 
         with change_directory(self.project_root):
             return self._get_features_for_layers(similar_results)
@@ -72,7 +72,8 @@ class Searcher(SunlumoProject):
 
     def _get_features_for_layers(self, similar_results):
         feature_collections = []
-        for key, group in groupby(similar_results, lambda x: x.index_name):
+
+        for key, group in groupby(similar_results, lambda x: x.index):
 
             layer_id = settings.QGIS_SIMILARITY_SEARCH[key].get('layer_id')
 

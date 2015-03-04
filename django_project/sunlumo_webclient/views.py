@@ -19,7 +19,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
 
         sl_project = SunlumoProject(project.project_path)
 

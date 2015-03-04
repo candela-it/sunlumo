@@ -34,7 +34,7 @@ class SimilaritySearchView(JSONRequestResponseMixin, View):
 
         params = self._parse_request_params(self.request_json)
 
-        project = Project.objects.get(pk=settings.QGIS_PROJECT_ID)
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
 
         sl_project = Searcher(project.project_path)
 
