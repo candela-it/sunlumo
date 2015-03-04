@@ -20,6 +20,8 @@ from qgis.core import (
 
 from django.conf import settings
 
+from sunlumo_project.models import Attribute
+
 from .utils import change_directory, featureToGeoJSON, writeGeoJSON
 from .project import SunlumoProject
 
@@ -112,25 +114,14 @@ class FeatureInfo(SunlumoProject):
                             < scaleDenom < layer.maximumScale()):
                         continue
 
-                # read layer field names
-                layer_field_names = [
-                    layer.attributeDisplayName(idx)
-                    for idx in layer.pendingAllAttributesList()
-                ]
-
                 # visible features generator
                 visible_features = self._visibleFeatures(
                     layer, renderContext, layer.getFeatures(qfr)
                 )
-
                 layer_features = [featureToGeoJSON(
-                    feature.id(), feature.geometry(), OrderedDict(zip(
-                        layer_field_names, [
-                            attr if attr else None
-                            for attr in feature.attributes()
-                        ]
-                    )))
-                    for feature in visible_features
+                    feature.id(), feature.geometry(),
+                    self._collectAttributes(layer, feature)
+                ) for feature in visible_features
                 ]
 
                 feature_collections.append(layer_features)
@@ -146,6 +137,22 @@ class FeatureInfo(SunlumoProject):
 
             if feature_rendered:
                 yield feature
+
+    def _collectAttributes(self, layer, feature):
+        attributes = [
+            attr.name for attr in Attribute.objects
+            .filter(layer_id=layer.id())
+            .filter(visible=True)
+            # this will set the identifier attribute as first one
+            .order_by('-identifier')
+        ]
+
+        return OrderedDict(zip(
+            attributes, [
+                feature.attribute(attr) if feature.attribute(attr) else None
+                for attr in attributes
+            ]
+        ))
 
     def _calcSearchBox(self, bbox, width, height, i, j):
         x_res = (bbox[2] - bbox[0]) / width
