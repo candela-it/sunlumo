@@ -25,8 +25,8 @@ class IndexSpecification(models.Model):
 
 @python_2_unicode_compatible
 class IndexAttribute(models.Model):
-    index = models.ForeignKey('IndexSpecification')
     attribute = models.ForeignKey('sunlumo_project.Attribute')
+    index = models.ForeignKey('IndexSpecification')
     primary_key = models.BooleanField(default=False)
     ordering = models.IntegerField(default=-1)
 

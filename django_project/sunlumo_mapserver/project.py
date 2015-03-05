@@ -15,7 +15,7 @@ from qgis.core import (
     QgsMapLayer
 )
 
-from sunlumo_project import IndexSpecification
+from sunlumo_similaritysearch.models import IndexSpecification
 
 from .utils import change_directory
 
@@ -253,9 +253,10 @@ class SunlumoProject(object):
     def _readSimilarityIndexes(self):
         similarity_indices = IndexSpecification.objects.filter(
             project_id=settings.SUNLUMO_PROJECT_ID
-        )
+        ).values_list('name', flat=True)
 
-        return [key for key in similarity_indices]
+        # we need to expand Django ValuesListQuerySet for JSON serialization
+        return list(similarity_indices)
 
     def getDetails(self):
         return {

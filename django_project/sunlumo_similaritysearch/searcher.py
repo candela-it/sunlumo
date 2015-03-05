@@ -3,8 +3,6 @@ import logging
 
 from itertools import groupby, chain
 
-from django.conf import settings
-
 from sunlumo_mapserver.project import SunlumoProject
 
 from sunlumo_mapserver.utils import (
@@ -75,13 +73,18 @@ class Searcher(SunlumoProject):
 
         for key, group in groupby(similar_results, lambda x: x.index):
 
-            layer_id = settings.QGIS_SIMILARITY_SEARCH[key].get('layer_id')
+            layer_id = key.layer.layer_id
 
             qgsLayer = self.layerRegistry.mapLayer(layer_id)
             qgsLayer.dataProvider().setEncoding('UTF-8')
             qgsLayer.updateFields()
 
-            layer_pk = settings.QGIS_SIMILARITY_SEARCH[key].get('pk')
+            layer_pk = (
+                key.indexattribute_set.filter(primary_key=True)
+                .values_list(
+                    'attribute__name', flat=True
+                )[0]
+            )
 
             records = {rec.feature_id: rec.text for rec in group}
 

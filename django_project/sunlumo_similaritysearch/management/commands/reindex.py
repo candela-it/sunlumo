@@ -9,7 +9,7 @@ from sunlumo_project.models import Project
 from sunlumo_mapserver.project import SunlumoProject
 from sunlumo_mapserver.utils import change_directory
 
-from ...models import SimilarityIndex
+from ...models import IndexSpecification, IndexData, IndexAttribute
 
 
 class Command(BaseCommand):
@@ -21,34 +21,47 @@ class Command(BaseCommand):
         sunlumo_project = SunlumoProject(project.project_path)
         with transaction.atomic():
             with change_directory(sunlumo_project.project_root):
-                for s_ind, mapping in settings.QGIS_SIMILARITY_SEARCH.items():
-                    l_id = mapping.get('layer_id')
+                # get search indices
+                indices = IndexSpecification.objects.filter(
+                    project_id=settings.SUNLUMO_PROJECT_ID
+                )
+                for index in indices:
+                    l_id = index.layer_id
                     qgs_layer = sunlumo_project.layerRegistry.mapLayer(l_id)
                     qgs_layer.dataProvider().setEncoding('UTF-8')
 
-                    self._indexFeatures(
-                        qgs_layer.getFeatures(), s_ind, mapping
-                    )
+                    self._indexFeatures(qgs_layer.getFeatures(), index)
 
     def _getAttr(self, feature, attribute):
         attr_val = feature.attribute(attribute)
         if attr_val:
-            return attr_val
+            return unicode(attr_val)
         else:
-            return ''
+            return u''
 
-    def _indexFeatures(self, features, index_name, mapping):
-        qgis_project = settings.SUNLUMO_PROJECT_ID
+    def _indexFeatures(self, features, index):
+        field_mapping = list(
+            index.indexattribute_set.filter(ordering__gt=0)
+            .order_by('ordering')
+            .values_list(
+                'attribute__name', flat=True
+            )
+        )
+        pk_field = (
+            index.indexattribute_set.filter(primary_key=True)
+            .values_list(
+                'attribute__name', flat=True
+            )[0]
+        )
         for feature in features:
             # indexable field is simply joined by spaces
             text = u' '.join([
                 self._getAttr(feature, attr).upper()
-                for attr in mapping.get('fields')
+                for attr in field_mapping
             ])
-            si_record = SimilarityIndex.objects.update_or_create(
-                qgis_project=qgis_project,
-                index_name=index_name,
-                feature_id=feature.attribute(mapping.get('pk')),
+            si_record = IndexData.objects.update_or_create(
+                index_id=index.pk,
+                feature_id=feature.attribute(pk_field),
                 # update index field
                 defaults={'text': text}
             )
