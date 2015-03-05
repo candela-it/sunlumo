@@ -5,7 +5,8 @@ var m = require('mithril');
 var render = function(ctrl) {
     return m('div.button.small.controlButton', {
         'class': ctrl.vm.active() ? '' : 'info',
-        onclick: ctrl.vm.ev_toggleButton.bind(ctrl)
+        onclick: ctrl.vm.ev_toggleButton.bind(ctrl),
+        'title': ctrl.vm.title()
     }, [
         m(ctrl.vm.style())
     ]);
