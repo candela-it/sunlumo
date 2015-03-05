@@ -29,7 +29,8 @@ DistanceTool.prototype = {
 
     init: function() {
         var button = new UI_Button({
-            style: 'i.fa.fa-arrows'
+            style: 'i.fa.fa-arrows',
+            title: 'Izmjeri površinu'
         });
 
         this.controller = button.controller;

@@ -29,7 +29,8 @@ DistanceTool.prototype = {
 
     init: function() {
         var button = new UI_Button({
-            style: 'i.fa.fa-arrows-v'
+            style: 'i.fa.fa-arrows-v',
+            title: 'Izmjeri udaljenost'
         });
 
         this.controller = button.controller;

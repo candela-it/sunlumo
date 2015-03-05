@@ -29,7 +29,8 @@ GFITool.prototype = {
 
     init: function() {
         var button = new UI_Button({
-            style: 'i.fa.fa-magic'
+            style: 'i.fa.fa-magic',
+            title: 'Pronađi objekt (svi vidljivi slojevi)'
         });
 
         this.controller = button.controller;

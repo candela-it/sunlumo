@@ -18,6 +18,7 @@ VIEWMODEL.prototype = {
         this.uuid = m.prop(uuid.v1());
 
         this.style = m.prop(options.style);
+        this.title = m.prop(options.title);
 
         // initialize component events
         this.events = new Jvent();
