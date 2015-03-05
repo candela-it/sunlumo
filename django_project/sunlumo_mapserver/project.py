@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 import os
 
@@ -12,10 +11,16 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
     QgsMapLayerRegistry,
-    QgsCredentials
+    QgsCredentials,
+    QgsMapLayer
 )
 
+from sunlumo_similaritysearch.models import IndexSpecification
+
 from .utils import change_directory
+
+
+LOG = logging.getLogger(__name__)
 
 
 class QgsCredentialsNull(QgsCredentials):
@@ -34,6 +39,7 @@ class SunlumoProject(object):
 
     LAYER_TREE = []  # hierarchical Layer datastructure
     LAYERS_DATA = {}  # generic Layer datastructure
+    LAYER_ORDER = []
     LAYOUTS = []
     LAYOUTS_DATA = {}
 
@@ -125,6 +131,18 @@ class SunlumoProject(object):
             else:
                 raise RuntimeError('Unknown legend item')
 
+    def _readLayerOrder(self):
+        self.LAYER_ORDER = []
+        customOrder = (
+            self.doc.elementsByTagName('layer-tree-canvas').at(0)
+            .firstChildElement('custom-order')
+        )
+        # enabled = self._getAttr(customOrder, 'enabled').value()
+        layer_items = customOrder.childNodes()
+        for idx in xrange(layer_items.size()):
+            layer_item = layer_items.at(idx)
+            self.LAYER_ORDER.append(layer_item.firstChild().nodeValue())
+
     def _iterateOverTagByName(self, tag):
         elements = self.doc.elementsByTagName(tag)
         for i in xrange(elements.size()):
@@ -148,7 +166,7 @@ class SunlumoProject(object):
 
         self._readLegend()
         self._parseLayers()
-
+        self._readLayerOrder()
         self._parseLayouts()
 
     def _parseLayers(self):
@@ -246,17 +264,20 @@ class SunlumoProject(object):
             return None
 
     def _readSimilarityIndexes(self):
-        similarity_index = settings.QGIS_SIMILARITY_SEARCH
+        similarity_indices = IndexSpecification.objects.filter(
+            project_id=settings.SUNLUMO_PROJECT_ID
+        ).values_list('name', flat=True)
 
-        return [key for key in similarity_index.keys()]
+        # we need to expand Django ValuesListQuerySet for JSON serialization
+        return list(similarity_indices)
 
     def getDetails(self):
         return {
-            'map': self.project_file,
             'layers': self.LAYERS_DATA,
             'layer_tree': self.LAYER_TREE,
             'layouts': self.LAYOUTS,
             'layouts_data': self.LAYOUTS_DATA,
+            'layer_order': self.LAYER_ORDER,
             'similarity_indices': self._readSimilarityIndexes()
         }
 
@@ -274,3 +295,15 @@ class SunlumoProject(object):
     def setTransparencies(self, layers, transparencies):
         for idx, layer_id in enumerate(layers):
             self.setTransparency(layer_id, transparencies[idx])
+
+    def getAttributesForALayer(self, layer_id):
+        qgs_layer = self.layerRegistry.mapLayer(layer_id)
+        if qgs_layer.type() == QgsMapLayer.RasterLayer:
+            return []
+
+        layer_field_names = [
+            qgs_layer.attributeDisplayName(idx)
+            for idx in qgs_layer.pendingAllAttributesList()
+        ]
+
+        return layer_field_names

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 from itertools import chain
 from collections import OrderedDict
@@ -21,8 +20,13 @@ from qgis.core import (
 
 from django.conf import settings
 
+from sunlumo_project.models import Attribute
+
 from .utils import change_directory, featureToGeoJSON, writeGeoJSON
 from .project import SunlumoProject
+
+
+LOG = logging.getLogger(__name__)
 
 
 class FeatureInfo(SunlumoProject):
@@ -54,8 +58,8 @@ class FeatureInfo(SunlumoProject):
             # initialize mapRenderer and a rendering context in order to be
             # to check if a feature will actually be rendered
             # we don't want to return features that are not visible
-            img = QImage(
-                QSize(settings.QGIS_GFI_BUFFER*2, settings.QGIS_GFI_BUFFER*2),
+            img = QImage(QSize(
+                settings.SUNLUMO_GFI_BUFFER*2, settings.SUNLUMO_GFI_BUFFER*2),
                 QImage.Format_ARGB32_Premultiplied
             )
             dpm = 1 / 0.00028
@@ -64,8 +68,8 @@ class FeatureInfo(SunlumoProject):
 
             mapRenderer = QgsMapRenderer()
             mapRenderer.clearLayerCoordinateTransforms()
-            mapRenderer.setOutputSize(
-                QSize(settings.QGIS_GFI_BUFFER*2, settings.QGIS_GFI_BUFFER*2),
+            mapRenderer.setOutputSize(QSize(
+                settings.SUNLUMO_GFI_BUFFER*2, settings.SUNLUMO_GFI_BUFFER*2),
                 img.logicalDpiX()
             )
 
@@ -110,25 +114,14 @@ class FeatureInfo(SunlumoProject):
                             < scaleDenom < layer.maximumScale()):
                         continue
 
-                # read layer field names
-                layer_field_names = [
-                    layer.attributeDisplayName(idx)
-                    for idx in layer.pendingAllAttributesList()
-                ]
-
                 # visible features generator
                 visible_features = self._visibleFeatures(
                     layer, renderContext, layer.getFeatures(qfr)
                 )
-
                 layer_features = [featureToGeoJSON(
-                    feature.id(), feature.geometry(), OrderedDict(zip(
-                        layer_field_names, [
-                            attr if attr else None
-                            for attr in feature.attributes()
-                        ]
-                    )))
-                    for feature in visible_features
+                    feature.id(), feature.geometry(),
+                    self._collectAttributes(layer, feature)
+                ) for feature in visible_features
                 ]
 
                 feature_collections.append(layer_features)
@@ -145,6 +138,22 @@ class FeatureInfo(SunlumoProject):
             if feature_rendered:
                 yield feature
 
+    def _collectAttributes(self, layer, feature):
+        attributes = [
+            attr.name for attr in Attribute.objects
+            .filter(layer_id=layer.id())
+            .filter(visible=True)
+            # this will set the identifier attribute as first one
+            .order_by('-identifier')
+        ]
+
+        return OrderedDict(zip(
+            attributes, [
+                feature.attribute(attr) if feature.attribute(attr) else None
+                for attr in attributes
+            ]
+        ))
+
     def _calcSearchBox(self, bbox, width, height, i, j):
         x_res = (bbox[2] - bbox[0]) / width
         y_res = (bbox[3] - bbox[1]) / height
@@ -153,8 +162,8 @@ class FeatureInfo(SunlumoProject):
         center_y = bbox[1] + j * y_res
 
         return (
-            center_x - settings.QGIS_GFI_BUFFER * x_res,
-            center_y - settings.QGIS_GFI_BUFFER * y_res,
-            center_x + settings.QGIS_GFI_BUFFER * x_res,
-            center_y + settings.QGIS_GFI_BUFFER * y_res
+            center_x - settings.SUNLUMO_GFI_BUFFER * x_res,
+            center_y - settings.SUNLUMO_GFI_BUFFER * y_res,
+            center_x + settings.SUNLUMO_GFI_BUFFER * x_res,
+            center_y + settings.SUNLUMO_GFI_BUFFER * y_res
         )

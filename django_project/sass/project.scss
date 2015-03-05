@@ -28,6 +28,11 @@
   display: none !important;
 }
 
+.project-logo {
+    margin-top: 1px;
+    height: rem-calc(43);
+}
+
 .sl-accordion {
     @include accordion-container();
     .accordion-navigation {
@@ -110,7 +115,7 @@
 
 
     .layer {
-        font-size: rem-calc(12);
+        font-size: rem-calc(11);
         color: $black;
         padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
 
@@ -120,7 +125,7 @@
     }
 
     .group {
-        font-size: rem-calc(16);
+        font-size: rem-calc(12);
         font-weight: bold;
         color: $black;
         padding: rem-calc(4) rem-calc(5) rem-calc(2) 0;
@@ -130,7 +135,7 @@
         }
 
         .layer {
-            font-size: rem-calc(12);
+            font-size: rem-calc(11);
             font-weight: normal;
             color: $black;
             padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(20);
@@ -142,11 +147,6 @@
             display: inline-block;
             line-height: rem-calc(18);
             text-transform: uppercase;
-    }
-
-
-    .dragging {
-        background: #FBB;
     }
 
     .layer-control {

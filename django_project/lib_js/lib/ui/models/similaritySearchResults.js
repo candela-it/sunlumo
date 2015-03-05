@@ -55,7 +55,7 @@ VIEWMODEL.prototype = {
     },
 
     ev_clickResult: function (item) {
-        this.vm.events.emit('search.clicked', {geojson: item.geojson()});
+        this.vm.events.emit('result.clicked', {geojson: item.geojson()});
     }
 };
 

@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 from itertools import groupby, chain
-
-from django.conf import settings
 
 from sunlumo_mapserver.project import SunlumoProject
 
@@ -14,7 +11,9 @@ from sunlumo_mapserver.utils import (
     writeGeoJSON
 )
 
-from .models import SimilarityIndex
+from .models import IndexData
+
+LOG = logging.getLogger(__name__)
 
 
 class Searcher(SunlumoProject):
@@ -30,24 +29,34 @@ class Searcher(SunlumoProject):
         # self.check_required_params(params)
 
         limit = 20
-        search_string = params.get('search_string')
+        search_string = params.get('search_string').strip()
 
         search_layers = params.get('search_layers')
 
-        with change_directory(self.project_root):
+        similar_results = (
+            IndexData.objects
+            # .filter(project=settings.QGIS_PROJECT_ID)
+            .filter(index__name__in=search_layers)
+        )
 
-            similar_results = (
-                SimilarityIndex.objects
-                .filter(qgis_project__exact=settings.QGIS_PROJECT)
-                .filter(index_name__in=search_layers)
-                .extra(
-                    where=['text LIKE %s'],
-                    params=[self._prepare_search_string(search_string)]
-                )
-                # groupby (itertools) requires and ordered set
-                .order_by('index_name')[:limit]
+        if search_string.startswith('='):
+            similar_results = similar_results.filter(
+                text=search_string[1:].upper()
+            )
+        elif search_string.startswith('^'):
+            similar_results = similar_results.filter(
+                text__startswith=search_string[1:].upper()
+            )
+        else:
+            similar_results = similar_results.extra(
+                where=['text LIKE %s'],
+                params=[self._prepare_search_string(search_string)]
             )
 
+        # groupby (itertools) requires and ordered set
+        similar_results = similar_results.order_by('index_id')[:limit]
+
+        with change_directory(self.project_root):
             return self._get_features_for_layers(similar_results)
 
     def _prepare_search_string(self, search_string):
@@ -61,15 +70,21 @@ class Searcher(SunlumoProject):
 
     def _get_features_for_layers(self, similar_results):
         feature_collections = []
-        for key, group in groupby(similar_results, lambda x: x.index_name):
 
-            layer_id = settings.QGIS_SIMILARITY_SEARCH[key].get('layer_id')
+        for key, group in groupby(similar_results, lambda x: x.index):
+
+            layer_id = key.layer.layer_id
 
             qgsLayer = self.layerRegistry.mapLayer(layer_id)
             qgsLayer.dataProvider().setEncoding('UTF-8')
             qgsLayer.updateFields()
 
-            layer_pk = settings.QGIS_SIMILARITY_SEARCH[key].get('pk')
+            layer_pk = (
+                key.indexattribute_set.filter(primary_key=True)
+                .values_list(
+                    'attribute__name', flat=True
+                )[0]
+            )
 
             records = {rec.feature_id: rec.text for rec in group}
 

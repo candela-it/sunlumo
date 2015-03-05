@@ -1,31 +1,29 @@
 # -*- coding: utf-8 -*-
 import logging
-LOG = logging.getLogger(__name__)
 
 from django.views.generic import View
 from django.http import Http404
+from django.conf import settings
 
 from braces.views import JSONRequestResponseMixin
 
+from sunlumo_project.models import Project
+
 from .searcher import Searcher
+
+LOG = logging.getLogger(__name__)
 
 
 class SimilaritySearchView(JSONRequestResponseMixin, View):
 
     def _parse_request_params(self, request_json):
-        if not(all(param in request_json for param in [
-                'map_file', 'search_string'])):
+        if not(all(param in request_json for param in ['search_string'])):
             raise Http404
 
-        map_file = request_json.get('map_file')
         search_string = request_json.get('search_string')
         search_layers = request_json.get('search_layers')
 
-        if not(map_file):
-            raise Http404
-
         params = {
-            'map_file': map_file,
             'search_string': search_string,
             'search_layers': search_layers
         }
@@ -36,7 +34,9 @@ class SimilaritySearchView(JSONRequestResponseMixin, View):
 
         params = self._parse_request_params(self.request_json)
 
-        sl_project = Searcher(params.get('map_file'))
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
+
+        sl_project = Searcher(project.project_path)
 
         results = sl_project.search(params)
 

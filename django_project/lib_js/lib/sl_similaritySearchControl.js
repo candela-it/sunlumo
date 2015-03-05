@@ -54,7 +54,7 @@ SL_SimilaritySearchControl.prototype = {
     handleEvents: function() {
         var self = this;
 
-        EVENTS.on('search.clicked', function (options) {
+        EVENTS.on('similaritySearch.result.clicked', function (options) {
             var feature = self.geojsonFormat.readFeatures(options.geojson);
 
             self.SL_Result_Source.clear(true);

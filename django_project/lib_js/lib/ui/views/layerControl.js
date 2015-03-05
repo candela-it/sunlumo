@@ -1,25 +1,13 @@
 'use strict';
 
 var m = require('mithril');
-var _ = require('lodash');
 
-var renderLayerItem = function (ctrl, index, item, dragging) {
+var renderLayerItem = function (ctrl, item) {
     // group layer handler
     var properties = {
         onmouseenter: ctrl.vm.ev_mouseOver.bind(ctrl, item),
         onmouseleave: ctrl.vm.ev_mouseOut.bind(ctrl, item)
     };
-
-    if (index !== undefined) {
-        _.extend(properties, {
-            'data-id': index,
-            'class': dragging,
-            draggable: 'true',
-            ondragstart: ctrl.vm.ev_dragStart.bind(ctrl),
-            ondragover: ctrl.vm.ev_dragOver.bind(ctrl),
-            ondragend: ctrl.vm.ev_dragEnd.bind(ctrl)
-        });
-    }
 
     return m('div.layer', properties, [
         m('div.layer-control', {
@@ -49,7 +37,6 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
         }, [
             m('span', {}, 'TRANSPARENTNOST: '),
             m('input[type=range]', {
-                draggable: false,
                 value: item.transparency(),
                 onchange: ctrl.vm.ev_layerTransparency.bind(ctrl, item)
             })
@@ -57,25 +44,18 @@ var renderLayerItem = function (ctrl, index, item, dragging) {
     ]);
 };
 
-var addGroupLayers = function (ctrl, item, dragging) {
+var addGroupLayers = function (ctrl, item) {
     if (!item.collapsed()) {
         return item.layers().map(function (groupLayer) {
             // set undefined index that will not setup drag events on group layers
-            return renderLayerItem(ctrl, undefined, groupLayer, dragging);
+            return renderLayerItem(ctrl, groupLayer);
         });
     }
     return [];
 };
 
-var renderGroupItem = function (ctrl, index, item, dragging) {
-    return m('div.group', {
-        'data-id': index,
-        'class': dragging,
-        draggable: 'true',
-        ondragstart: ctrl.vm.ev_dragStart.bind(ctrl),
-        ondragover: ctrl.vm.ev_dragOver.bind(ctrl),
-        ondragend: ctrl.vm.ev_dragEnd.bind(ctrl)
-    }, [
+var renderGroupItem = function (ctrl, item) {
+    return m('div.group', [
         m('div.layer-control', {
             'class': item.visible() ? '' : 'deactivated',
             onclick: ctrl.vm.ev_groupToggle.bind(ctrl, item)
@@ -99,21 +79,17 @@ var renderGroupItem = function (ctrl, index, item, dragging) {
         ]),
 
         // add group layers
-        addGroupLayers(ctrl, item, dragging)
+        addGroupLayers(ctrl, item)
     ]);
 };
 
 var render = function(ctrl) {
     return m('div.layer-list', [
         ctrl.vm.layerTree.map(function (treeItem, index) {
-            // is the current treeItem dragged
-            var dragging = index === ctrl.vm.dragged_item() ? 'dragging' : '';
-
-
             if (treeItem.type() === 'layer') {
-                return renderLayerItem(ctrl, index, treeItem, dragging);
+                return renderLayerItem(ctrl, treeItem);
             } else {
-                return renderGroupItem(ctrl, index, treeItem, dragging);
+                return renderGroupItem(ctrl, treeItem);
             }
         })
     ]);
