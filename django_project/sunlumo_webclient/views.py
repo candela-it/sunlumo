@@ -23,6 +23,7 @@ class IndexView(TemplateView):
 
         sl_project = SunlumoProject(project.project_path)
 
+        context['SL_Project'] = project
         context['SL_Details'] = json.dumps(sl_project.getDetails())
 
         return context

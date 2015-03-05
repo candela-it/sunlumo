@@ -28,6 +28,10 @@
   display: none !important;
 }
 
+.project-logo {
+    height: rem-calc(45);
+}
+
 .sl-accordion {
     @include accordion-container();
     .accordion-navigation {
