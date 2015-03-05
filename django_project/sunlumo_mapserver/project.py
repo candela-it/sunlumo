@@ -39,6 +39,7 @@ class SunlumoProject(object):
 
     LAYER_TREE = []  # hierarchical Layer datastructure
     LAYERS_DATA = {}  # generic Layer datastructure
+    LAYER_ORDER = []
     LAYOUTS = []
     LAYOUTS_DATA = {}
 
@@ -130,6 +131,18 @@ class SunlumoProject(object):
             else:
                 raise RuntimeError('Unknown legend item')
 
+    def _readLayerOrder(self):
+        self.LAYER_ORDER = []
+        customOrder = (
+            self.doc.elementsByTagName('layer-tree-canvas').at(0)
+            .firstChildElement('custom-order')
+        )
+        # enabled = self._getAttr(customOrder, 'enabled').value()
+        layer_items = customOrder.childNodes()
+        for idx in xrange(layer_items.size()):
+            layer_item = layer_items.at(idx)
+            self.LAYER_ORDER.append(layer_item.firstChild().nodeValue())
+
     def _iterateOverTagByName(self, tag):
         elements = self.doc.elementsByTagName(tag)
         for i in xrange(elements.size()):
@@ -153,7 +166,7 @@ class SunlumoProject(object):
 
         self._readLegend()
         self._parseLayers()
-
+        self._readLayerOrder()
         self._parseLayouts()
 
     def _parseLayers(self):
@@ -264,6 +277,7 @@ class SunlumoProject(object):
             'layer_tree': self.LAYER_TREE,
             'layouts': self.LAYOUTS,
             'layouts_data': self.LAYOUTS_DATA,
+            'layer_order': self.LAYER_ORDER,
             'similarity_indices': self._readSimilarityIndexes()
         }
 
