@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=60)),
                 ('visible', models.BooleanField(default=True)),
+                ('identifier', models.BooleanField(default=False)),
             ],
             options={
             },
@@ -26,8 +27,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Layer',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('layer_id', models.CharField(max_length=60, serialize=False, editable=False, primary_key=True)),
                 ('title', models.CharField(max_length=60)),
+                ('visible', models.BooleanField(default=True)),
+                ('layer_type', models.CharField(max_length=20)),
             ],
             options={
             },
@@ -59,34 +62,6 @@ class Migration(migrations.Migration):
             model_name='attribute',
             name='layer',
             field=models.ForeignKey(to='sunlumo_project.Layer'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='layer',
-            name='layer_id',
-            field=models.CharField(max_length=60, serialize=False, editable=False, primary_key=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='layer',
-            name='visible',
-            field=models.BooleanField(default=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='layer',
-            name='layer_type',
-            field=models.CharField(default='', max_length=20),
-            preserve_default=False,
-        ),
-        migrations.RemoveField(
-            model_name='layer',
-            name='id',
-        ),
-        migrations.AddField(
-            model_name='attribute',
-            name='identifier',
-            field=models.BooleanField(default=False),
             preserve_default=True,
         ),
     ]
