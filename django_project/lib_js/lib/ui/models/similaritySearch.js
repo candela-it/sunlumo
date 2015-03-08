@@ -68,7 +68,6 @@ VIEWMODEL.prototype = {
             url: '/api/search',
             // json encoded data
             data: {
-                map_file: this.vm.map_file(),
                 search_string: this.vm.search_string(),
                 search_layers: this.vm.getSearchLayers()
             }
@@ -89,7 +88,7 @@ VIEWMODEL.prototype = {
             // read search string
             this.vm.search_string(event.currentTarget.value);
             // execute search
-            this.clickSearch();
+            this.vm.ev_clickSearch.call(this);
         }
     },
 
