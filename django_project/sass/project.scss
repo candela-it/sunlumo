@@ -142,7 +142,25 @@
             font-size: rem-calc(11);
             font-weight: normal;
             color: $black;
+            padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(10);
+        }
+
+        .group {
+          font-size: rem-calc(12);
+          font-weight: bold;
+          color: $black;
+          padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(10);
+
+          &:hover {
+            background-color: $smoke;
+          }
+
+          .layer {
+            font-size: rem-calc(11);
+            font-weight: normal;
+            color: $black;
             padding: rem-calc(4) rem-calc(5) rem-calc(2) rem-calc(20);
+          }
         }
     }
 

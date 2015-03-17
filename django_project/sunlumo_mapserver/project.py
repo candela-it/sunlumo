@@ -60,7 +60,66 @@ class SunlumoProject(object):
             layer_xml.firstChild().firstChild(), 'layerid'
         ).value()
 
-        return (layer_id, layer_name, visible)
+        return {
+            'layer': {
+                'layer_id': layer_id,
+                'layer_name': layer_name,
+                'visible': visible
+            }
+        }
+
+    def _readLegendGroup(self, legend_item):
+        group_name = self._getAttr(legend_item, 'name').value()
+
+        grp_visible_val = self._getAttr(legend_item, 'checked').value()
+        grp_visible = (
+            True if grp_visible_val == 'Qt::Checked' else False
+        )
+
+        grp_open_val = self._getAttr(legend_item, 'open').value()
+        if grp_open_val == 'true':
+            grp_collapsed = False
+        elif grp_open_val == 'false':
+            grp_collapsed = True
+        else:
+            raise RuntimeError('Unknown value for grp_open')
+
+        group_data = {
+            'group': {
+                'name': group_name,
+                'visible': grp_visible,
+                'collapsed': grp_collapsed
+            }
+        }
+
+        return group_data
+
+    def _readLegendItem(self, legend_item):
+        if legend_item.nodeName() == 'legendlayer':
+            layer_data = self._readLegendLayer(legend_item)
+
+            layer = layer_data.get('layer');
+            self.LAYERS_DATA[layer['layer_id']] = {
+                'layer_name': layer['layer_name'],
+                'visible': layer['visible']
+            }
+            return layer_data
+
+        elif legend_item.nodeName() == 'legendgroup':
+            group_data = self._readLegendGroup(legend_item)
+
+            groupLayers = legend_item.childNodes()
+
+            group_layer_list = []
+            for sub_layer_idx in xrange(groupLayers.size()):
+                subItem = groupLayers.at(sub_layer_idx)
+
+                group_layer_list.append(self._readLegendItem(subItem))
+
+            group_data.update({
+                'layers': group_layer_list
+            })
+            return group_data
 
     def _readLegend(self):
         # clear layers
@@ -70,66 +129,7 @@ class SunlumoProject(object):
         lItems = self.doc.elementsByTagName('legend').at(0).childNodes()
         for i in xrange(lItems.size()):
             lItem = lItems.at(i)
-            if lItem.nodeName() == 'legendlayer':
-                layer_id, layer_name, visible = self._readLegendLayer(lItem)
-
-                self.LAYER_TREE.append({'layer': layer_id})
-
-                self.LAYERS_DATA[layer_id] = {
-                    'layer_name': layer_name,
-                    'visible': visible
-                }
-
-            elif lItem.nodeName() == 'legendgroup':
-                group_name = self._getAttr(lItem, 'name').value()
-
-                grp_visible_val = self._getAttr(lItem, 'checked').value()
-                grp_visible = (
-                    True if grp_visible_val == 'Qt::Checked' else False
-                )
-
-                grp_open_val = self._getAttr(lItem, 'open').value()
-                if grp_open_val == 'true':
-                    grp_collapsed = False
-                elif grp_open_val == 'false':
-                    grp_collapsed = True
-                else:
-                    raise RuntimeError('Unknown value for grp_open')
-
-                group_data = {
-                    'group': {
-                        'name': group_name,
-                        'visible': grp_visible,
-                        'collapsed': grp_collapsed
-                    }
-                }
-
-                groupLayers = lItem.childNodes()
-
-                group_layer_list = []
-                for sub_layer_idx in xrange(groupLayers.size()):
-                    subItem = groupLayers.at(sub_layer_idx)
-                    if subItem.nodeName() == 'legendlayer':
-                        layer_id, layer_name, visible = (
-                            self._readLegendLayer(subItem)
-                        )
-
-                        self.LAYERS_DATA[layer_id] = {
-                            'layer_name': layer_name,
-                            'visible': visible
-                        }
-
-                        group_layer_list.append({'layer': layer_id})
-
-                    else:
-                        raise RuntimeError('Unknown sublegend item')
-
-                group_data['group'].update({
-                    'layers': group_layer_list
-                })
-                self.LAYER_TREE.append(group_data)
-            else:
-                raise RuntimeError('Unknown legend item')
+            self.LAYER_TREE.append(self._readLegendItem(lItem))
 
     def _readLayerOrder(self):
         self.LAYER_ORDER = []

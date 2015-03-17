@@ -2,8 +2,9 @@
 
 var m = require('mithril');
 
-var renderLayerItem = function (ctrl, item) {
+var renderLayerItem = function (ctrl, treeItem) {
     // group layer handler
+    var item = ctrl.vm.layers[treeItem.item_uuid()];
     var properties = {
         onmouseenter: ctrl.vm.ev_mouseOver.bind(ctrl, item),
         onmouseleave: ctrl.vm.ev_mouseOut.bind(ctrl, item)
@@ -44,34 +45,36 @@ var renderLayerItem = function (ctrl, item) {
     ]);
 };
 
-var addGroupLayers = function (ctrl, item) {
+var addGroupLayers = function (ctrl, treeItem) {
+    var item = ctrl.vm.groups[treeItem.item_uuid()];
     if (!item.collapsed()) {
-        return item.layers().map(function (groupLayer) {
-            // set undefined index that will not setup drag events on group layers
-            return renderLayerItem(ctrl, groupLayer);
+        return treeItem.items().map(function (groupItem) {
+            return renderTreeItem(ctrl, groupItem);
         });
     }
     return [];
 };
 
-var renderGroupItem = function (ctrl, item) {
+var renderGroupItem = function (ctrl, treeItem) {
+    var item = ctrl.vm.groups[treeItem.item_uuid()];
+
     return m('div.group', [
         m('div.layer-control', {
             'class': item.visible() ? '' : 'deactivated',
-            onclick: ctrl.vm.ev_groupToggle.bind(ctrl, item)
+            onclick: ctrl.vm.ev_groupToggle.bind(ctrl, treeItem)
         }, [
             m('i.fa.fa-eye')
         ]),
         m('div.layer-control', {
             'class': item.query() ? '' : 'deactivated',
-            onclick: ctrl.vm.ev_queryGroupToggle.bind(ctrl, item)
+            onclick: ctrl.vm.ev_queryGroupToggle.bind(ctrl, treeItem)
         }, [
             m('i.fa.fa-info-circle')
         ]),
         m('div.group-name', [item.name()]),
 
         m('div.group-control', {
-            onclick: ctrl.vm.ev_toggleGroupCollapse.bind(ctrl, item)
+            onclick: ctrl.vm.ev_toggleGroupCollapse.bind(ctrl, treeItem)
         }, [
             m('i.fa', {
                 'class': item.collapsed() ? 'fa-plus' : 'fa-minus'
@@ -79,18 +82,22 @@ var renderGroupItem = function (ctrl, item) {
         ]),
 
         // add group layers
-        addGroupLayers(ctrl, item)
+        addGroupLayers(ctrl, treeItem)
     ]);
+};
+
+var renderTreeItem = function (ctrl, treeItem) {
+    if (treeItem.type() === 'layer') {
+        return renderLayerItem(ctrl, treeItem);
+    } else {
+        return renderGroupItem(ctrl, treeItem);
+    }
 };
 
 var render = function(ctrl) {
     return m('div.layer-list', [
         ctrl.vm.layerTree.map(function (treeItem, index) {
-            if (treeItem.type() === 'layer') {
-                return renderLayerItem(ctrl, treeItem);
-            } else {
-                return renderGroupItem(ctrl, treeItem);
-            }
+            return renderTreeItem(ctrl, treeItem);
         })
     ]);
 };
