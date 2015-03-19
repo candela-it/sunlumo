@@ -4,7 +4,7 @@ var m = require('mithril');
 
 
 var render = function(ctrl) {
-    return m('ul', [
+    return m('ul.ss-result', [
         ctrl.vm.result_list.map(function(item) {
             return m('li', {
                 onclick: ctrl.vm.ev_clickResult.bind(ctrl, item)

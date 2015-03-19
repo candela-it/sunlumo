@@ -17,7 +17,7 @@ var render = function(ctrl) {
             onchange: ctrl.vm.ev_inputChanged.bind(ctrl),
             onkeypress: ctrl.vm.ev_keypressAction.bind(ctrl)
         }),
-        m('button', {onclick: ctrl.vm.ev_clickSearch.bind(ctrl)}, 'Search')
+        m('button.small', {onclick: ctrl.vm.ev_clickSearch.bind(ctrl)}, 'Pretraži')
     ]);
 };
 

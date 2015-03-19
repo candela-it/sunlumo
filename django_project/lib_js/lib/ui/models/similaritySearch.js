@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var m = require('mithril');
 var cookie = require('../../../contrib/cookie');
+var EVENTS = require('../../events');
 
 var Jvent = require('jvent');
 
@@ -62,6 +63,7 @@ VIEWMODEL.prototype = {
     },
     ev_clickSearch: function() {
         var self = this;
+        EVENTS.emit('spinner.activate');
         m.request({
             config: xhrConfig,
             method: 'POST',
@@ -75,6 +77,7 @@ VIEWMODEL.prototype = {
             self.vm.events.emit('results', {
                 features: response.features
             });
+            EVENTS.emit('spinner.deactivate');
         });
     },
 

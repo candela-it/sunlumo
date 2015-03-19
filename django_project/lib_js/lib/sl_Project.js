@@ -113,7 +113,8 @@ SL_Project.prototype = {
             },
             {
                 title: 'Pretraživanje',
-                component: ui_ss
+                component: ui_ss,
+                open: true
             },
             {
                 title: 'Slojevi',

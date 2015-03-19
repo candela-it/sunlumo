@@ -14,6 +14,11 @@
     padding: 0;
 }
 
+// style top-bar
+.top-bar {
+    background-color: $topbar-bg-color;
+}
+
 #refresh-notification {
     padding-right: rem-calc(8);
     padding-top: rem-calc(3);
@@ -58,6 +63,7 @@
     z-index: 2;
     padding:0 !important;
     border: none !important;
+    max-height: rem-calc(625);
 
     .heading {
         // this class is defined in _utils partial
@@ -74,6 +80,8 @@
 
         padding: rem-calc(3);
         border: solid rem-calc(1) $oil;
+        overflow: auto;
+        max-height: rem-calc(600);
     }
 }
 
@@ -281,6 +289,10 @@
 .feature-result {
     display: block;
     position: relative;
+    margin-bottom: rem-calc(5);
+}
+.feature-result:hover {
+    background-color: $smoke;
 }
 
 .mouse-pointer {
@@ -326,4 +338,19 @@
 }
 .tooltip-static:before {
     border-top-color: #ffcc33;
+}
+
+ul.ss-result {
+    list-style-type: none;
+    margin: rem-calc(2);
+    padding: 0;
+
+    li {
+      cursor: pointer;
+      margin-bottom: rem-calc(5);
+    }
+
+    li:hover {
+       background-color: $smoke;
+    }
 }

@@ -7,7 +7,7 @@ var Jvent = require('jvent');
 
 var Feature = function(data) {
     this.id = m.prop(data.id);
-    this.toggled = m.prop(false);
+    this.toggled = m.prop(true);
 
     this.properties = {};
 };
