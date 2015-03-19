@@ -12,7 +12,7 @@ LOG = logging.getLogger(__name__)
 @python_2_unicode_compatible
 class IndexSpecification(models.Model):
     project = models.ForeignKey('sunlumo_project.Project')
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     layer = models.ForeignKey('sunlumo_project.Layer')
     fields = models.ManyToManyField(
         'sunlumo_project.Attribute', through='IndexAttribute',
