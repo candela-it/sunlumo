@@ -39,6 +39,9 @@ var SL_QGISLayerControl = function (sl_map, options) {
 
     // initialize the layer control event handling
     this.initEvents();
+
+    // prevent multiple image request
+    this.waiting_for_image = false;
 };
 
 
@@ -68,20 +71,27 @@ SL_QGISLayerControl.prototype = {
     },
 
     customImageLoadFunction: function(image, src) {
-        var start_time = new Date().getTime();
-        // set loading-status
-        EVENTS.emit('spinner.activate');
+        var self = this;
+        // prevent making another image request if previous one has not finished
+        if (!this.waiting_for_image) {
+            this.waiting_for_image = true;
+            var start_time = new Date().getTime();
+            // set loading-status
+            EVENTS.emit('spinner.activate');
 
-        // set image source
-        image.getImage().src = src;
+            // set image source
+            image.getImage().src = src;
 
-        // onload triggers when the image is fully loaded
-        image.getImage().onload = function(evt) {
-            EVENTS.emit('spinner.deactivate');
-            var end_time = new Date().getTime();
+            // onload triggers when the image is fully loaded
+            image.getImage().onload = function (evt) {
+                EVENTS.emit('spinner.deactivate');
+                var end_time = new Date().getTime();
 
-            console.log('Image loaded:', end_time - start_time);
-        };
+                console.log('Image loaded:', end_time - start_time);
+
+                self.waiting_for_image = false;
+            };
+        }
     },
 
     init: function () {
