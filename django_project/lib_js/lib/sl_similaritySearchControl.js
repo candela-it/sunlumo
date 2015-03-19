@@ -43,12 +43,29 @@ SL_SimilaritySearchControl.prototype = {
         this.SL_Result_Source = new ol.source.Vector();
 
         this.SL_Result_Layer = new ol.layer.Vector({
-            source: this.SL_Result_Source
+            source: this.SL_Result_Source,
+            style: this.style_function
         });
 
         this.geojsonFormat = new ol.format.GeoJSON();
 
         this.sl_map.addControlOverlayLayer(this.SL_Result_Layer);
+    },
+
+    style_function: function(feature, resolution) {
+        var stroke = new ol.style.Stroke({
+            color: '#FF3333',
+            lineDash: [6, 1],
+            width: 3
+        });
+        var styles = new ol.style.Style({
+            image: new ol.style.Circle({
+                stroke: stroke,
+                radius: 10
+            }),
+            stroke: stroke
+        });
+        return [styles];
     },
 
     handleEvents: function() {
