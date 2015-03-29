@@ -77,7 +77,6 @@ VIEWMODEL.prototype = {
             self.vm.events.emit('results', {
                 features: response.features
             });
-            EVENTS.emit('spinner.deactivate');
         });
     },
 
@@ -87,7 +86,7 @@ VIEWMODEL.prototype = {
     },
 
     ev_keypressAction: function (event) {
-        if (event.key === 'Enter') {
+        if (event.keyCode === 13) {
             // read search string
             this.vm.search_string(event.currentTarget.value);
             // execute search
