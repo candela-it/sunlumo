@@ -90,7 +90,8 @@ class FeatureInfo(SunlumoProject):
             renderContext.setPainter(None)
 
             qfr = QgsFeatureRequest()
-            qfr.setFilterRect(QgsRectangle(*search_box))
+            search_rectangle = QgsRectangle(*search_box)
+            qfr.setFilterRect(search_rectangle)
 
             for q_layer in params.get('query_layers'):
                 layer = self.layerRegistry.mapLayer(q_layer)
@@ -114,9 +115,13 @@ class FeatureInfo(SunlumoProject):
                             < scaleDenom < layer.maximumScale()):
                         continue
 
+                # check if features actually intersect search rectangle
+                intersected_features = self._intersectedFeatures(
+                    layer.getFeatures(qfr), search_rectangle
+                )
                 # visible features generator
                 visible_features = self._visibleFeatures(
-                    layer, renderContext, layer.getFeatures(qfr)
+                    layer, renderContext, intersected_features
                 )
                 layer_features = [featureToGeoJSON(
                     feature.id(), feature.geometry(),
@@ -127,6 +132,11 @@ class FeatureInfo(SunlumoProject):
                 feature_collections.append(layer_features)
 
             return writeGeoJSON(chain(*feature_collections))
+
+    def _intersectedFeatures(self, features, search_rectangle):
+        for feature in features:
+            if feature.geometry().intersects(search_rectangle):
+                yield feature
 
     def _visibleFeatures(self, layer, renderContext, features):
         renderer = layer.rendererV2()
