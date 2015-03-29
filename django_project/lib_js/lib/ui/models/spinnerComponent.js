@@ -12,9 +12,12 @@ VIEWMODEL.prototype = {
     },
 
     deactivate: function() {
-        m.startComputation();
-        this.active(false);
-        m.endComputation();
+        var self = this;
+        setTimeout(function() {
+            m.startComputation();
+            self.active(false);
+            m.endComputation();
+        }, 25);
     },
 
     activate: function() {

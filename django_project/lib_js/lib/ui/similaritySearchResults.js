@@ -57,9 +57,11 @@ SimilaritySearchResults.prototype = {
 
         ssr_controller.vm.events.on('results.found', function(options) {
             panel.controller.vm.show();
+            EVENTS.emit('spinner.deactivate');
         });
         ssr_controller.vm.events.on('results.empty', function(options) {
             panel.controller.vm.hide();
+            EVENTS.emit('spinner.deactivate');
         });
         ssr_controller.vm.events.on('result.clicked', function(options) {
             EVENTS.emit('similaritySearch.result.clicked', options);
