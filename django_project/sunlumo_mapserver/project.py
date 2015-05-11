@@ -98,7 +98,7 @@ class SunlumoProject(object):
         if legend_item.nodeName() == 'legendlayer':
             layer_data = self._readLegendLayer(legend_item)
 
-            layer = layer_data.get('layer');
+            layer = layer_data.get('layer')
             self.LAYERS_DATA[layer['layer_id']] = {
                 'layer_name': layer['layer_name'],
                 'visible': layer['visible']

@@ -3,6 +3,8 @@ import logging
 
 from itertools import groupby, chain
 
+from django.conf import settings
+
 from sunlumo_mapserver.project import SunlumoProject
 
 from sunlumo_mapserver.utils import (
@@ -11,7 +13,8 @@ from sunlumo_mapserver.utils import (
     writeGeoJSON
 )
 
-from .models import IndexData
+from .models import IndexData, IndexSpecification
+from .utils import index_features
 
 LOG = logging.getLogger(__name__)
 
@@ -110,3 +113,48 @@ class Searcher(SunlumoProject):
             feature_collections.append(layer_geojson)
 
         return writeGeoJSON(chain(*feature_collections))
+
+    def searchspec(self):
+
+        index_specs = (
+            IndexSpecification.objects
+            .filter(
+                project_id=settings.SUNLUMO_PROJECT_ID,
+                fields__indexattribute__primary_key=True
+            ).values(
+                'project__id', 'layer__layer_id',
+                'fields__indexattribute__attribute__name',
+                'id'
+            )
+        )
+
+        return [ispec for ispec in index_specs]
+
+    def reindex_features(self, params):
+
+        pk_value = reindex.get('pk_value', -1)
+        index_id = reindex.get('index_id')
+        layer_id = reindex.get('layer_id')
+
+        for reindex in params.get('reindex'):
+            index = IndexSpecification.objects.get(pk=index_id)
+
+            layer_pk = (
+                index.indexattribute_set.filter(primary_key=True)
+                .values_list(
+                    'attribute__name', flat=True
+                )[0]
+            )
+            qgsLayer = self.layerRegistry.mapLayer(layer_id)
+
+            filter_expression = '{} = {}'.format(
+                layer_pk, pk_value
+            )
+
+            # apply it to the layer
+            qgsLayer.setSubsetString(filter_expression)
+            qgis_features = qgsLayer.getFeatures()
+
+            index_features(qgis_features, index)
+
+            return {'msg': 'OK'}
