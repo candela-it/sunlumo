@@ -6,10 +6,10 @@ var render = function(ctrl) {
     if (ctrl.vm.visible()) {
         return m('div.sl-panel', {style: ctrl.vm.style()}, [
             m('div.heading', [
-                m('i.fa.fa-times-circle.mouse-pointer', {
+                ctrl.vm.component.title(),
+                m('i.fa.fa-times-circle.mouse-pointer.close-icon', {
                     onclick: ctrl.vm.ev_closeclick.bind(ctrl)
-                }),
-                ctrl.vm.component.title()
+                })
             ]),
             m('div.content.active', [
                 ctrl.vm.component.view(ctrl.vm.component.controller)

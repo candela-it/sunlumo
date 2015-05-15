@@ -150,11 +150,22 @@
         @extend .relative-clear-left-100;
 
         background-color: $oil;
-        font-size: rem-calc(14);
+        font-size: rem-calc(12);
         color: $white;
         padding: rem-calc(3) rem-calc(10);
         text-transform: uppercase;
+
+        .close-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        .close-icon:hover {
+            color: #0097c6;
+        }
     }
+
     .content {
         @extend .relative-clear-left-100;
 
@@ -162,6 +173,10 @@
         border: solid rem-calc(1) $oil;
         overflow: auto;
         max-height: rem-calc(600);
+    }
+
+    li {
+      font-size: rem-calc(12);
     }
 }
 
