@@ -14,7 +14,7 @@ var UI_GFITool = require('./ui/getFeatureInfoTool');
 var UI_GFIAllVisibleTool = require('./ui/getFeatureInfoAllVisibleTool');
 var UI_PrintTool = require('./ui/printTool');
 var UI_SpinnerComponent = require('./ui/spinnerComponent');
-var UI_Accordion = require('./ui/accordion');
+var UI_Sidebar = require('./ui/sidebar');
 var UI_Toolbox = require('./ui/toolBox');
 
 var SL_Map = require('./sl_map');
@@ -104,7 +104,7 @@ SL_Project.prototype = {
                 component: ui_pt
             }
         ]);
-
+        /*
         var ui_acc = new UI_Accordion(this.options, [
             {
                 title: 'Alati',
@@ -122,13 +122,30 @@ SL_Project.prototype = {
                 open: true
             }
         ]);
-
+        */
+        var ui_sidebar = new UI_Sidebar(this.options, [
+            {
+                title: 'Alati',
+                component: ui_toolbox,
+                open: false
+            },
+            {
+                title: 'Pretraživanje',
+                component: ui_ss,
+                open: false
+            },
+            {
+                title: 'Slojevi',
+                component: ui_lc,
+                open: true
+            }
+        ]);
         m.module(document.getElementById('sidebar'), {
             controller: function () {
-                return ui_acc.controller;
+                return ui_sidebar.controller;
             },
             view: function (ctrl) {
-                return [ui_acc.view(ctrl)];
+                return [ui_sidebar.view(ctrl)];
             }
         });
 

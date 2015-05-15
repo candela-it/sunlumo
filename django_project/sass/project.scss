@@ -55,6 +55,86 @@
 
 }
 
+.sl-sidebar {
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    .content-holder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      border: solid 1px #0097c6;
+
+
+      .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        display: none;
+        overflow: auto;
+      }
+
+      .show {
+        display: block;
+      }
+
+    }
+
+    .content-side {
+        position: absolute;
+        top: 60px;
+        right: -30px;
+        height: 100%;
+        width: 30px;
+        z-index: 99;
+
+
+        .item {
+            text-align: center;
+            position: relative;
+            float: left;
+            clear: left;
+            width: 20px;
+            text-transform: uppercase;
+            word-break: break-all !important;
+            font-size: 12px;
+            background-color: #0097c6;
+            margin-top: 10px;
+            padding: 10px 5px;
+            letter-spacing: 3px;
+            line-height: 16px;
+            border: solid 1px #0097c6;
+        }
+
+        .show {
+          background-color: #FFFFFF;
+          border-top: solid 1px #0097c6;
+          border-right: solid 1px #0097c6;
+          border-bottom: solid 1px #0097c6;
+          border-left: solid 1px #FFFFFF;
+          margin-left: -1px;
+          width: 22px;
+
+          a {
+            color: #000000 !important;
+          }
+        }
+
+        a {
+          font-weight: bold;
+          color: #FFFFFF;
+        }
+    }
+}
 
 .sl-panel {
     @include panel();
@@ -87,14 +167,13 @@
 
 #sidebar {
     position: fixed;
-    width: $navbar-width;
-    top: $navbar-height;
-    left:0;
-    bottom: 0;
+    width: $navbar-width - rem-calc(5);
+    top: $navbar-height + rem-calc(5);
+    left: rem-calc(5);
+    bottom: rem-calc(5);
     margin: 0;
     padding: 0;
 
-    overflow: auto;
     ul {
         margin-left: 0;
     }
