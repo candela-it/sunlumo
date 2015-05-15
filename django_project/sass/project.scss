@@ -381,15 +381,18 @@
 
 .locate-icon {
     position: absolute;
-    bottom: 0;
-    right: rem-calc(5);
+    top: 0;
+    right: rem-calc(19);
 }
 
 .feature-result {
     display: block;
     position: relative;
     margin-bottom: rem-calc(5);
+    font-size: rem-calc(12);
+    border-bottom: 1px dotted;
 }
+
 .feature-result:hover {
     background-color: $smoke;
 }
