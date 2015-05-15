@@ -6,18 +6,19 @@ var m = require('mithril');
 var render = function(ctrl) {
     return m('div', {}, [
         ctrl.vm.index_list.map(function(index) {
-            return m('label', index.index_name(), [
+            return m('div.search-chk', [
                 m('input[type=checkbox]', {
                     onclick: ctrl.vm.ev_clickIndex.bind(ctrl, index),
                     checked: index.visible()
-                })
+                }),
+                m('label', index.index_name())
             ]);
         }),
         m('input', {
             onchange: ctrl.vm.ev_inputChanged.bind(ctrl),
             onkeypress: ctrl.vm.ev_keypressAction.bind(ctrl)
         }),
-        m('button.small', {onclick: ctrl.vm.ev_clickSearch.bind(ctrl)}, 'Pretraži')
+        m('button.tiny', {onclick: ctrl.vm.ev_clickSearch.bind(ctrl)}, 'Pretraži')
     ]);
 };
 

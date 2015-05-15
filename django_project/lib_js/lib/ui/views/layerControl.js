@@ -40,6 +40,9 @@ var renderLayerItem = function (ctrl, treeItem) {
             m('input[type=range]', {
                 value: item.transparency(),
                 onchange: ctrl.vm.ev_layerTransparency.bind(ctrl, item)
+            }),
+            m('img.legend', {
+                'src': 'http://www.helenedraux.net/images/Post1_fig4a.png'
             })
         ])
     ]);
