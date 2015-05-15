@@ -63,6 +63,7 @@
     left: 0;
     height: 100%;
     width: 100%;
+    z-index: 9999;
 
     .content-holder {
       position: absolute;
@@ -71,6 +72,9 @@
       height: 100%;
       width: 100%;
       border: solid 1px #0097c6;
+      -webkit-box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
+      -moz-box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
+      box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
 
 
       .content {
@@ -113,6 +117,9 @@
             letter-spacing: 3px;
             line-height: 16px;
             border: solid 1px #0097c6;
+          -webkit-box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
+          -moz-box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
+          box-shadow: 5px 5px 10px -2px rgba(0,0,0,0.75);
         }
 
         .show {
@@ -144,6 +151,9 @@
     padding:0 !important;
     border: none !important;
     max-height: rem-calc(625);
+    -webkit-box-shadow: -5px 5px 10px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: -5px 5px 10px -2px rgba(0,0,0,0.75);
+    box-shadow: -5px 5px 10px -2px rgba(0,0,0,0.75);
 
     .heading {
         // this class is defined in _utils partial
@@ -461,4 +471,13 @@ ul.ss-result {
     position: absolute;
     top: rem-calc(56);
     left: rem-calc(390);
+}
+
+.sl-toolbox {
+  -webkit-box-shadow: 5px 5px 5px -2px rgba(0,0,0,0.55);
+  -moz-box-shadow: 5px 5px 5px -2px rgba(0,0,0,0.55);
+  box-shadow: 5px 5px 5px -2px rgba(0,0,0,0.55);
+  .button {
+      margin: 0;
+  }
 }
