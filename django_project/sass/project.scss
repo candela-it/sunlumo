@@ -456,3 +456,9 @@ ul.ss-result {
        background-color: $smoke;
     }
 }
+
+#toolbox {
+    position: absolute;
+    top: rem-calc(56);
+    left: rem-calc(390);
+}

@@ -104,31 +104,16 @@ SL_Project.prototype = {
                 component: ui_pt
             }
         ]);
-        /*
-        var ui_acc = new UI_Accordion(this.options, [
-            {
-                title: 'Alati',
-                component: ui_toolbox,
-                open: true
+        m.module(document.getElementById('toolbox'), {
+            controller: function () {
+                return ui_toolbox.controller;
             },
-            {
-                title: 'Pretraživanje',
-                component: ui_ss,
-                open: true
-            },
-            {
-                title: 'Slojevi',
-                component: ui_lc,
-                open: true
+            view: function (ctrl) {
+                return [ui_toolbox.view(ctrl)];
             }
-        ]);
-        */
+        });
+
         var ui_sidebar = new UI_Sidebar(this.options, [
-            {
-                title: 'Alati',
-                component: ui_toolbox,
-                open: false
-            },
             {
                 title: 'Pretraživanje',
                 component: ui_ss,
