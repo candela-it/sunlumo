@@ -46,7 +46,7 @@ GetFeatureInfoAllVisible.prototype = {
             component: {controller: gfi_controller, view: gfi_view},
             width: '200px',
             top: '56px',
-            left: '350px'
+            right: '10px'
         });
 
         this.controller = panel.controller;
