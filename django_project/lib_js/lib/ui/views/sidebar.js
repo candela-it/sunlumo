@@ -14,10 +14,11 @@ var render = function(ctrl) {
         ]),
         m('div.content-side', [
             ctrl.vm.components.map(function(component, index) {
-                return m('div.item', {'class': component.open() ? 'show' : ''}, [
-                    m('a', {
-                        onclick: ctrl.vm.ev_toggleOpen.bind(ctrl, component)
-                    }, [component.title()])
+                return m('div.item', {
+                    'class': component.open() ? 'show' : '',
+                    onclick: ctrl.vm.ev_toggleOpen.bind(ctrl, component)
+                }, [
+                    m('a', [component.title()])
                 ]);
             })
         ])
