@@ -132,9 +132,9 @@ class Searcher(SunlumoProject):
 
     def reindex_features(self, params):
 
-        pk_value = reindex.get('pk_value', -1)
-        index_id = reindex.get('index_id')
-        layer_id = reindex.get('layer_id')
+        pk_value = params.get('pk_value', -1)
+        index_id = params.get('index_id')
+        layer_id = params.get('layer_id')
 
         for reindex in params.get('reindex'):
             index = IndexSpecification.objects.get(pk=index_id)

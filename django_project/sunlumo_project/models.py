@@ -45,9 +45,9 @@ class Project(TimeStampedModel):
         for layer_id, values in sl_project.LAYERS_DATA.items():
             layer, created = Layer.objects.update_or_create(
                 layer_id=layer_id, defaults={
-                   'project_id': self.pk, 'title': values['layer_name'],
-                   'visible': values['visible'],
-                   'layer_type': values['type']
+                    'project_id': self.pk, 'title': values['layer_name'],
+                    'visible': values['visible'],
+                    'layer_type': values['type']
                 }
             )
             for attribute in sl_project.getAttributesForALayer(layer_id):
