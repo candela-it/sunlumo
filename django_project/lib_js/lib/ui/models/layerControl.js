@@ -202,7 +202,6 @@ VIEWMODEL.prototype = {
     },
 
     loadLegend: function (item) {
-        console.log(item);
         return '/legend?REQUEST=GetLegendGraphics&LAYER=' + item.l_id() + '&FORMAT=image/png';
     },
 
