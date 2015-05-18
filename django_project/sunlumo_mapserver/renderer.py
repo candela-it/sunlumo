@@ -2,15 +2,24 @@
 import logging
 LOG = logging.getLogger(__name__)
 
-from PyQt4.QtCore import QSize, QBuffer, QIODevice
+from PyQt4.QtCore import QSize, QSizeF, QBuffer, QIODevice
 from PyQt4.QtGui import QColor, QImage, QPainter
 
 from qgis.core import (
     QgsMapRendererCustomPainterJob,
     QgsCoordinateReferenceSystem,
     QgsMapSettings,
-    QgsRectangle
+    QgsRectangle,
+    QgsLegendRenderer,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
+    QgsLayerTreeModel,
+    QgsLegendSettings,
+    QgsLayerTree,
+    QgsComposerLegendStyle
 )
+
+from django.conf import settings
 
 from .utils import change_directory
 from .project import SunlumoProject
@@ -91,3 +100,87 @@ class Renderer(SunlumoProject):
             p.end()
             map_buffer.close()
             return map_buffer.data()
+
+    def getLegendGraphic(self, params):
+        qgsLayer = self.layerRegistry.mapLayer(params.get('layer'))
+
+        boxSpace = 1
+        layerSpace = 2
+        # layerTitleSpace = 3
+        symbolSpace = 2
+        iconLabelSpace = 2
+        symbolWidth = 5
+        symbolHeight = 3
+
+        drawLegendLabel = True
+
+        rootGroup = QgsLayerTreeGroup()
+        rootGroup.addLayer(qgsLayer)
+        layer = QgsLayerTreeLayer(qgsLayer)
+
+        if qgsLayer.title():
+            layer.setLayerName(qgsLayer.title())
+
+        legendModel = QgsLayerTreeModel(rootGroup)
+
+        rootChildren = rootGroup.children()
+
+        img_tmp = QImage(QSize(1, 1), QImage.Format_ARGB32_Premultiplied)
+        dpm = 1 / 0.00028
+        img_tmp.setDotsPerMeterX(dpm)
+        img_tmp.setDotsPerMeterY(dpm)
+
+        dpmm = img_tmp.dotsPerMeterX() / 1000.0
+
+        del img_tmp
+
+        legendSettings = QgsLegendSettings()
+        legendSettings.setTitle('')
+        legendSettings.setBoxSpace(boxSpace)
+        legendSettings.rstyle(QgsComposerLegendStyle.Subgroup).setMargin(QgsComposerLegendStyle.Top, layerSpace)
+
+        legendSettings.rstyle(QgsComposerLegendStyle.Symbol).setMargin(QgsComposerLegendStyle.Top, symbolSpace)
+        legendSettings.rstyle(QgsComposerLegendStyle.SymbolLabel).setMargin(QgsComposerLegendStyle.Left, iconLabelSpace)
+        legendSettings.setSymbolSize(QSizeF(symbolWidth, symbolHeight))
+        # legendSettings.rstyle(QgsComposerLegendStyle.Subgroup).setFont(layerFont)
+        # legendSettings.rstyle(QgsComposerLegendStyle.SymbolLabel).setFont(itemFont)
+        # // TODO: not available: layer font color
+        # legendSettings.setFontColor( itemFontColor );
+
+        for node in rootChildren:
+            if (QgsLayerTree.isLayer(node)):
+                QgsLegendRenderer.setNodeLegendStyle(node, QgsComposerLegendStyle.Subgroup)
+            # rule item titles
+            # if ( !mDrawLegendItemLabel )
+            #     for legendNode in legendModel.layerLegendNodes(nodeLayer):
+            #         legendNode.setUserLabel(' ')
+            # }
+
+        legendRenderer = QgsLegendRenderer(legendModel, legendSettings)
+        minSize = legendRenderer.minimumSize()
+        s = QSize(minSize.width() * dpmm, minSize.height() * dpmm)
+
+        img = QImage(s, QImage.Format_ARGB32_Premultiplied)
+        # fill in the background
+        color = QColor(0, 0, 0, 0)
+        img.fill(color)
+
+        p = QPainter()
+        p.begin(img)
+
+        p.setRenderHint(QPainter.Antialiasing, True)
+        p.scale(dpmm, dpmm)
+        legendRenderer.drawLegend(p)
+
+        map_buffer = QBuffer()
+        map_buffer.open(QIODevice.ReadWrite)
+
+        img.save(map_buffer, 'PNG')
+        # clean up
+
+        map_buffer.close()
+        p.end()
+
+        # self.layerRegistry.removeAllMapLayers()
+        return map_buffer.data()
+

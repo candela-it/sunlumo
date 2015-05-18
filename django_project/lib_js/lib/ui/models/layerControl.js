@@ -201,6 +201,11 @@ VIEWMODEL.prototype = {
         }
     },
 
+    loadLegend: function (item) {
+        console.log(item);
+        return '/legend?REQUEST=GetLegendGraphics&LAYER=' + item.l_id() + '&FORMAT=image/png';
+    },
+
     ev_queryGroupToggle: function(treeItem) {
         var self = this;
         var group = this.vm.groups[treeItem.item_uuid()];

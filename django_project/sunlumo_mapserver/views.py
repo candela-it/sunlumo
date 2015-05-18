@@ -125,6 +125,52 @@ class GetMapView(UpperParamsMixin, JSONResponseMixin, View):
             return self.render_json_response(features)
 
 
+class GetLegendGraphicView(UpperParamsMixin, JSONResponseMixin, View):
+    def _parse_request_params(self, request):
+        if not(all(param in self.req_params for param in [
+                'FORMAT', 'LAYER', 'REQUEST'])):
+            raise Http404
+
+        try:
+            request = self.req_params.get('REQUEST')
+            image_size = [
+                int(a) for a in (
+                    self.req_params.get('WIDTH', -1),
+                    self.req_params.get('HEIGHT', -1))
+            ]
+            image_format = self.req_params.get('FORMAT').split('/')[-1]
+            layer = self.req_params.get('LAYER').strip()
+        except:
+            # return 404 if any of parameters are missing or not parsable
+            raise Http404
+
+        # map must have a value
+        if not(request):
+            raise Http404
+
+        # check if image format is supported
+        if image_format not in ['png', 'jpeg', 'png8']:
+            raise Http404
+
+        params = {
+            'image_format': image_format,
+            'image_size': image_size,
+            'layer': layer,
+            'request': request
+        }
+
+        return params
+
+    def get(self, request, *args, **kwargs):
+        params = self._parse_request_params(request)
+
+        project = Project.objects.get(pk=settings.SUNLUMO_PROJECT_ID)
+
+        sl_project = Renderer(project.project_path)
+        img = sl_project.getLegendGraphic(params)
+        return HttpResponse(img, content_type=params.get('image_format'))
+
+
 class PrintPDFView(UpperParamsMixin, View):
     def _parse_request_params(self, request):
         if not(all(param in self.req_params for param in [
