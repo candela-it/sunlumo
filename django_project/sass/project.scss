@@ -99,7 +99,7 @@
         right: -30px;
         height: 100%;
         width: 30px;
-        z-index: 99;
+        z-index: 9999999;
 
 
         .item {
@@ -489,4 +489,8 @@ ul.ss-result {
   padding: rem-calc(3) rem-calc(10);
   text-transform: uppercase;
   font-size: rem-calc(12);
+}
+
+#sidebar {
+  z-index: 9999;
 }
