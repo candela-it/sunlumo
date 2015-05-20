@@ -116,10 +116,10 @@ class Renderer(SunlumoProject):
 
         rootGroup = QgsLayerTreeGroup()
         rootGroup.addLayer(qgsLayer)
-        layer = QgsLayerTreeLayer(qgsLayer)
+        # layer = QgsLayerTreeLayer(qgsLayer)
 
-        if qgsLayer.title():
-            layer.setLayerName(qgsLayer.title())
+        # if qgsLayer.title():
+        #     layer.setLayerName(qgsLayer.title())
 
         legendModel = QgsLayerTreeModel(rootGroup)
 
@@ -147,14 +147,14 @@ class Renderer(SunlumoProject):
         # // TODO: not available: layer font color
         # legendSettings.setFontColor( itemFontColor );
 
-        for node in rootChildren:
-            if (QgsLayerTree.isLayer(node)):
-                QgsLegendRenderer.setNodeLegendStyle(node, QgsComposerLegendStyle.Subgroup)
-            # rule item titles
-            # if ( !mDrawLegendItemLabel )
-            #     for legendNode in legendModel.layerLegendNodes(nodeLayer):
-            #         legendNode.setUserLabel(' ')
-            # }
+        # for node in rootChildren:
+        #     if (QgsLayerTree.isLayer(node)):
+        #         QgsLegendRenderer.setNodeLegendStyle(node, QgsComposerLegendStyle.Subgroup)
+        #     # rule item titles
+        #     # if ( !mDrawLegendItemLabel )
+        #     #     for legendNode in legendModel.layerLegendNodes(nodeLayer):
+        #     #         legendNode.setUserLabel(' ')
+        #     # }
 
         legendRenderer = QgsLegendRenderer(legendModel, legendSettings)
         minSize = legendRenderer.minimumSize()
