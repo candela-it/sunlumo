@@ -42,7 +42,7 @@ var renderLayerItem = function (ctrl, treeItem) {
                 onchange: ctrl.vm.ev_layerTransparency.bind(ctrl, item)
             }),
             m('img.legend', {
-                'src': ctrl.vm.loadLegend(item)
+                src: ctrl.vm.loadLegend(item)
             })
         ])
     ]);
