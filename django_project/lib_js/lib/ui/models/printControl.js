@@ -35,6 +35,7 @@ var Scales = [
     {scale: 1000, display: '1:1000'},
     {scale: 2000, display: '1:2000'},
     {scale: 5000, display: '1:5000'},
+    {scale: 7000, display: '1:7000'},
     {scale: 10000, display: '1:10000'},
     {scale: 25000, display: '1:25000'},
     {scale: 50000, display: '1:50000'},
