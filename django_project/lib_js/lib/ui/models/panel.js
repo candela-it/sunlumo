@@ -56,6 +56,7 @@ VIEWMODEL.prototype = {
 
     show: function () {
         this.visible(true);
+        this.minimized(false);
     },
 
     hide: function() {
