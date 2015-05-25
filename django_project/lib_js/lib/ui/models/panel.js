@@ -20,6 +20,8 @@ var VIEWMODEL = function (options) {
     this.style = m.prop();
 
     this.visible = m.prop(false);
+
+    this.minimized = m.prop(false);
 };
 
 VIEWMODEL.prototype = {
@@ -63,8 +65,15 @@ VIEWMODEL.prototype = {
     ev_closeclick: function() {
         this.vm.hide();
         this.vm.events.emit('panel.closed');
-    }
+    },
 
+    ev_toggleclick: function() {
+        if (this.vm.minimized() === true) {
+            this.vm.minimized(false);
+        } else {
+            this.vm.minimized(true);
+        }
+    }
 };
 
 module.exports = VIEWMODEL;
