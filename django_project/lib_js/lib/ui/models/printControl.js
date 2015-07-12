@@ -115,11 +115,15 @@ VIEWMODEL.prototype = {
 
     ev_onPrintLayoutChange: function(evt) {
         this.vm.selected_layout = this.vm.layouts_list[evt.currentTarget.selectedIndex];
+        this.vm.params.layout = this.vm.selected_layout.name();
         // Automatically show print area.
-        this.vm.events.emit('params.updated', {
-            scale: this.vm.selected_scale,
-            layout: this.vm.selected_layout
-        });
+
+        if (this.vm.selected_scale) {
+            this.vm.events.emit('params.updated', {
+                scale: this.vm.selected_scale,
+                layout: this.vm.selected_layout
+            });
+        }
     }
 };
 
