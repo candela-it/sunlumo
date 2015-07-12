@@ -7,6 +7,13 @@ var _ = require('lodash');
 var render = function(ctrl) {
     return [
         ctrl.vm.list.map(function(item) {
+            if (Object.keys(item.properties).length === 0) {
+                item.properties = {
+                    unknown: function () {
+                        return 'unknown';
+                    }
+                };
+            }
             return m('div.feature-result', [
                 _.map(item.properties, function(val, attr) {
                     return m('div.item', {'class': item.toggled() ? '' : 'hide'}, attr + ': ' + val());
