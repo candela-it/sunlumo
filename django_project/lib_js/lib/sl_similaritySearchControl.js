@@ -77,7 +77,7 @@ SL_SimilaritySearchControl.prototype = {
             self.SL_Result_Source.clear(true);
             self.SL_Result_Source.addFeatures(feature);
 
-            self.sl_map.map.getView().fitExtent(
+            self.sl_map.map.getView().fit(
                 self.SL_Result_Source.getExtent(), self.sl_map.map.getSize()
             );
         });

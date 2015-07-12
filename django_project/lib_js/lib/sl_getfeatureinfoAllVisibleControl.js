@@ -39,9 +39,10 @@ var SL_GetFeatureInfoAllVisibleControl = function (sl_map, options) {
 
 SL_GetFeatureInfoAllVisibleControl.prototype = {
     init: function() {
-        this.SL_GFI_Source = new ol.source.GeoJSON({
+        this.SL_GFI_Source = new ol.source.Vector({
             // projection: data.map.getView().getProjection(),
-            defaultProjection: this.sl_map.map.getView().getProjection()
+            defaultProjection: this.sl_map.map.getView().getProjection(),
+            format: new ol.format.GeoJSON()
         });
 
         this.SL_GFI_Layer = new ol.layer.Vector({
@@ -95,7 +96,7 @@ SL_GetFeatureInfoAllVisibleControl.prototype = {
 
         EVENTS.on('getFeatureInfoAllVisible.result.clicked', function(data) {
             var feature = self.SL_GFI_Source.getFeatureById(data.result.id());
-            self.sl_map.map.getView().fitExtent(
+            self.sl_map.map.getView().fit(
                 feature.getGeometry().getExtent(), self.sl_map.map.getSize()
             );
             EVENTS.emit('featureOverlay.add', {

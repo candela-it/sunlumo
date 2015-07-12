@@ -37,8 +37,16 @@ SL_FeatureOverlay.prototype = {
     init: function() {
         var self = this;
 
-        this.SL_FeatureOverlay_Layer = new ol.FeatureOverlay({
+        var collection = new ol.Collection();
+
+        this.SL_FeatureOverlay_Layer = new ol.layer.Vector({
             map: this.sl_map.map,
+            source: new ol.source.Vector({
+                features: collection,
+                useSpatialIndex: false
+            }),
+            updateWhileAnimating: true,
+            updateWhileInteracting: true,
             style: [new ol.style.Style({
                 stroke: new ol.style.Stroke({
                     color: '#f00',
@@ -63,10 +71,10 @@ SL_FeatureOverlay.prototype = {
         EVENTS.on('featureOverlay.add', function(data) {
             if (data.feature !== this.HighlightedFeature) {
                 if (this.HighlightedFeature) {
-                    self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
+                    self.SL_FeatureOverlay_Layer.getSource().removeFeature(this.HighlightedFeature);
                 }
                 if (data.feature) {
-                    self.SL_FeatureOverlay_Layer.addFeature(data.feature);
+                    self.SL_FeatureOverlay_Layer.getSource().addFeature(data.feature);
                 }
                 this.HighlightedFeature = data.feature;
             }
@@ -74,7 +82,7 @@ SL_FeatureOverlay.prototype = {
 
         EVENTS.on('featureOverlay.clear', function() {
             if (this.HighlightedFeature !== undefined) {
-                self.SL_FeatureOverlay_Layer.removeFeature(this.HighlightedFeature);
+                self.SL_FeatureOverlay_Layer.getSource().removeFeature(this.HighlightedFeature);
             }
         });
     }
