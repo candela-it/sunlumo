@@ -72,26 +72,21 @@ SL_QGISLayerControl.prototype = {
 
     customImageLoadFunction: function(image, src) {
         var self = this;
-        // prevent making another image request if previous one has not finished
-        if (!this.waiting_for_image) {
-            this.waiting_for_image = true;
-            var start_time = new Date().getTime();
-            // set loading-status
-            EVENTS.emit('spinner.activate');
 
-            // set image source
-            image.getImage().src = src;
+        var start_time = new Date().getTime();
+        // set loading-status
+        EVENTS.emit('spinner.activate');
 
-            // onload triggers when the image is fully loaded
-            image.getImage().onload = function (evt) {
-                EVENTS.emit('spinner.deactivate');
-                var end_time = new Date().getTime();
+        // set image source
+        image.getImage().src = src;
 
-                console.log('Image loaded:', end_time - start_time);
+        // onload triggers when the image is fully loaded
+        image.getImage().onload = function (evt) {
+            EVENTS.emit('spinner.deactivate');
+            var end_time = new Date().getTime();
 
-                self.waiting_for_image = false;
-            };
-        }
+            console.log('Image loaded:', end_time - start_time);
+        };
     },
 
     init: function () {
